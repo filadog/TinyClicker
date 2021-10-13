@@ -22,14 +22,15 @@ namespace TinyTowerComputerVisionConsole
         public static void Main()
         {
             Console.WriteLine("Commands:" +
-                "\nstart - enable clicker" +
+                "\ns - enable clicker" +
                 "\nl - display all processes" +
-                "\nq - quit application");
+                "\nq - quit application" +
+                "\nss - capture and save a screenshot");
 
             string input = Console.ReadLine();
             switch (input)
             {
-                case "start":
+                case "s":
                     ClickerStart();
                     break;
 
@@ -42,6 +43,10 @@ namespace TinyTowerComputerVisionConsole
                     Environment.Exit(0);
                     break;
 
+                case "ss":
+                    SaveScreenshot(GetProcessId(processName));
+                    break;
+                       
                 default:
                     Main();
                     break;
@@ -56,14 +61,14 @@ namespace TinyTowerComputerVisionConsole
             MatchImages(processId, images); 
         }
 
-        public static void PerformAction(string key, int location)
+        public static void PerformAction(List<string> matchedImages, int location)
         {
             suspended = true;
             switch (key)
             {
-                case "elevatorButton":
-                    Click(location);
-                    Thread.Sleep(10000);
+                case "moveIn":
+
+                    Console.WriteLine("Move in is found");
                     Click(100, 375);
                     Thread.Sleep(500);
                     Click(245, 415);
@@ -72,8 +77,29 @@ namespace TinyTowerComputerVisionConsole
                     Thread.Sleep(500);
                     break;
 
+                case "freeBuxCollectButton":
+
+                    Click(location);
+                    Thread.Sleep(500);
+                    break;
+
+                case "elevatorButton":
+
+                    Console.WriteLine("Elevator is found");
+                    Click(location);
+                    Thread.Sleep(13000);
+                    break;
+                
+                case "freeBuxButton":
+
+                    Click(location);
+                    Thread.Sleep(500);
+                    Click(230, 375);
+                    Thread.Sleep(500);
+                    break;
+
                 default:
-                    Console.WriteLine("Action is not implemented yet");
+                    Console.WriteLine("Action is not implemented yet : {0}", key);
                     break;
             }
 
@@ -83,6 +109,10 @@ namespace TinyTowerComputerVisionConsole
 
         static void MatchImages(int processId, Dictionary<string, Image> images)
         {
+            
+            List<string> matchedImages = new List<string>();
+            matchedImages.Clear();
+
             while (processId != -1 && !suspended)
             {
                 Thread.Sleep(1000); // Object detection performed twice a second
@@ -99,7 +129,7 @@ namespace TinyTowerComputerVisionConsole
                     var imageBitmap = new Bitmap(image.Value);
                     Mat template = BitmapConverter.ToMat(imageBitmap);
                     imageBitmap.Dispose();
-
+                    //MatType.CV_32FC1
                     using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
                     {
                         //Convert input images to gray
@@ -107,22 +137,21 @@ namespace TinyTowerComputerVisionConsole
                         Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
 
                         Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
-                        Cv2.Threshold(res, res, 0.8, 1.0, ThresholdTypes.Tozero);
+                        Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
                         GC.Collect();
 
-                        while (true && !suspended)
+                        while (!suspended)
                         {
-                            double minval, maxval, threshold = 0.8;
+                            double minval, maxval, threshold = 0.95;
                             Point minloc, maxloc;
                             Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
 
                             if (maxval >= threshold)
                             {
-                                if (image.Key == "elevatorButton")
-                                {
-                                    PerformAction(image.Key, MakeParam(maxloc.X, maxloc.Y));
-                                }
 
+                                Console.WriteLine(image.Key + " is found");
+                                matchedImages.Add(image.Key);
+                                
                                 break;
                             }
                             else
@@ -188,6 +217,18 @@ namespace TinyTowerComputerVisionConsole
             } 
         }
 
+        public static void SaveScreenshot(int processId)
+        {
+            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
+            ScreenCapture sc = new ScreenCapture();
+
+            // Captures screenshot of a window and saves it to screenshots folder
+
+            sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + "\\screenshots\\mainWindow.png", ImageFormat.Png);
+            Console.WriteLine("Made a screenchot you bastard");
+            Main();
+        }
+
         static void PrintAllProcesses()
         {
             Process[] processlist = Process.GetProcesses();
@@ -238,6 +279,7 @@ namespace TinyTowerComputerVisionConsole
             dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
             dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
             dict.Add("giftChute", Image.FromFile(samplesPath + "gift_chute.png"));
+            dict.Add("moveIn", Image.FromFile(samplesPath + "move_in.png"));
 
             return dict;
         }
