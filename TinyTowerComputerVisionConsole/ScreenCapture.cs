@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 
 namespace TinyTowerComputerVisionConsole
 {
-
     // Provides functions to capture the entire screen, or a particular window, and save it to a file.
     
     // public Image CaptureScreen()

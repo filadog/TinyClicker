@@ -15,6 +15,10 @@ namespace TinyTowerComputerVisionConsole
 {
     internal class Program
     {
+        public const string processName = "dnplayer";
+        static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
+        static bool suspended = false;
+
         public static void Main()
         {
             Console.WriteLine("Commands:" +
@@ -47,11 +51,41 @@ namespace TinyTowerComputerVisionConsole
         public static void ClickerStart()
         {
             var images = FindImages();
-            int processId = GetProcessId("dnplayer");
+            int processId = GetProcessId(processName);
 
-            while (processId != -1)
+            MatchImages(processId, images); 
+        }
+
+        public static void PerformAction(string key, int location)
+        {
+            suspended = true;
+            switch (key)
             {
-                Thread.Sleep(500);
+                case "elevatorButton":
+                    Click(location);
+                    Thread.Sleep(10000);
+                    Click(100, 375);
+                    Thread.Sleep(500);
+                    Click(245, 415);
+                    Thread.Sleep(500);
+                    Click(220, 380);
+                    Thread.Sleep(500);
+                    break;
+
+                default:
+                    Console.WriteLine("Action is not implemented yet");
+                    break;
+            }
+
+            suspended = false;
+            ClickerStart();
+        }
+
+        static void MatchImages(int processId, Dictionary<string, Image> images)
+        {
+            while (processId != -1 && !suspended)
+            {
+                Thread.Sleep(1000); // Object detection performed twice a second
                 Image gameWindow = MakeScreenshot(processId);
 
                 var windowBitmap = new Bitmap(gameWindow);
@@ -74,48 +108,59 @@ namespace TinyTowerComputerVisionConsole
 
                         Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                         Cv2.Threshold(res, res, 0.8, 1.0, ThresholdTypes.Tozero);
-                        
-                        while (true)
+                        GC.Collect();
+
+                        while (true && !suspended)
                         {
-                            double minval, maxval, threshold = 0.9;
+                            double minval, maxval, threshold = 0.8;
                             Point minloc, maxloc;
                             Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
 
                             if (maxval >= threshold)
                             {
-                                Console.WriteLine("{0} found at x:{1} y:{2}", image.Key, maxloc.X, maxloc.Y);
+                                if (image.Key == "elevatorButton")
+                                {
+                                    PerformAction(image.Key, MakeParam(maxloc.X, maxloc.Y));
+                                }
+
                                 break;
-                                ////Setup the rectangle to draw
-                                //Rect r = new Rect(new Point(maxloc.X, maxloc.Y), new Size(template.Width, template.Height));
-
-                                ////Draw a rectangle of the matching area
-                                //Cv2.Rectangle(reference, r, Scalar.LimeGreen, 2);
-
-                                ////Fill in the res Mat so you don't find the same area again in the MinMaxLoc
-                                //Rect outRect;
-                                //Cv2.FloodFill(res, maxloc, new Scalar(0), out outRect, new Scalar(0.1), new Scalar(1.0));
                             }
                             else
                             {
-                                //Console.WriteLine("No matches were found");
                                 break;
                             }
                         }
-                        //Cv2.ImShow("Matches", reference);
-                        //Cv2.WaitKey();
                     }
-                    GC.Collect(); // Never remove this!!!
                 }
-                //var mat = new Mat();
-                //OutputArray result = OutputArray.Create(mat);
-
-                //Cv2.MatchTemplate(gameWindow, images["vipButton"], result, TemplateMatchModes.SqDiff);
             }
+            GC.Collect(); // Never remove this!!!
         }
-        
-        public static void FindMatches()
-        {
 
+        public static void Click(int location)
+        {
+            MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, location);
+            MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONUP, 0, location);
+        }
+        public static void Click(int x, int y)
+        {
+            MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, MakeParam(x, y));
+            MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONUP, 0, MakeParam(x, y));
+        }
+
+        public static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+
+        public static IntPtr FindClickableChildHandles(string processName)
+        {
+            if (WindowHandleInfo.GetChildren(processName) != null)
+            {
+                List<IntPtr> childProcesses = WindowHandleInfo.GetChildren(processName);
+                return childProcesses[0];
+            }
+            else
+            {
+                Console.WriteLine("No clickable child found - clicker function not possible");
+                return IntPtr.Zero;
+            } 
         }
 
         public static Image MakeScreenshot(int processId)
@@ -138,7 +183,7 @@ namespace TinyTowerComputerVisionConsole
             }
             else
             {
-                Console.WriteLine("No process with LDPlayer found");
+                Console.WriteLine("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
                 return null;
             } 
         }
