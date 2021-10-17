@@ -174,9 +174,16 @@ namespace TinyClicker
 
         static void PerformActions()
         {
+            if (matchedImages.ContainsKey("closeAdButton"))
+            {
+                Click(311, 22);
+                Thread.Sleep(2000);
+                return;
+            }
             if (matchedImages.ContainsKey("closeAdButton_2"))
             {
-                Click(matchedImages["closeAdButton_2"]);
+                Click(311, 22);
+                //Click(matchedImages["closeAdButton_2"]);
                 Thread.Sleep(2000);
                 return;
             }
@@ -239,18 +246,20 @@ namespace TinyClicker
                 if (MatchImage("watchAdPromptBux"))
                 {
                     Click(220, 380); // Continue
-                    Thread.Sleep(35000);
+                    Thread.Sleep(40000);
                     Console.WriteLine("Watched the ad. Looking for a close button");
                     MatchImages();
                     if (matchedImages.ContainsKey("closeAdButton"))
                     {
-                        Click(matchedImages["closeAdButton"]);
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_2"))
                     {
-                        Click(matchedImages["closeAdButton_2"]);
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_2"]);
                         Thread.Sleep(2000);
                         return;
                     }
@@ -265,18 +274,20 @@ namespace TinyClicker
                 if (MatchImage("watchAdPromptCoins"))
                 {
                     Click(220, 380); // Continue
-                    Thread.Sleep(35000);
+                    Thread.Sleep(40000);
                     Console.WriteLine("Watched the ad. Looking for a close button");
                     MatchImages();
                     if (matchedImages.ContainsKey("closeAdButton"))
                     {
-                        Click(matchedImages["closeAdButton"]);
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_2"))
                     {
-                        Click(matchedImages["closeAdButton_2"]);
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_2"]);
                         Thread.Sleep(2000);
                         return;
                     }
@@ -469,7 +480,7 @@ namespace TinyClicker
 
         static void PrintInfo()
         {
-            Console.WriteLine("TinyClicker build v0.02" +
+            Console.WriteLine("TinyClicker build v0.03" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
