@@ -219,10 +219,15 @@ namespace TinyClicker
                 if (MatchImage("fullyStockedBonus"))
                 {
                     Click(165, 375); // Close the bonus tooltip
+                    Thread.Sleep(1000);
+                    Click(160, 8); // Go up
+                    Thread.Sleep(800);
                     return;
                 }
                 else
                 {
+                    Click(160, 8); // Go up
+                    Thread.Sleep(800);
                     return;
                 }
 
@@ -450,9 +455,9 @@ namespace TinyClicker
             var dict = new Dictionary<string, Image>();
             string samplesPath = Path.Combine(Environment.CurrentDirectory, "samples\\");
 
-            dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
+            //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
             dict.Add("backButton", Image.FromFile(samplesPath + "back_button.png"));
-            dict.Add("questButton", Image.FromFile(samplesPath + "quest_button.png"));
+            //dict.Add("questButton", Image.FromFile(samplesPath + "quest_button.png"));
             dict.Add("elevatorButton", Image.FromFile(samplesPath + "elevator_button.png"));
             dict.Add("vipButton", Image.FromFile(samplesPath + "vip_button.png"));
             dict.Add("freeBuxButton", Image.FromFile(samplesPath + "free_bux_button.png"));
@@ -460,8 +465,8 @@ namespace TinyClicker
             dict.Add("freeBuxVidoffersButton", Image.FromFile(samplesPath + "free_bux_vidoffers_button.png"));
             dict.Add("raffleIconMenu", Image.FromFile(samplesPath + "raffle_icon_menu.png"));
             dict.Add("enterRaffleButton", Image.FromFile(samplesPath + "enter_raffle_button.png"));
-            dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
-            dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
+            //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
+            //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
             dict.Add("giftChute", Image.FromFile(samplesPath + "gift_chute.png"));
             dict.Add("moveIn", Image.FromFile(samplesPath + "move_in.png"));
             dict.Add("restockButton", Image.FromFile(samplesPath + "restock_button.png"));
@@ -480,7 +485,7 @@ namespace TinyClicker
 
         static void PrintInfo()
         {
-            Console.WriteLine("TinyClicker build v0.03" +
+            Console.WriteLine("TinyClicker build v0.051" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
