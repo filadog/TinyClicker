@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
@@ -34,13 +33,7 @@ namespace TinyClicker
 
         public static void Startup()
         {
-            Console.WriteLine("TinyClicker build v0.02" +
-                "\nCommands:" +
-                "\ns - Enable clicker" +
-                "\nl - Display all processes" +
-                "\nq - Quit the application" +
-                "\nss - Capture and save a screenshot");
-
+            PrintInfo();
             string input = Console.ReadLine();
             switch (input)
             {
@@ -360,6 +353,16 @@ namespace TinyClicker
             dict.Add("moveIn", Image.FromFile(samplesPath + "move_in.png"));
 
             return dict;
+        }
+
+        static void PrintInfo()
+        {
+            Console.WriteLine("TinyClicker build v0.02" +
+                "\nCommands:" +
+                "\ns - Enable clicker" +
+                "\nl - Display all processes" +
+                "\nq - Quit the application" +
+                "\nss - Capture and save a screenshot");
         }
     }
 }
