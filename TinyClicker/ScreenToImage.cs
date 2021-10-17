@@ -5,22 +5,22 @@ using System.Drawing.Imaging;
 
 namespace TinyClicker
 {
-    // Provides functions to capture the entire screen, or a particular window, and save it to a file.
-    
-    // public Image CaptureScreen()
-    // Creates an Image object containing a screen shot of the entire desktop
-
-    // public Image CaptureWindow(IntPtr handle)
-    // Creates an Image object containing a screen shot of a specific window
-
-    // public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
-    // Captures a screen shot of a specific window, and saves it to a file
-
-    // public void CaptureScreenToFile(string filename, ImageFormat format)
-    // Captures a screen shot of the entire desktop, and saves it to a file
-
     public class ScreenToImage
     {
+        // Provides functions to capture the entire screen, or a particular window, and save it to a file.
+
+        // public Image CaptureScreen()
+        // Creates an Image object containing a screen shot of the entire desktop
+
+        // public Image CaptureWindow(IntPtr handle)
+        // Creates an Image object containing a screen shot of a specific window
+
+        // public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
+        // Captures a screen shot of a specific window, and saves it to a file
+
+        // public void CaptureScreenToFile(string filename, ImageFormat format)
+        // Captures a screen shot of the entire desktop, and saves it to a file
+
 
         // Creates an Image object containing a screen shot of the entire desktop
 

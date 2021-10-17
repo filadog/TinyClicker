@@ -14,7 +14,7 @@ namespace TinyClicker
 {
     internal class Program
     {
-        public const string processName = "dnplayer";
+        const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         static bool suspended = false;
         static int processId = GetProcessId(processName);
@@ -26,12 +26,12 @@ namespace TinyClicker
         static Dictionary<string, Image> images = FindImages();
         static Dictionary<string, Mat> templates = MakeTemplates(images);
 
-        public static void Main()
+        static void Main()
         {
             Startup();
         }
 
-        public static void Startup()
+        static void Startup()
         {
             PrintInfo();
             string input = Console.ReadLine();
@@ -60,7 +60,7 @@ namespace TinyClicker
             }
         }
 
-        public static void ClickerStart()
+        static void ClickerStart()
         {
             //PlayRaffle();
             //Thread.Sleep(10000);
@@ -128,7 +128,7 @@ namespace TinyClicker
             GC.Collect(); // Never remove this!!!
         }
 
-        public static void PerformActions()
+        static void PerformActions()
         {
             //switch (MatchedImages.Keys)
             //{
@@ -205,7 +205,7 @@ namespace TinyClicker
             //ClickerStart();
         }
 
-        public static void PlayRaffle()
+        static void PlayRaffle()
         {
             while (true)
             {
@@ -221,7 +221,7 @@ namespace TinyClicker
             }
         }
 
-        public static Dictionary <string, Mat> MakeTemplates(Dictionary<string, Image> images)
+        static Dictionary <string, Mat> MakeTemplates(Dictionary<string, Image> images)
         {
             Dictionary<string, Mat> mats = new Dictionary<string, Mat>();
             foreach (var image in images)
@@ -235,21 +235,21 @@ namespace TinyClicker
             return mats;
         }
 
-        public static void Click(int location)
+        static void Click(int location)
         {
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, location);
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONUP, 0, location);
         }
 
-        public static void Click(int x, int y)
+        static void Click(int x, int y)
         {
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, MakeParam(x, y));
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONUP, 0, MakeParam(x, y));
         }
 
-        public static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+        static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
 
-        public static IntPtr FindClickableChildHandles(string processName)
+        static IntPtr FindClickableChildHandles(string processName)
         {
             if (WindowHandleInfo.GetChildren(processName) != null)
             {
@@ -263,7 +263,7 @@ namespace TinyClicker
             } 
         }
 
-        public static Image MakeScreenshot(int processId)
+        static Image MakeScreenshot(int processId)
         {
             if (processId != -1)
             {
@@ -288,7 +288,7 @@ namespace TinyClicker
             } 
         }
 
-        public static void SaveScreenshot(int processId)
+        static void SaveScreenshot(int processId)
         {
             IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
             ScreenToImage sc = new ScreenToImage();
