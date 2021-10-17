@@ -13,15 +13,27 @@ using Size = OpenCvSharp.Size;
 
 namespace TinyTowerComputerVisionConsole
 {
+    // TODO 
+    // Store all bitmaps and maps of template images and do not generate them on each iteration.
+    // i.e. iterate over bitmap list not the image list.
+
     internal class Program
     {
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         static bool suspended = false;
+        static int processId = GetProcessId(processName);
+        // Matched images are stored here. Cleaned every update cycle (~1000 ms)
+        // string - image key, int - location within the host screen
+        static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
+
+        static Dictionary<string, Image> images = FindImages();
+        static Dictionary<string, Mat> templates = MakeTemplates(images);
 
         public static void Main()
         {
-            Console.WriteLine("Commands:" +
+            Console.WriteLine("TinyClicker build 0.01" +
+                "\nCommands:" +
                 "\ns - enable clicker" +
                 "\nl - display all processes" +
                 "\nq - quit application" +
@@ -55,109 +67,65 @@ namespace TinyTowerComputerVisionConsole
 
         public static void ClickerStart()
         {
-            var images = FindImages();
-            int processId = GetProcessId(processName);
-
-            MatchImages(processId, images); 
-        }
-
-        public static void PerformAction(List<string> matchedImages, int location)
-        {
-            suspended = true;
-            switch (key)
-            {
-                case "moveIn":
-
-                    Console.WriteLine("Move in is found");
-                    Click(100, 375);
-                    Thread.Sleep(500);
-                    Click(245, 415);
-                    Thread.Sleep(500);
-                    Click(220, 380);
-                    Thread.Sleep(500);
-                    break;
-
-                case "freeBuxCollectButton":
-
-                    Click(location);
-                    Thread.Sleep(500);
-                    break;
-
-                case "elevatorButton":
-
-                    Console.WriteLine("Elevator is found");
-                    Click(location);
-                    Thread.Sleep(13000);
-                    break;
-                
-                case "freeBuxButton":
-
-                    Click(location);
-                    Thread.Sleep(500);
-                    Click(230, 375);
-                    Thread.Sleep(500);
-                    break;
-
-                default:
-                    Console.WriteLine("Action is not implemented yet : {0}", key);
-                    break;
-            }
-
-            suspended = false;
-            ClickerStart();
-        }
-
-        static void MatchImages(int processId, Dictionary<string, Image> images)
-        {
-            
-            List<string> matchedImages = new List<string>();
-            matchedImages.Clear();
+            //PlayRaffle();
+            //Thread.Sleep(10000);
 
             while (processId != -1 && !suspended)
             {
-                Thread.Sleep(1000); // Object detection performed twice a second
-                Image gameWindow = MakeScreenshot(processId);
+                MatchImages();
+                // Perform all actions here
 
-                var windowBitmap = new Bitmap(gameWindow);
-                gameWindow.Dispose();
-
-                Mat reference = BitmapConverter.ToMat(windowBitmap);
-                windowBitmap.Dispose();
-
-                foreach (var image in images)
+                foreach (var image in matchedImages)
                 {
-                    var imageBitmap = new Bitmap(image.Value);
-                    Mat template = BitmapConverter.ToMat(imageBitmap);
-                    imageBitmap.Dispose();
-                    //MatType.CV_32FC1
-                    using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
+                    Console.WriteLine("Found {0}", image.Key);
+                }
+                PerformActions();
+
+                Thread.Sleep(1000); // Object detection performed ~once a second
+                matchedImages.Clear();
+            }
+        }
+
+        static void MatchImages()
+        {
+            Image gameWindow = MakeScreenshot(processId);
+            var windowBitmap = new Bitmap(gameWindow);
+            gameWindow.Dispose();
+
+            Mat reference = BitmapConverter.ToMat(windowBitmap);
+            windowBitmap.Dispose();
+
+            foreach (var template in templates)
+            {
+                //var imageBitmap = new Bitmap(image.Value);
+                //Mat template = BitmapConverter.ToMat(imageBitmap);
+                //imageBitmap.Dispose();
+                //MatType.CV_32FC1
+                using (Mat res = new Mat(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_32FC1))
+                {
+                    //Convert input images to gray
+                    Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
+                    Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+                    Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+                    Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+                    GC.Collect();
+
+                    while (!suspended)
                     {
-                        //Convert input images to gray
-                        Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
-                        Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
+                        double minval, maxval, threshold = 0.5; // default 0.5
+                        Point minloc, maxloc;
+                        Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
 
-                        Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
-                        Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
-                        GC.Collect();
-
-                        while (!suspended)
+                        if (maxval >= threshold)
                         {
-                            double minval, maxval, threshold = 0.95;
-                            Point minloc, maxloc;
-                            Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
-
-                            if (maxval >= threshold)
-                            {
-
-                                Console.WriteLine(image.Key + " is found");
-                                matchedImages.Add(image.Key);
-                                
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
+                            //Console.WriteLine(image.Key + " is found");
+                            break;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }
@@ -165,11 +133,119 @@ namespace TinyTowerComputerVisionConsole
             GC.Collect(); // Never remove this!!!
         }
 
+        public static void PerformActions()
+        {
+            //switch (MatchedImages.Keys)
+            //{
+            //    default:
+            //        break;
+            //}
+            if (matchedImages.ContainsKey("freeBuxButton"))
+            {
+                // Perform free bux collection
+                Click(matchedImages["freeBuxButton"]);
+                Thread.Sleep(500);
+                Click(230, 375);
+                Thread.Sleep(500);
+            }
+            else if (matchedImages.ContainsKey("giftChute"))
+            {
+                Click(matchedImages["giftChute"]);
+                Thread.Sleep(1000);
+                Click(210, 375);
+                Thread.Sleep(1000);
+            }
+            else if (matchedImages.ContainsKey("elevatorButton"))
+            {
+                // Perform lift ride
+                Click(45, 535);
+                //Click(MatchedImages["elevatorButton"]);
+                Thread.Sleep(12000);
+                Click(240, 575); // Click at the bottom pane to return to the ground level
+                Thread.Sleep(1000);
+            }
+            
+            
+            //suelse ifspended = true;
+            //switch (key)
+            //{
+            //    case "moveIn":
+
+            //        Console.WriteLine("Move in is found");
+            //        Click(100, 375);
+            //        Thread.Sleep(500);
+            //        Click(245, 415);
+            //        Thread.Sleep(500);
+            //        Click(220, 380);
+            //        Thread.Sleep(500);
+            //        break;
+
+            //    case "freeBuxCollectButton":
+
+            //        Click(location);
+            //        Thread.Sleep(500);
+            //        break;
+
+            //    case "elevatorButton":
+
+            //        Console.WriteLine("Elevator is found");
+            //        Click(location);
+            //        Thread.Sleep(13000);
+            //        break;
+                
+            //    case "freeBuxButton":
+
+            //        Click(location);
+            //        Thread.Sleep(500);
+            //        Click(230, 375);
+            //        Thread.Sleep(500);
+            //        break;
+
+            //    default:
+            //        Console.WriteLine("Action is not implemented yet : {0}", key);
+            //        break;
+            //}
+
+            //suspended = false;
+            //ClickerStart();
+        }
+
+        public static void PlayRaffle()
+        {
+            while (true)
+            {
+                Console.WriteLine("Played raffle");
+                Click(305, 575);
+                Thread.Sleep(500);
+                Click(275, 440);
+                Thread.Sleep(5000);
+                Click(165, 375);
+                Thread.Sleep(2000);
+                Click(165, 375);
+                Thread.Sleep(216000000); // wait 1 hour
+            }
+        }
+
+        public static Dictionary <string, Mat> MakeTemplates(Dictionary<string, Image> images)
+        {
+            Dictionary<string, Mat> mats = new Dictionary<string, Mat>();
+            foreach (var image in images)
+            {
+                var imageBitmap = new Bitmap(image.Value);
+                Mat template = BitmapConverter.ToMat(imageBitmap);
+                imageBitmap.Dispose();
+                mats.Add(image.Key, template);
+                //template.Dispose();
+            }
+            return mats;
+        }
+
         public static void Click(int location)
         {
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, location);
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONUP, 0, location);
         }
+
         public static void Click(int x, int y)
         {
             MouseClickSimulator.SendMessage(clickableChildHandle, MouseClickSimulator.WM_LBUTTONDOWN, 1, MakeParam(x, y));
@@ -187,7 +263,7 @@ namespace TinyTowerComputerVisionConsole
             }
             else
             {
-                Console.WriteLine("No clickable child found - clicker function not possible");
+                Console.WriteLine("No clickable child found - clicker function is not possible");
                 return IntPtr.Zero;
             } 
         }
