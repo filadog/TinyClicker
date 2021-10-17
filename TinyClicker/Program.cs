@@ -176,18 +176,25 @@ namespace TinyClicker
         {
             if (matchedImages.ContainsKey("closeAdButton"))
             {
-                Click(311, 22);
+                Click(311, 22); // Close ad (x)
                 Thread.Sleep(2000);
                 return;
             }
             if (matchedImages.ContainsKey("closeAdButton_2"))
             {
-                Click(311, 22);
+                Click(311, 22); // Close ad (x)
                 //Click(matchedImages["closeAdButton_2"]);
                 Thread.Sleep(2000);
                 return;
             }
             if (matchedImages.ContainsKey("closeAdButton_3"))
+            {
+                Click(311, 22); // Close ad (x)
+                //Click(matchedImages["closeAdButton_3"]);
+                Thread.Sleep(2000);
+                return;
+            }
+            if (matchedImages.ContainsKey("closeAdButton_4"))
             {
                 Click(311, 22);
                 //Click(matchedImages["closeAdButton_3"]);
@@ -251,7 +258,7 @@ namespace TinyClicker
                 if (MatchImage("watchAdPromptBux"))
                 {
                     Click(220, 380); // Continue
-                    Thread.Sleep(40000);
+                    Thread.Sleep(40500);
                     Console.WriteLine("Watched the ad. Looking for a close button");
                     MatchImages();
                     if (matchedImages.ContainsKey("closeAdButton"))
@@ -272,6 +279,19 @@ namespace TinyClicker
                     {
                         Click(311, 22);
                         //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_4"))
+                    {
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    else
+                    {
+                        Click(311, 22); // Close ad (x)
                         Thread.Sleep(2000);
                         return;
                     }
@@ -279,7 +299,7 @@ namespace TinyClicker
                 if (MatchImage("watchAdPromptCoins"))
                 {
                     Click(220, 380); // Continue
-                    Thread.Sleep(40000);
+                    Thread.Sleep(40500);
                     Console.WriteLine("Watched the ad. Looking for a close button");
                     MatchImages();
                     if (matchedImages.ContainsKey("closeAdButton"))
@@ -300,6 +320,19 @@ namespace TinyClicker
                     {
                         Click(311, 22);
                         //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_4"))
+                    {
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    else
+                    {
+                        Click(311, 22); // Close ad (x)
                         Thread.Sleep(2000);
                         return;
                     }
@@ -311,7 +344,7 @@ namespace TinyClicker
                 // Perform lift ride
                 Click(45, 535);
                 //Click(MatchedImages["elevatorButton"]);
-                Thread.Sleep(12000);
+                Thread.Sleep(10000); // Default 12000
                 if (MatchImage("giftChute"))
                 {
                     return;
@@ -477,6 +510,7 @@ namespace TinyClicker
             dict.Add("closeAdButton", Image.FromFile(samplesPath + "close_ad_button.png"));
             dict.Add("closeAdButton_2", Image.FromFile(samplesPath + "close_ad_button_2.png"));
             dict.Add("closeAdButton_3", Image.FromFile(samplesPath + "close_ad_button_3.png"));
+            dict.Add("closeAdButton_4", Image.FromFile(samplesPath + "close_ad_button_4.png"));
             dict.Add("fullyStockedBonus", Image.FromFile(samplesPath + "fully_stocked_bonus.png"));
             dict.Add("continueButton", Image.FromFile(samplesPath + "continue_button.png"));
 
@@ -485,7 +519,7 @@ namespace TinyClicker
 
         static void PrintInfo()
         {
-            Console.WriteLine("TinyClicker build v0.051" +
+            Console.WriteLine("TinyClicker build v0.054" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
