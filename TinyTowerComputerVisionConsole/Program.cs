@@ -11,33 +11,35 @@ using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using Size = OpenCvSharp.Size;
 
-namespace TinyTowerComputerVisionConsole
+namespace TinyClicker
 {
-    // TODO 
-    // Store all bitmaps and maps of template images and do not generate them on each iteration.
-    // i.e. iterate over bitmap list not the image list.
-
     internal class Program
     {
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         static bool suspended = false;
         static int processId = GetProcessId(processName);
-        // Matched images are stored here. Cleaned every update cycle (~1000 ms)
-        // string - image key, int - location within the host screen
-        static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
 
+        // Matched images are stored in fields below. Cleaned every update cycle (~1000 ms)
+        // string - image key, int - location within the target screen
+
+        static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         static Dictionary<string, Image> images = FindImages();
         static Dictionary<string, Mat> templates = MakeTemplates(images);
 
         public static void Main()
         {
-            Console.WriteLine("TinyClicker build 0.01" +
+            Startup();
+        }
+
+        public static void Startup()
+        {
+            Console.WriteLine("TinyClicker build v0.02" +
                 "\nCommands:" +
-                "\ns - enable clicker" +
-                "\nl - display all processes" +
-                "\nq - quit application" +
-                "\nss - capture and save a screenshot");
+                "\ns - Enable clicker" +
+                "\nl - Display all processes" +
+                "\nq - Quit the application" +
+                "\nss - Capture and save a screenshot");
 
             string input = Console.ReadLine();
             switch (input)
@@ -58,7 +60,7 @@ namespace TinyTowerComputerVisionConsole
                 case "ss":
                     SaveScreenshot(GetProcessId(processName));
                     break;
-                       
+
                 default:
                     Main();
                     break;
@@ -274,7 +276,7 @@ namespace TinyTowerComputerVisionConsole
             {
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
 
-                ScreenCapture sc = new ScreenCapture();
+                ScreenToImage sc = new ScreenToImage();
 
                 Image img = sc.CaptureWindow(handle);
                 return img;
@@ -296,7 +298,7 @@ namespace TinyTowerComputerVisionConsole
         public static void SaveScreenshot(int processId)
         {
             IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-            ScreenCapture sc = new ScreenCapture();
+            ScreenToImage sc = new ScreenToImage();
 
             // Captures screenshot of a window and saves it to screenshots folder
 

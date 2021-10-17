@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TinyTowerComputerVisionConsole
+namespace TinyClicker
 {
     public class WindowHandleInfo
     {
@@ -20,7 +17,7 @@ namespace TinyTowerComputerVisionConsole
 
         public WindowHandleInfo(IntPtr handle)
         {
-            this._MainHandle = handle;
+            _MainHandle = handle;
         }
 
         public List<IntPtr> GetAllChildHandles()
@@ -47,7 +44,7 @@ namespace TinyTowerComputerVisionConsole
         {
             GCHandle gcChildhandlesList = GCHandle.FromIntPtr(lParam);
 
-            if (gcChildhandlesList == null || gcChildhandlesList.Target == null)
+            if (gcChildhandlesList.Target == null)
             {
                 return false;
             }
@@ -70,8 +67,10 @@ namespace TinyTowerComputerVisionConsole
                 var allChildWindows = new WindowHandleInfo(processes[0].MainWindowHandle).GetAllChildHandles();
                 return allChildWindows;
             }
-            else return null;
+            else
+            {
+                return null;
+            }
         }
     }
-
 }

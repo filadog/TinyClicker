@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TinyTowerComputerVisionConsole
+namespace TinyClicker
 {
     /// <summary>
     /// Summary description for Win32.
@@ -27,6 +27,7 @@ namespace TinyTowerComputerVisionConsole
         // class name and window name match the specified strings.
         // This function does not search child windows.
         // This function does not perform a case-sensitive search.
+
         [DllImport("User32.dll")]
         public static extern int FindWindow(string strClassName, string strWindowName);
 
@@ -52,14 +53,14 @@ namespace TinyTowerComputerVisionConsole
             IntPtr hWnd,               // handle to destination window
             int Msg,                // message
             int wParam,             // first message parameter
-            [MarshalAs(UnmanagedType.LPStr)] string lParam); // second message parameter
+            [MarshalAs(UnmanagedType.LPStr)] string lParam); // second message parameter (coordinates)
 
         [DllImport("User32.dll")]
         public static extern Int32 SendMessage(
             IntPtr hWnd,               // handle to destination window
             int Msg,                // message
             int wParam,             // first message parameter
-            int lParam);            // second message parameter
+            int lParam);            // second message parameter (coordinates)
 
 
 

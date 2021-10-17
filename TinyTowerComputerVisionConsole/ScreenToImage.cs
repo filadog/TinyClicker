@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace TinyTowerComputerVisionConsole
+namespace TinyClicker
 {
     // Provides functions to capture the entire screen, or a particular window, and save it to a file.
     
@@ -19,7 +19,7 @@ namespace TinyTowerComputerVisionConsole
     // public void CaptureScreenToFile(string filename, ImageFormat format)
     // Captures a screen shot of the entire desktop, and saves it to a file
 
-    public class ScreenCapture
+    public class ScreenToImage
     {
 
         // Creates an Image object containing a screen shot of the entire desktop
