@@ -74,6 +74,10 @@ namespace TinyClicker
                 {
                     Console.WriteLine("Found {0}", image.Key);
                 }
+                if (matchedImages.Count == 0)
+                {
+                    Console.WriteLine("Nothing was found");
+                }
                 PerformActions();
 
                 Thread.Sleep(1000); // Object detection performed ~once a second
@@ -108,14 +112,17 @@ namespace TinyClicker
 
                     while (!suspended)
                     {
-                        double minval, maxval, threshold = 0.5; // default 0.5
+                        double minval, maxval, threshold = 0.8; // default 0.5
                         Point minloc, maxloc;
                         Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
 
                         if (maxval >= threshold)
                         {
-                            matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
-                            //Console.WriteLine(image.Key + " is found");
+                            if (!matchedImages.ContainsKey(template.Key))
+                            {
+                                matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
+                                //Console.WriteLine(image.Key + " is found");
+                            }
                             break;
                         }
                         else
@@ -128,13 +135,93 @@ namespace TinyClicker
             GC.Collect(); // Never remove this!!!
         }
 
+        static bool MatchImage(string imageKey)
+        {
+            // Returns true if image is found 
+
+            Image gameWindow = MakeScreenshot(processId);
+            var windowBitmap = new Bitmap(gameWindow);
+            gameWindow.Dispose();
+
+            Mat reference = BitmapConverter.ToMat(windowBitmap);
+            windowBitmap.Dispose();
+
+            var template = templates[imageKey];
+            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
+            {
+                //Convert input images to gray
+                Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+                Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+                Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+                
+                double minval, maxval, threshold = 0.5; // default 0.5
+                Point minloc, maxloc;
+                Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+                GC.Collect();
+
+                if (maxval >= threshold)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         static void PerformActions()
         {
-            //switch (MatchedImages.Keys)
-            //{
-            //    default:
-            //        break;
-            //}
+            if (matchedImages.ContainsKey("closeAdButton_2"))
+            {
+                Click(matchedImages["closeAdButton_2"]);
+                Thread.Sleep(2000);
+                return;
+            }
+            if (matchedImages.ContainsKey("closeAdButton_3"))
+            {
+                Click(311, 22);
+                //Click(matchedImages["closeAdButton_3"]);
+                Thread.Sleep(2000);
+                return;
+            }
+
+            if (matchedImages.ContainsKey("continueButton"))
+            {
+                Click(matchedImages["continueButton"]);
+                Thread.Sleep(1000);
+                Click(160, 8); // Go up
+                return;
+            }
+            if (matchedImages.ContainsKey("foundCoinsChuteNotification"))
+            {
+                Console.WriteLine("Closing the notification");
+                Click(165, 375); // Close the notification
+                return;
+            }
+            if (matchedImages.ContainsKey("restockButton"))
+            {
+                Click(230, 580); // Click to go down
+                Thread.Sleep(1500);
+                Click(100, 480); // Click STOCK ALL
+                Thread.Sleep(1000);
+                Click(225, 375); // Yes
+                Thread.Sleep(1500);
+                if (MatchImage("fullyStockedBonus"))
+                {
+                    Click(165, 375); // Close the bonus tooltip
+                    return;
+                }
+                else
+                {
+                    return;
+                }
+
+                // Add a check for bonus of fully stocked floors
+            }
+
             if (matchedImages.ContainsKey("freeBuxButton"))
             {
                 // Perform free bux collection
@@ -142,67 +229,81 @@ namespace TinyClicker
                 Thread.Sleep(500);
                 Click(230, 375);
                 Thread.Sleep(500);
+                return;
             }
-            else if (matchedImages.ContainsKey("giftChute"))
+            if (matchedImages.ContainsKey("giftChute"))
             {
                 Click(matchedImages["giftChute"]);
-                Thread.Sleep(1000);
-                Click(210, 375);
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
+
+                if (MatchImage("watchAdPromptBux"))
+                {
+                    Click(220, 380); // Continue
+                    Thread.Sleep(35000);
+                    Console.WriteLine("Watched the ad. Looking for a close button");
+                    MatchImages();
+                    if (matchedImages.ContainsKey("closeAdButton"))
+                    {
+                        Click(matchedImages["closeAdButton"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_2"))
+                    {
+                        Click(matchedImages["closeAdButton_2"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_3"))
+                    {
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                }
+                if (MatchImage("watchAdPromptCoins"))
+                {
+                    Click(220, 380); // Continue
+                    Thread.Sleep(35000);
+                    Console.WriteLine("Watched the ad. Looking for a close button");
+                    MatchImages();
+                    if (matchedImages.ContainsKey("closeAdButton"))
+                    {
+                        Click(matchedImages["closeAdButton"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_2"))
+                    {
+                        Click(matchedImages["closeAdButton_2"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_3"))
+                    {
+                        Click(311, 22);
+                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                }
+                return;
             }
-            else if (matchedImages.ContainsKey("elevatorButton"))
+            if (matchedImages.ContainsKey("elevatorButton"))
             {
                 // Perform lift ride
                 Click(45, 535);
                 //Click(MatchedImages["elevatorButton"]);
                 Thread.Sleep(12000);
-                Click(240, 575); // Click at the bottom pane to return to the ground level
+                if (MatchImage("giftChute"))
+                {
+                    return;
+                }
+                Click(160, 8); // Click to go up
                 Thread.Sleep(1000);
+                return;
             }
-            
-            
-            //suelse ifspended = true;
-            //switch (key)
-            //{
-            //    case "moveIn":
-
-            //        Console.WriteLine("Move in is found");
-            //        Click(100, 375);
-            //        Thread.Sleep(500);
-            //        Click(245, 415);
-            //        Thread.Sleep(500);
-            //        Click(220, 380);
-            //        Thread.Sleep(500);
-            //        break;
-
-            //    case "freeBuxCollectButton":
-
-            //        Click(location);
-            //        Thread.Sleep(500);
-            //        break;
-
-            //    case "elevatorButton":
-
-            //        Console.WriteLine("Elevator is found");
-            //        Click(location);
-            //        Thread.Sleep(13000);
-            //        break;
-                
-            //    case "freeBuxButton":
-
-            //        Click(location);
-            //        Thread.Sleep(500);
-            //        Click(230, 375);
-            //        Thread.Sleep(500);
-            //        break;
-
-            //    default:
-            //        Console.WriteLine("Action is not implemented yet : {0}", key);
-            //        break;
-            //}
-
-            //suspended = false;
-            //ClickerStart();
         }
 
         static void PlayRaffle()
@@ -232,6 +333,7 @@ namespace TinyClicker
                 mats.Add(image.Key, template);
                 //template.Dispose();
             }
+            images.Clear();
             return mats;
         }
 
@@ -351,6 +453,16 @@ namespace TinyClicker
             dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
             dict.Add("giftChute", Image.FromFile(samplesPath + "gift_chute.png"));
             dict.Add("moveIn", Image.FromFile(samplesPath + "move_in.png"));
+            dict.Add("restockButton", Image.FromFile(samplesPath + "restock_button.png"));
+
+            dict.Add("foundCoinsChuteNotification", Image.FromFile(samplesPath + "found_coins_chute_notification.png"));
+            dict.Add("watchAdPromptBux", Image.FromFile(samplesPath + "watch_ad_prompt_bux.png"));
+            dict.Add("watchAdPromptCoins", Image.FromFile(samplesPath + "watch_ad_prompt_coins.png"));
+            dict.Add("closeAdButton", Image.FromFile(samplesPath + "close_ad_button.png"));
+            dict.Add("closeAdButton_2", Image.FromFile(samplesPath + "close_ad_button_2.png"));
+            dict.Add("closeAdButton_3", Image.FromFile(samplesPath + "close_ad_button_3.png"));
+            dict.Add("fullyStockedBonus", Image.FromFile(samplesPath + "fully_stocked_bonus.png"));
+            dict.Add("continueButton", Image.FromFile(samplesPath + "continue_button.png"));
 
             return dict;
         }
