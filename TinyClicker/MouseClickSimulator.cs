@@ -11,6 +11,7 @@ namespace TinyClicker
         // The WM_COMMAND message is sent when the user selects a command item from 
         // a menu, when a control sends a notification message to its parent window, 
         // or when an accelerator keystroke is translated.
+
         public const int WM_LBUTTON = 0x01;
         public const int WM_RBUTTON = 0x02;
         public const int WM_KEYDOWN = 0x100;
@@ -48,6 +49,7 @@ namespace TinyClicker
         // The SendMessage function sends the specified message to a window or windows. 
         // It calls the window procedure for the specified window and does not return
         // until the window procedure has processed the message. 
+
         [DllImport("User32.dll")]
         public static extern Int32 SendMessage(
             IntPtr hWnd,               // handle to destination window
@@ -61,8 +63,6 @@ namespace TinyClicker
             int Msg,                // message
             int wParam,             // first message parameter
             int lParam);            // second message parameter (coordinates)
-
-
 
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
