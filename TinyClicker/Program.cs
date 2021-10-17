@@ -112,7 +112,7 @@ namespace TinyClicker
 
                     while (!suspended)
                     {
-                        double minval, maxval, threshold = 0.8; // default 0.5
+                        double minval, maxval, threshold = 0.78; // default 0.5
                         Point minloc, maxloc;
                         Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
 
