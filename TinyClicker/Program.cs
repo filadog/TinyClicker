@@ -72,11 +72,11 @@ namespace TinyClicker
 
                 foreach (var image in matchedImages)
                 {
-                    Console.WriteLine("Found {0}", image.Key);
+                    Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " Found {0}", image.Key);
                 }
                 if (matchedImages.Count == 0)
                 {
-                    Console.WriteLine("Nothing was found");
+                    Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " Nothing was found");
                 }
                 PerformActions();
 
@@ -174,6 +174,18 @@ namespace TinyClicker
 
         static void PerformActions()
         {
+            // TODO: Refactor this abomination
+
+            if (matchedImages.ContainsKey("roofCustomizationWindow"))
+            {
+                Click(305, 565); // Exit the menu
+                Thread.Sleep(1000);
+            }
+            if (matchedImages.ContainsKey("hurryConstructionPrompt"))
+            {
+                Click(100, 375); // Cancel
+                Thread.Sleep(1000);
+            }
             if (matchedImages.ContainsKey("closeAdButton"))
             {
                 Click(311, 22); // Close ad (x)
@@ -183,21 +195,30 @@ namespace TinyClicker
             if (matchedImages.ContainsKey("closeAdButton_2"))
             {
                 Click(311, 22); // Close ad (x)
-                //Click(matchedImages["closeAdButton_2"]);
                 Thread.Sleep(2000);
                 return;
             }
             if (matchedImages.ContainsKey("closeAdButton_3"))
             {
                 Click(311, 22); // Close ad (x)
-                //Click(matchedImages["closeAdButton_3"]);
                 Thread.Sleep(2000);
                 return;
             }
             if (matchedImages.ContainsKey("closeAdButton_4"))
             {
                 Click(311, 22);
-                //Click(matchedImages["closeAdButton_3"]);
+                Thread.Sleep(2000);
+                return;
+            }
+            if (matchedImages.ContainsKey("closeAdButton_5"))
+            {
+                Click(311, 22);
+                Thread.Sleep(2000);
+                return;
+            }
+            if (matchedImages.ContainsKey("closeAdButton_6"))
+            {
+                Click(311, 22);
                 Thread.Sleep(2000);
                 return;
             }
@@ -264,28 +285,36 @@ namespace TinyClicker
                     if (matchedImages.ContainsKey("closeAdButton"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_2"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_2"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_3"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_3"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_4"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_5"))
+                    {
+                        Click(311, 22);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_6"))
+                    {
+                        Click(311, 22);
                         Thread.Sleep(2000);
                         return;
                     }
@@ -305,28 +334,36 @@ namespace TinyClicker
                     if (matchedImages.ContainsKey("closeAdButton"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_2"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_2"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_3"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_3"]);
                         Thread.Sleep(2000);
                         return;
                     }
                     if (matchedImages.ContainsKey("closeAdButton_4"))
                     {
                         Click(311, 22);
-                        //Click(matchedImages["closeAdButton_3"]);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_5"))
+                    {
+                        Click(311, 22);
+                        Thread.Sleep(2000);
+                        return;
+                    }
+                    if (matchedImages.ContainsKey("closeAdButton_6"))
+                    {
+                        Click(311, 22);
                         Thread.Sleep(2000);
                         return;
                     }
@@ -511,15 +548,19 @@ namespace TinyClicker
             dict.Add("closeAdButton_2", Image.FromFile(samplesPath + "close_ad_button_2.png"));
             dict.Add("closeAdButton_3", Image.FromFile(samplesPath + "close_ad_button_3.png"));
             dict.Add("closeAdButton_4", Image.FromFile(samplesPath + "close_ad_button_4.png"));
+            dict.Add("closeAdButton_5", Image.FromFile(samplesPath + "close_ad_button_5.png"));
+            dict.Add("closeAdButton_6", Image.FromFile(samplesPath + "close_ad_button_6.png"));
             dict.Add("fullyStockedBonus", Image.FromFile(samplesPath + "fully_stocked_bonus.png"));
             dict.Add("continueButton", Image.FromFile(samplesPath + "continue_button.png"));
+            dict.Add("hurryConstructionPrompt", Image.FromFile(samplesPath + "hurry_construction_prompt.png"));
+            dict.Add("roofCustomizationWindow", Image.FromFile(samplesPath + "roof_customization_window.png"));
 
             return dict;
         }
 
         static void PrintInfo()
         {
-            Console.WriteLine("TinyClicker build v0.054" +
+            Console.WriteLine("TinyClicker build v0.059" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
