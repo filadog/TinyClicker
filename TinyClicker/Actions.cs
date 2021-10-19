@@ -48,7 +48,7 @@ namespace TinyClicker
             {
                 Click(311, 22);
             }
-            Wait(1.5f);
+            Wait(1);
         }
 
         public static void PressContinue()
@@ -69,24 +69,24 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Restocking");
             MoveDown();
-            Wait(1.5f);
+            Wait(1);
             Click(100, 480); // Stock all
             Wait(1);
             Click(225, 375);
-            Wait(1.5f);
+            Wait(1);
 
             if (MatchImage("fullyStockedBonus"))
             {
                 Click(165, 375); // Close the bonus tooltip
                 Wait(1);
                 MoveUp(); // Go up
-                Wait(0.8f);
+                Wait(1);
                 return;
             }
             else
             {
                 MoveUp(); // Go up
-                Wait(0.8f);
+                Wait(1);
                 return;
             }
         }
@@ -95,9 +95,9 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Pressing free bux icon");
             Click(Clicker.matchedImages["freeBuxButton"]);
-            Wait(0.5f);
+            Wait(1);
             Click(230, 375);
-            Wait(0.5f);
+            Wait(1);
         }
 
         public static void CollectFreeBux()
@@ -110,12 +110,10 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Clicking on the parachute");
             Click(Clicker.matchedImages["giftChute"]);
-            Wait(0.7f);
+            Wait(1);
             if (MatchImage("watchAdPromptBux") || MatchImage("watchAdPromptCoins"))
             {
-                Click(220, 380); // Continue
-                Wait(40);
-                Console.WriteLine("Watched the advertisement. Looking for a close button");
+                WatchAd();
             }
         }
 
@@ -138,22 +136,45 @@ namespace TinyClicker
         public static void PressQuestButton()
         {
             if (verbose) Console.WriteLine("Clicking on the quest button");
+            Wait(1);
             Click(Clicker.matchedImages["questButton"]);
+            Wait(1);
             if (MatchImage("deliverBitizens"))
             {
-                if (verbose) Console.WriteLine("Delivering bitizens");
-                //Click(); // Continue
+                DeliverBitizens();
             }
             else if (MatchImage("findBitizens"))
             {
-                if (verbose) Console.WriteLine("Skipping the quest");
-                //Click(); // Skip the quest
+                FindBitizens();
             }
+        }
+
+        public static void FindBitizens()
+        {
+            if (verbose) Console.WriteLine("Skipping the quest");
+            Click(95, 445); // Skip the quest
+            Wait(1);
+            Click(225, 380); // Confirm skip
+        }
+
+        public static void DeliverBitizens()
+        {
+            if (verbose) Console.WriteLine("Delivering bitizens");
+            Click(230, 440); // Continue
         }
 
         public static void CompleteQuest()
         {
+            Wait(1);
+            if (verbose) Console.WriteLine("Completing the quest");
+            Click(Clicker.matchedImages["completedQuestButton"]);
+        }
 
+        public static void WatchAd()
+        {
+            if (verbose) Console.WriteLine("Watching the advertisement");
+            Click(225, 375);
+            Wait(5);
         }
 
         public static void MoveUp()
@@ -196,7 +217,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.101" +
+                "TinyClicker build v0.210" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
@@ -204,9 +225,9 @@ namespace TinyClicker
                 "\nss - Capture and save a screenshot");
         }
 
-        static void Wait(float seconds)
+        static void Wait(int seconds)
         {
-            int milliseconds = (int)seconds * 1000;
+            int milliseconds = seconds * 1000;
             Thread.Sleep(milliseconds);
         }
 
@@ -332,8 +353,6 @@ namespace TinyClicker
             Process[] processlist = Process.GetProcesses();
             foreach (Process process in processlist)
             {
-                // If the process appears on the Taskbar (if has a title)
-                // print the information of the process
                 if (!String.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     Console.WriteLine("Process:   {0}", process.ProcessName);
@@ -351,9 +370,13 @@ namespace TinyClicker
             try
             {
                 // Order is important
+
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
                 //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
-                
+                dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
+                dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
+                dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
+
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
 
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
@@ -362,6 +385,7 @@ namespace TinyClicker
                 
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
+                dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
                 dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
                 dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
                 //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
@@ -370,12 +394,9 @@ namespace TinyClicker
                 dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
                 dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
 
-                dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
-                dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
-
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
-                dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
+                
                 dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
                 dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));
                 dict.Add("closeAd_2", Image.FromFile(path + "close_ad_button_2.png"));
@@ -408,7 +429,6 @@ namespace TinyClicker
                 Mat template = BitmapConverter.ToMat(imageBitmap);
                 imageBitmap.Dispose();
                 mats.Add(image.Key, template);
-                //template.Dispose();
             }
             images.Clear();
             return mats;

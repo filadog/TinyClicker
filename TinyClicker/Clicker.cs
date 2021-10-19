@@ -125,6 +125,9 @@ namespace TinyClicker
                     case "elevatorButton": Actions.RideElevator(); break;
                     case "questButton": Actions.PressQuestButton(); break;
                     case "completedQuestButton": Actions.CompleteQuest(); break;
+                    case "watchAdPromptBux": Actions.WatchAd(); break;
+                    case "findBitizens": Actions.FindBitizens(); break;
+                    case "deliverBitizens": Actions.DeliverBitizens(); break;
                     default: break;
                 }
                 break;
