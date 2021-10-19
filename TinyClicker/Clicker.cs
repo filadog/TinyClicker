@@ -19,8 +19,8 @@ namespace TinyClicker
         static bool suspended = false;
 
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
-        static Dictionary<string, Image> images = Actions.FindImages();
-        static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
+        public static Dictionary<string, Image> images = Actions.FindImages();
+        public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
 
         public static void StartClicker()
         {
@@ -96,47 +96,8 @@ namespace TinyClicker
             GC.Collect(); // Never remove this!!!
         }
 
-        static bool MatchImage(string imageKey)
-        {
-            // Returns true if image is found 
-
-            Image gameWindow = Actions.MakeScreenshot();
-            var windowBitmap = new Bitmap(gameWindow);
-            gameWindow.Dispose();
-
-            Mat reference = BitmapConverter.ToMat(windowBitmap);
-            windowBitmap.Dispose();
-
-            var template = templates[imageKey];
-            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
-            {
-                //Convert input images to gray
-                Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
-                Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
-
-                Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
-                Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
-
-                double minval, maxval, threshold = 0.5; // default 0.5
-                Point minloc, maxloc;
-                Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
-                GC.Collect();
-
-                if (maxval >= threshold)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         static void PerformActions()
         {
-            // TODO: Refactor this abomination
-
             foreach (var key in matchedImages.Keys)
             {
                 switch (key)
@@ -145,198 +106,22 @@ namespace TinyClicker
                     case "hurryConstructionPrompt": Actions.CancelHurryConstruction(); break;
                     case "closeAd": 
                     case "closeAd_2":
-                    case "closeAd_3": 
-                    case "closeAd_4": 
-                    case "closeAd_5":
-                    case "closeAd_6":
-                    case "closeAd_7":
+                    case "closeAd_3":
+                    case "closeAd_4":
+                    case "closeAd_5": 
+                    case "closeAd_6": 
+                    case "closeAd_7": 
                     case "closeAd_8": Actions.CloseAd(); break;
                     case "continueButton": Actions.PressContinue(); break;
                     case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
-                    case "": break;
-
-                    default:
-                        break;
+                    case "restockButton": Actions.Restock(); break;
+                    case "freeBuxButton": Actions.CollectFreeBux(); break;
+                    case "giftChute": Actions.ClickOnChute(); break;
+                    case "backButton": Actions.PressExitButton(); break;
+                    case "elevatorButton": Actions.RideElevator(); break;
+                    default: break;
                 }
-            }
-
-            if (matchedImages.ContainsKey("restockButton"))
-            {
-                Actions.Click(230, 580); // Click to go down
-                Thread.Sleep(1500);
-                Actions.Click(100, 480); // Click STOCK ALL
-                Thread.Sleep(1000);
-                Actions.Click(225, 375); // Yes
-                Thread.Sleep(1500);
-                if (MatchImage("fullyStockedBonus"))
-                {
-                    Actions.Click(165, 375); // Close the bonus tooltip
-                    Thread.Sleep(1000);
-                    Actions.Click(160, 8); // Go up
-                    Thread.Sleep(800);
-                    return;
-                }
-                else
-                {
-                    Actions.Click(160, 8); // Go up
-                    Thread.Sleep(800);
-                    return;
-                }
-
-                // Add a check for bonus of fully stocked floors
-            }
-
-            if (matchedImages.ContainsKey("freeBuxButton"))
-            {
-                // Perform free bux collection
-                Actions.Click(matchedImages["freeBuxButton"]);
-                Thread.Sleep(500);
-                Actions.Click(230, 375);
-                Thread.Sleep(500);
-                return;
-            }
-            if (matchedImages.ContainsKey("giftChute"))
-            {
-                Actions.Click(matchedImages["giftChute"]);
-                Thread.Sleep(1500);
-
-                if (MatchImage("watchAdPromptBux"))
-                {
-                    Actions.Click(220, 380); // Continue
-                    Thread.Sleep(40500);
-                    Console.WriteLine("Watched the ad. Looking for a close button");
-                    MatchImages();
-                    if (matchedImages.ContainsKey("closeAdButton"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_2"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_3"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_4"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_5"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_6"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_7")) // Probably incorrect click place
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_8")) // Probably incorrect click place
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    else
-                    {
-                        Actions.Click(311, 22); // Close ad (x)
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                }
-                if (MatchImage("watchAdPromptCoins"))
-                {
-                    Actions.Click(220, 380); // Continue
-                    Thread.Sleep(40500);
-                    Console.WriteLine("Watched the ad. Looking for a close button");
-                    MatchImages();
-                    if (matchedImages.ContainsKey("closeAdButton"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_2"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_3"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_4"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_5"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_6"))
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_7")) // Probably incorrect click place
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    if (matchedImages.ContainsKey("closeAdButton_8")) // Probably incorrect click place
-                    {
-                        Actions.Click(311, 22);
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                    else
-                    {
-                        Actions.Click(311, 22); // Close ad (x)
-                        Thread.Sleep(2000);
-                        return;
-                    }
-                }
-                return;
-            }
-            if (matchedImages.ContainsKey("elevatorButton"))
-            {
-                // Perform lift ride
-                Actions.Click(45, 535);
-                //Click(MatchedImages["elevatorButton"]);
-                Thread.Sleep(2000); // Default 12000 (when floors > 80)
-                if (MatchImage("giftChute"))
-                {
-                    return;
-                }
-                Actions.Click(160, 8); // Click to go up
-                Thread.Sleep(1000);
-                return;
+                break;
             }
         }
     }

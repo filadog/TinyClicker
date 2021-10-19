@@ -13,31 +13,39 @@ namespace TinyClicker
 {
     internal static class Actions
     {
+        static bool verbose = true;
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcessId();
 
         #region Clicker Actions
+
         public static void ExitRoofCustomizationMenu()
         {
+            if (verbose) Console.WriteLine("Exiting from the roof customization menu");
+
             PressExitButton();
             Wait(1);
         }
 
         public static void CancelHurryConstruction()
         {
+            if (verbose) Console.WriteLine("Exiting from the construction menu");
             Click(100, 375); // Cancel action
             Wait(1);
         }
 
         public static void CloseAd()
         {
+            Console.WriteLine("Closing advertisement");
             Click(311, 22);
+            //Click(Clicker.matchedImages())
             Wait(2);
         }
 
         public static void PressContinue()
         {
+            if (verbose) Console.WriteLine("Clicking continue");
             Click(Clicker.matchedImages["continueButton"]);
             Wait(1);
             MoveUp();
@@ -45,16 +53,88 @@ namespace TinyClicker
 
         public static void CloseChuteNotification()
         {
+            if (verbose) Console.WriteLine("Closing the parachute notification");
             Click(165, 375); // Close the notification
         }
 
-        static void MoveUp()
+        public static void Restock()
         {
+            if (verbose) Console.WriteLine("Restocking");
+            MoveDown();
+            Wait(1.5f);
+            Click(100, 480); // Stock all
+            Wait(1);
+            Click(225, 375);
+            Wait(1.5f);
+
+            if (MatchImage("fullyStockedBonus"))
+            {
+                Click(165, 375); // Close the bonus tooltip
+                Wait(1);
+                MoveUp(); // Go up
+                Wait(0.8f);
+                return;
+            }
+            else
+            {
+                MoveUp(); // Go up
+                Wait(0.8f);
+                return;
+            }
+        }
+
+        public static void CollectFreeBux()
+        {
+            if (verbose) Console.WriteLine("Collecting free bux");
+            Click(Clicker.matchedImages["freeBuxButton"]);
+            Wait(0.5f);
+            Click(230, 375);
+            Wait(0.5f);
+        }
+
+        public static void ClickOnChute()
+        {
+            if (verbose) Console.WriteLine("Clicking on the parachute");
+            Click(Clicker.matchedImages["giftChute"]);
+            Wait(0.7f);
+            if (MatchImage("watchAdPromptBux") || MatchImage("watchAdPromptCoins"))
+            {
+                Click(220, 380); // Continue
+                Wait(40);
+                Console.WriteLine("Watched the advertisement. Looking for a close button");
+            }
+        }
+
+        public static void RideElevator()
+        {
+            if (verbose) Console.WriteLine("Riding the elevator");
+            Click(45, 535);
+            Wait(2);
+            if (MatchImage("giftChute"))
+            {
+                return;
+            }
+            else
+            {
+                MoveUp();
+                Wait(1);
+            }
+        }
+
+        public static void MoveUp()
+        {
+            if (verbose) Console.WriteLine("Moving up");
             Click(160, 8);
         }
 
-        static void PressExitButton()
+        public static void MoveDown()
         {
+            Click(230, 580);
+        }
+
+        public static void PressExitButton()
+        {
+            if (verbose) Console.WriteLine("Pressing exit button");
             Click(305, 565);
         }
 
@@ -81,7 +161,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.073" +
+                "TinyClicker build v0.101" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
@@ -89,10 +169,46 @@ namespace TinyClicker
                 "\nss - Capture and save a screenshot");
         }
 
-        static void Wait(int seconds)
+        static void Wait(float seconds)
         {
-            int milliseconds = seconds * 1000;
+            int milliseconds = (int)seconds * 1000;
             Thread.Sleep(milliseconds);
+        }
+
+        static bool MatchImage(string imageKey)
+        {
+            // Returns true if image is found 
+
+            Image gameWindow = Actions.MakeScreenshot();
+            var windowBitmap = new Bitmap(gameWindow);
+            gameWindow.Dispose();
+
+            Mat reference = BitmapConverter.ToMat(windowBitmap);
+            windowBitmap.Dispose();
+
+            var template = Clicker.templates[imageKey];
+            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
+            {
+                Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+                Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+                Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+
+                double minval, maxval, threshold = 0.7; // default 0.5
+                Point minloc, maxloc;
+                Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+                GC.Collect();
+
+                if (maxval >= threshold)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         public static int GetProcessId()
@@ -238,7 +354,7 @@ namespace TinyClicker
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Cannot import sample images, some are missing or renamed. Clicker will continue nonetheless." + ex.Message);
+                Console.WriteLine("Cannot import all sample images, some are missing or renamed. Clicker will continue nonetheless.\nMissing image path: " + ex.Message);
                 return dict;
             }
         }
