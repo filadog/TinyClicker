@@ -174,7 +174,7 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Watching the advertisement");
             Click(225, 375);
-            Wait(5);
+            Wait(31);
         }
 
         public static void MoveUp()
@@ -217,7 +217,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.210" +
+                "TinyClicker build v0.211" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
