@@ -3,10 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace TinyClicker
 {
-    /// <summary>
-    /// Summary description for Win32.
-    /// </summary>
-    public static class MouseClickSimulator
+    // Simulates mouse actions
+
+    public static class MouseSim
     {
         // The WM_COMMAND message is sent when the user selects a command item from 
         // a menu, when a control sends a notification message to its parent window, 
