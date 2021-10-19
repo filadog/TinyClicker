@@ -217,7 +217,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.211" +
+                "TinyClicker build v0.222" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
@@ -285,14 +285,20 @@ namespace TinyClicker
 
         public static void Click(int location)
         {
-            MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, location);
-            MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, location);
+            if (clickableChildHandle != IntPtr.Zero)
+            {
+                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, location);
+                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, location);
+            }
         }
 
         public static void Click(int x, int y)
         {
-            MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, MakeParam(x, y));
-            MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, MakeParam(x, y));
+            if (clickableChildHandle != IntPtr.Zero)
+            {
+                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, MakeParam(x, y));
+                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, MakeParam(x, y));
+            }   
         }
 
         public static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
@@ -306,7 +312,8 @@ namespace TinyClicker
             }
             else
             {
-                Console.WriteLine("No clickable child found - clicker function is not possible");
+                Console.WriteLine("LDPlayer process not found - clicker function is not possible. Launch LDPlayer and restart the app.");
+                Console.ReadLine();
                 return IntPtr.Zero;
             }
         }
@@ -338,14 +345,16 @@ namespace TinyClicker
 
         public static void SaveScreenshot()
         {
+            if (processId != -1)
+            {
+                IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
+                ScreenToImage sc = new ScreenToImage();
 
-            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-            ScreenToImage sc = new ScreenToImage();
+                // Captures screenshot of a window and saves it to screenshots folder
 
-            // Captures screenshot of a window and saves it to screenshots folder
-
-            sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + "\\screenshots\\mainWindow.png", ImageFormat.Png);
-            Console.WriteLine("Made a screenchot you bastard");
+                sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + "\\screenshots\\window.png", ImageFormat.Png);
+                Console.WriteLine("Made a screenshot. Screenshots can be found inside TinyClicker\\screenshots directory");
+            }
         }
 
         public static void PrintAllProcesses()
@@ -375,9 +384,10 @@ namespace TinyClicker
                 //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
+                dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
 
-                dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
+                
 
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
                 dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
