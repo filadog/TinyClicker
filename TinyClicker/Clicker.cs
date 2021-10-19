@@ -69,6 +69,8 @@ namespace TinyClicker
 
                     Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                     Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+                    gref.Dispose();
+                    gtpl.Dispose();
                     GC.Collect();
 
                     while (!suspended)
@@ -76,7 +78,8 @@ namespace TinyClicker
                         double minval, maxval, threshold = 0.78; // default 0.5
                         Point minloc, maxloc;
                         Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
-
+                        res.Dispose();
+                        
                         if (maxval >= threshold)
                         {
                             if (!matchedImages.ContainsKey(template.Key))
@@ -93,7 +96,7 @@ namespace TinyClicker
                     }
                 }
             }
-            GC.Collect(); // Never remove this!!!
+            //GC.Collect(); // Important
         }
 
         static void PerformActions()
@@ -115,10 +118,13 @@ namespace TinyClicker
                     case "continueButton": Actions.PressContinue(); break;
                     case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
                     case "restockButton": Actions.Restock(); break;
-                    case "freeBuxButton": Actions.CollectFreeBux(); break;
+                    case "freeBuxCollectButton": Actions.CollectFreeBux(); break;
+                    case "freeBuxButton": Actions.PressFreeBuxButton(); break;
                     case "giftChute": Actions.ClickOnChute(); break;
                     case "backButton": Actions.PressExitButton(); break;
                     case "elevatorButton": Actions.RideElevator(); break;
+                    case "questButton": Actions.PressQuestButton(); break;
+                    case "completedQuestButton": Actions.CompleteQuest(); break;
                     default: break;
                 }
                 break;
