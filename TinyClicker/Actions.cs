@@ -17,11 +17,40 @@ namespace TinyClicker
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcessId();
 
-
+        #region Clicker Actions
         public static void ExitRoofCustomizationMenu()
         {
             PressExitButton();
             Wait(1);
+        }
+
+        public static void CancelHurryConstruction()
+        {
+            Click(100, 375); // Cancel action
+            Wait(1);
+        }
+
+        public static void CloseAd()
+        {
+            Click(311, 22);
+            Wait(2);
+        }
+
+        public static void PressContinue()
+        {
+            Click(Clicker.matchedImages["continueButton"]);
+            Wait(1);
+            MoveUp();
+        }
+
+        public static void CloseChuteNotification()
+        {
+            Click(165, 375); // Close the notification
+        }
+
+        static void MoveUp()
+        {
+            Click(160, 8);
         }
 
         static void PressExitButton()
@@ -45,12 +74,14 @@ namespace TinyClicker
             }
         }
 
+        #endregion
+
         #region Utility Methods
 
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.063" +
+                "TinyClicker build v0.073" +
                 "\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
@@ -164,44 +195,52 @@ namespace TinyClicker
         public static Dictionary<string, Image> FindImages()
         {
             var dict = new Dictionary<string, Image>();
-            string samplesPath = Path.Combine(Environment.CurrentDirectory, "samples\\");
+            string path = Path.Combine(Environment.CurrentDirectory, "samples\\");
 
-            //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
-            dict.Add("backButton", Image.FromFile(samplesPath + "back_button.png"));
-            //dict.Add("questButton", Image.FromFile(samplesPath + "quest_button.png"));
-            dict.Add("elevatorButton", Image.FromFile(samplesPath + "elevator_button.png"));
-            dict.Add("vipButton", Image.FromFile(samplesPath + "vip_button.png"));
-            dict.Add("freeBuxButton", Image.FromFile(samplesPath + "free_bux_button.png"));
-            dict.Add("freeBuxCollectButton", Image.FromFile(samplesPath + "free_bux_collect_button.png"));
-            dict.Add("freeBuxVidoffersButton", Image.FromFile(samplesPath + "free_bux_vidoffers_button.png"));
-            dict.Add("raffleIconMenu", Image.FromFile(samplesPath + "raffle_icon_menu.png"));
-            dict.Add("enterRaffleButton", Image.FromFile(samplesPath + "enter_raffle_button.png"));
-            //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
-            //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
-            dict.Add("giftChute", Image.FromFile(samplesPath + "gift_chute.png"));
-            dict.Add("moveIn", Image.FromFile(samplesPath + "move_in.png"));
-            dict.Add("restockButton", Image.FromFile(samplesPath + "restock_button.png"));
+            try
+            {
+                //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
+                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
+                //dict.Add("questButton", Image.FromFile(samplesPath + "quest_button.png"));
+                dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
+                dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
+                dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
+                dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
+                dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
+                dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
+                dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
+                //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
+                //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
+                dict.Add("giftChute", Image.FromFile(path + "gift_chute.png"));
+                dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
+                dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
 
-            dict.Add("deliverBitizens", Image.FromFile(samplesPath + "deliver_bitizens.png"));
-            dict.Add("findBitizens", Image.FromFile(samplesPath + "find_bitizens.png"));
+                dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
+                dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
 
-            dict.Add("foundCoinsChuteNotification", Image.FromFile(samplesPath + "found_coins_chute_notification.png"));
-            dict.Add("watchAdPromptBux", Image.FromFile(samplesPath + "watch_ad_prompt_bux.png"));
-            dict.Add("watchAdPromptCoins", Image.FromFile(samplesPath + "watch_ad_prompt_coins.png"));
-            dict.Add("closeAdButton", Image.FromFile(samplesPath + "close_ad_button.png"));
-            dict.Add("closeAdButton_2", Image.FromFile(samplesPath + "close_ad_button_2.png"));
-            dict.Add("closeAdButton_3", Image.FromFile(samplesPath + "close_ad_button_3.png"));
-            dict.Add("closeAdButton_4", Image.FromFile(samplesPath + "close_ad_button_4.png"));
-            dict.Add("closeAdButton_5", Image.FromFile(samplesPath + "close_ad_button_5.png"));
-            dict.Add("closeAdButton_6", Image.FromFile(samplesPath + "close_ad_button_6.png"));
-            dict.Add("closeAdButton_7", Image.FromFile(samplesPath + "close_ad_button_7.png"));
-            dict.Add("closeAdButton_8", Image.FromFile(samplesPath + "close_ad_button_8.png"));
-            dict.Add("fullyStockedBonus", Image.FromFile(samplesPath + "fully_stocked_bonus.png"));
-            dict.Add("continueButton", Image.FromFile(samplesPath + "continue_button.png"));
-            dict.Add("hurryConstructionPrompt", Image.FromFile(samplesPath + "hurry_construction_prompt.png"));
-            dict.Add("roofCustomizationWindow", Image.FromFile(samplesPath + "roof_customization_window.png"));
+                dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
+                dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
+                dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
+                dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));
+                dict.Add("closeAd_2", Image.FromFile(path + "close_ad_button_2.png"));
+                dict.Add("closeAd_3", Image.FromFile(path + "close_ad_button_3.png"));
+                dict.Add("closeAd_4", Image.FromFile(path + "close_ad_button_4.png"));
+                dict.Add("closeAd_5", Image.FromFile(path + "close_ad_button_5.png"));
+                dict.Add("closeAd_6", Image.FromFile(path + "close_ad_button_6.png"));
+                dict.Add("closeAd_7", Image.FromFile(path + "close_ad_button_7.png"));
+                dict.Add("closeAd_8", Image.FromFile(path + "close_ad_button_8.png"));
+                dict.Add("fullyStockedBonus", Image.FromFile(path + "fully_stocked_bonus.png"));
+                dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
+                dict.Add("hurryConstructionPrompt", Image.FromFile(path + "hurry_construction_prompt.png"));
+                dict.Add("roofCustomizationWindow", Image.FromFile(path + "roof_customization_window.png"));
 
-            return dict;
+                return dict;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Cannot import sample images, some are missing or renamed. Clicker will continue nonetheless." + ex.Message);
+                return dict;
+            }
         }
 
         public static Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)

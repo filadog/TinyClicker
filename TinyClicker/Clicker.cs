@@ -18,7 +18,7 @@ namespace TinyClicker
     {
         static bool suspended = false;
 
-        static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
+        public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         static Dictionary<string, Image> images = Actions.FindImages();
         static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
 
@@ -141,90 +141,25 @@ namespace TinyClicker
             {
                 switch (key)
                 {
-                    case "roofCustomizationWindow":
-                        Actions.ExitRoofCustomizationMenu();
-                        //Click(305, 565); // Exit the menu
-                        //Thread.Sleep(1000);
-                        break;
+                    case "roofCustomizationWindow": Actions.ExitRoofCustomizationMenu(); break;
+                    case "hurryConstructionPrompt": Actions.CancelHurryConstruction(); break;
+                    case "closeAd": 
+                    case "closeAd_2":
+                    case "closeAd_3": 
+                    case "closeAd_4": 
+                    case "closeAd_5":
+                    case "closeAd_6":
+                    case "closeAd_7":
+                    case "closeAd_8": Actions.CloseAd(); break;
+                    case "continueButton": Actions.PressContinue(); break;
+                    case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
+                    case "": break;
 
                     default:
                         break;
                 }
             }
 
-
-            //if (matchedImages.ContainsKey("roofCustomizationWindow"))
-            //{
-            //    Click(305, 565); // Exit the menu
-            //    Thread.Sleep(1000);
-            //}
-            if (matchedImages.ContainsKey("hurryConstructionPrompt"))
-            {
-                Actions.Click(100, 375); // Cancel
-                Thread.Sleep(1000);
-            }
-            if (matchedImages.ContainsKey("closeAdButton"))
-            {
-                Actions.Click(311, 22); // Close ad (x)
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_2"))
-            {
-                Actions.Click(311, 22); // Close ad (x)
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_3"))
-            {
-                Actions.Click(311, 22); // Close ad (x)
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_4"))
-            {
-                Actions.Click(311, 22);
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_5"))
-            {
-                Actions.Click(311, 22);
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_6"))
-            {
-                Actions.Click(311, 22);
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_7")) // Probably incorrect click place
-            {
-                Actions.Click(311, 22);
-                Thread.Sleep(2000);
-                return;
-            }
-            if (matchedImages.ContainsKey("closeAdButton_8")) // Probably incorrect click place
-            {
-                Actions.Click(311, 22);
-                Thread.Sleep(2000);
-                return;
-            }
-
-            if (matchedImages.ContainsKey("continueButton"))
-            {
-                Actions.Click(matchedImages["continueButton"]);
-                Thread.Sleep(1000);
-                Actions.Click(160, 8); // Go up
-                return;
-            }
-            if (matchedImages.ContainsKey("foundCoinsChuteNotification"))
-            {
-                Console.WriteLine("Closing the notification");
-                Actions.Click(165, 375); // Close the notification
-                return;
-            }
             if (matchedImages.ContainsKey("restockButton"))
             {
                 Actions.Click(230, 580); // Click to go down
