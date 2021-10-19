@@ -61,12 +61,16 @@ namespace TinyClicker
                 //Mat template = BitmapConverter.ToMat(imageBitmap);
                 //imageBitmap.Dispose();
                 //MatType.CV_32FC1
-                using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_32FC1))
+                using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
                 {
-                    //Convert input images to gray
+                    // Convert input images to gray
+                    // Default is BGR2GRAY
                     Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
                     Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
+                    //reference.Dispose();
+                    //template.Value.Dispose();
 
+                    //CCoeffNormed
                     Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                     Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
                     gref.Dispose();
@@ -75,7 +79,7 @@ namespace TinyClicker
 
                     while (!suspended)
                     {
-                        double minval, maxval, threshold = 0.78; // default 0.5
+                        double minval, maxval, threshold = 0.78; // default 0.78
                         Point minloc, maxloc;
                         Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                         res.Dispose();
