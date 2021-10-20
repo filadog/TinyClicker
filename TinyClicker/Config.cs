@@ -10,23 +10,25 @@ namespace TinyClicker
 {
     internal class Config
     {
-        private readonly bool _vip;
-        private readonly float _elevatorSpeed;
+        private bool _vip;
+        private float _elevatorSpeed;
 
-        public bool Vip => _vip;
-        public float ElevatorSpeed => _elevatorSpeed;
+        public bool Vip { get => _vip; set => _vip = value; }
+        public float ElevatorSpeed { get => _elevatorSpeed; set => _elevatorSpeed = value; }
 
         public Config() : this(true, 10f) { }
         public Config(bool vip, float elevatorSpeed)
         {
-            _vip = vip;
-            _elevatorSpeed = elevatorSpeed;
+            Vip = vip;
+            ElevatorSpeed = elevatorSpeed;
         }
+
+
     }
 
     internal class ConfigManager
     {
-        static string configPath = Environment.CurrentDirectory + @"\config.txt";
+        static string configPath = Environment.CurrentDirectory + @"\Config.txt";
 
         public static void SaveConfig()
         {
