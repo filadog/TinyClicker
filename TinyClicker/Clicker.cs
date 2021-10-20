@@ -21,6 +21,7 @@ namespace TinyClicker
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = Actions.FindImages();
         public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
+        public static Config currentConfig = ConfigManager.GetConfig();
 
         public static void StartClicker()
         {

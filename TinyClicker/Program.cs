@@ -34,6 +34,10 @@ namespace TinyClicker
                     Main();
                     break;
 
+                case "cc":
+                    ConfigManager.SaveConfig();
+                    break;
+
                 default:
                     Main();
                     break;

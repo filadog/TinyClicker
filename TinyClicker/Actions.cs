@@ -217,12 +217,14 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.234" +
-                "\nCommands:" +
+                "TinyClicker build v0.244"+
+                "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS"+
+                "\n\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
                 "\nq - Quit the application" +
-                "\nss - Capture and save a screenshot");
+                "\nss - Capture and save a screenshot" +
+                "\ncc - Restore default config", Clicker.currentConfig.Vip, Clicker.currentConfig.ElevatorSpeed);
         }
 
         static void Wait(int seconds)
