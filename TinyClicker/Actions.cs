@@ -121,7 +121,7 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Riding the elevator");
             Click(45, 535);
-            Wait(2);
+            Wait(4);
             if (MatchImage("giftChute"))
             {
                 return;
@@ -161,6 +161,16 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Delivering bitizens");
             Click(230, 440); // Continue
+        }
+
+        public static void CloseNewFloorMenu()
+        {
+            PressExitButton();
+        }
+
+        public static void CloseBuildNewFloorNotification()
+        {
+            Click(105, 320); // Click no
         }
 
         public static void CompleteQuest()
@@ -217,7 +227,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.244"+
+                "TinyClicker build v0.264"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -388,6 +398,8 @@ namespace TinyClicker
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
+                dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
+                dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
                 dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
@@ -396,6 +408,7 @@ namespace TinyClicker
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
                 dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
                 dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
+                
                 //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
                 //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
                 dict.Add("moveIn", Image.FromFile(path + "move_in.png"));

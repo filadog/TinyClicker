@@ -134,6 +134,8 @@ namespace TinyClicker
                     case "watchAdPromptBux": Actions.WatchAd(); break;
                     case "findBitizens": Actions.FindBitizens(); break;
                     case "deliverBitizens": Actions.DeliverBitizens(); break;
+                    case "newFloorMenu": Actions.CloseNewFloorMenu(); break;
+                    case "buildNewFloorNotification": Actions.CloseBuildNewFloorNotification(); break;
                     default: break;
                 }
                 break;
