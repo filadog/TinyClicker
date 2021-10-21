@@ -24,7 +24,7 @@ namespace TinyClicker
 
         public static void ExitRoofCustomizationMenu()
         {
-            if (verbose) Console.WriteLine("Exiting from the roof customization menu");
+            if (verbose) Console.WriteLine("Exiting the roof customization menu");
 
             PressExitButton();
             Wait(1);
@@ -32,7 +32,7 @@ namespace TinyClicker
 
         public static void CancelHurryConstruction()
         {
-            if (verbose) Console.WriteLine("Exiting from the construction menu");
+            if (verbose) Console.WriteLine("Exiting the construction menu");
             Click(100, 375); // Cancel action
             Wait(1);
         }
@@ -81,13 +81,13 @@ namespace TinyClicker
             {
                 Click(165, 375); // Close the bonus tooltip
                 Wait(1);
-                MoveUp(); // Go up
+                MoveUp();
                 Wait(1);
                 return;
             }
             else
             {
-                MoveUp(); // Go up
+                MoveUp();
                 Wait(1);
                 return;
             }
@@ -131,14 +131,12 @@ namespace TinyClicker
             else
             {
                 MoveUp();
-                Wait(1);
             }
         }
 
         public static void PressQuestButton()
         {
             if (verbose) Console.WriteLine("Clicking on the quest button");
-            Wait(1);
             Click(Clicker.matchedImages["questButton"]);
             Wait(1);
             if (MatchImage("deliverBitizens"))
@@ -167,18 +165,20 @@ namespace TinyClicker
 
         public static void CloseNewFloorMenu()
         {
+            if (verbose) Console.WriteLine("Exiting");
             PressExitButton();
         }
 
         public static void CloseBuildNewFloorNotification()
         {
+            if (verbose) Console.WriteLine("Closing the new floor notification");
             Click(105, 320); // Click no
         }
 
         public static void CompleteQuest()
         {
-            Wait(1);
             if (verbose) Console.WriteLine("Completing the quest");
+            Wait(1);
             Click(Clicker.matchedImages["completedQuestButton"]);
         }
 
@@ -226,6 +226,7 @@ namespace TinyClicker
 
         public static void RebuildTower()
         {
+            if (verbose) Console.WriteLine("Rebuilding the tower");
             // Add code for rebuilding and reset floor count back to 1
             // Add automatic tutorial passing
         }
@@ -238,12 +239,13 @@ namespace TinyClicker
 
         public static void MoveDown()
         {
+            if (verbose) Console.WriteLine("Moving down");
             Click(230, 580);
         }
 
         public static void PressExitButton()
         {
-            if (verbose) Console.WriteLine("Pressing exit button");
+            if (verbose) Console.WriteLine("Pressing the exit button");
             Click(305, 565);
         }
 
@@ -251,7 +253,7 @@ namespace TinyClicker
         {
             while (true)
             {
-                Console.WriteLine("Played raffle");
+                if (verbose) Console.WriteLine("Playing the raffle");
                 Click(305, 575);
                 Thread.Sleep(500);
                 Click(275, 440);
@@ -270,14 +272,17 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.368"+
+                "TinyClicker build v0.367"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
                 "\nq - Quit the application" +
                 "\nss - Capture and save a screenshot" +
-                "\ncc - Create new config", Clicker.currentConfig.VipPackage, Clicker.currentConfig.ElevatorSpeed, Clicker.currentConfig.FloorsNumber);
+                "\ncc - Create new config", 
+                Clicker.currentConfig.VipPackage, 
+                Clicker.currentConfig.ElevatorSpeed, 
+                Clicker.currentConfig.FloorsNumber);
         }
 
         static void Wait(int seconds)

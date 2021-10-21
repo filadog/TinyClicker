@@ -32,7 +32,6 @@ namespace TinyClicker
         public static void StartClicker()
         {
             //PlayRaffle();
-            //Thread.Sleep(10000);
             int processId = Actions.processId;
 
             while (processId != -1 && !suspended)
@@ -45,7 +44,7 @@ namespace TinyClicker
                 }
                 if (matchedImages.Count == 0)
                 {
-                    Console.WriteLine(dateTimeNow + " Nothing was found");
+                    Console.WriteLine(dateTimeNow + " Found nothing");
                 }
                 PerformActions();
                 Thread.Sleep(1000); // Object detection performed ~once a second
@@ -70,21 +69,12 @@ namespace TinyClicker
 
             foreach (var template in templates)
             {
-                Thread.Sleep(12);
-                //var imageBitmap = new Bitmap(image.Value);
-                //Mat template = BitmapConverter.ToMat(imageBitmap);
-                //imageBitmap.Dispose();
-                //MatType.CV_32FC1
+                Thread.Sleep(12); // Smoothing the CPU peak load
                 using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
                 {
-                    // Convert input images to gray
-                    // Default is BGR2GRAY
                     Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
                     Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
-                    //reference.Dispose();
-                    //template.Value.Dispose();
 
-                    //CCoeffNormed
                     Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                     Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
                     gref.Dispose();
