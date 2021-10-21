@@ -70,7 +70,7 @@ namespace TinyClicker
 
             foreach (var template in templates)
             {
-                Thread.Sleep(14);
+                Thread.Sleep(12);
                 //var imageBitmap = new Bitmap(image.Value);
                 //Mat template = BitmapConverter.ToMat(imageBitmap);
                 //imageBitmap.Dispose();

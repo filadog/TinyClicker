@@ -219,6 +219,7 @@ namespace TinyClicker
                 if (!MatchImage("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddNewFloor();
+                    Console.WriteLine("Building a new floor");
                 }
             }
         }
@@ -269,7 +270,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.367"+
+                "TinyClicker build v0.368"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
