@@ -227,7 +227,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.264"+
+                "TinyClicker build v0.265"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -406,14 +406,16 @@ namespace TinyClicker
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
+                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
+
                 dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
-                dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
+                //dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
                 
                 //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
                 //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
                 dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
                 dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
-                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
+                
                 dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
                 dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
                 dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));
