@@ -16,12 +16,18 @@ namespace TinyClicker
 {
     internal static class Clicker
     {
+        public static Config currentConfig = ConfigManager.GetConfig();
+        public static int balance = currentConfig.Coins;
+        public static int currentFloor = currentConfig.FloorsNumber;
+        public static float elevatorSpeed = currentConfig.ElevatorSpeed;
+        public static bool vipPackage = currentConfig.VipPackage;
+
         static bool suspended = false;
 
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = Actions.FindImages();
         public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
-        public static Config currentConfig = ConfigManager.GetConfig();
+        
 
         public static void StartClicker()
         {
@@ -51,6 +57,12 @@ namespace TinyClicker
         {
             Image gameWindow = Actions.MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
+
+            balance = TextRecognition.ParseBalance(gameWindow);
+            Actions.CheckBuildableFloor(currentFloor, balance);
+            Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
+            Console.WriteLine("Current balance: {0}", balance);
+
             gameWindow.Dispose();
 
             Mat reference = BitmapConverter.ToMat(windowBitmap);

@@ -35,7 +35,7 @@ namespace TinyClicker
                     break;
 
                 case "cc":
-                    ConfigManager.SaveConfig();
+                    ConfigManager.CreateNewConfig();
                     break;
 
                 default:

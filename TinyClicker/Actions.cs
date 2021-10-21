@@ -18,6 +18,8 @@ namespace TinyClicker
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcessId();
 
+        static Dictionary<int, int> floors = Floors();
+
         #region Clicker Actions
 
         public static void ExitRoofCustomizationMenu()
@@ -187,6 +189,29 @@ namespace TinyClicker
             Wait(31);
         }
 
+        public static void CheckBuildableFloor(int currentFloor, int balance)
+        {
+            int targetPrice = floors[currentFloor + 1];
+            if (targetPrice < balance)
+            {
+                BuyFloor();
+            }
+        }
+
+        public static void BuyFloor()
+        {
+            MoveUp();
+            Wait(1);
+            Click(195, 390);
+            Wait(1);
+
+            if (MatchImage("buildNewFloorNotification"))
+            {
+                Click(230, 320);
+                ConfigManager.AddNewFloor();
+            }
+        }
+
         public static void MoveUp()
         {
             if (verbose) Console.WriteLine("Moving up");
@@ -227,14 +252,14 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.265"+
-                "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS"+
+                "TinyClicker build v0.365"+
+                "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
                 "\nl - Display all processes" +
                 "\nq - Quit the application" +
                 "\nss - Capture and save a screenshot" +
-                "\ncc - Restore default config", Clicker.currentConfig.Vip, Clicker.currentConfig.ElevatorSpeed);
+                "\ncc - Create new config", Clicker.currentConfig.VipPackage, Clicker.currentConfig.ElevatorSpeed, Clicker.currentConfig.FloorsNumber);
         }
 
         static void Wait(int seconds)
@@ -383,6 +408,62 @@ namespace TinyClicker
             }
         }
 
+        public static Dictionary<int, int> Floors()
+        {
+            // Prices for each floor
+            var dict = new Dictionary<int, int>();
+            dict.Add(2, 5000);
+            dict.Add(3, 5000);
+            dict.Add(4, 5000);
+            dict.Add(5, 5000);
+            dict.Add(6, 5000);
+            dict.Add(7, 5000);
+            dict.Add(8, 5000);
+            dict.Add(9, 5000);
+            dict.Add(10, 13000);
+            dict.Add(11, 32000);
+            dict.Add(12, 51000);
+            dict.Add(13, 72000);
+            dict.Add(14, 93000);
+            dict.Add(15, 116000);
+            dict.Add(16, 139000);
+            dict.Add(17, 164000);
+            dict.Add(18, 189000);
+            dict.Add(19, 216000);
+            dict.Add(20, 243000);
+            dict.Add(21, 272000);
+            dict.Add(22, 301000);
+            dict.Add(23, 332000);
+            dict.Add(24, 363000);
+            dict.Add(25, 396000);
+            dict.Add(26, 429000);
+            dict.Add(27, 464000);
+            dict.Add(28, 499000);
+            dict.Add(29, 536000);
+            dict.Add(30, 573000);
+            dict.Add(31, 612000);
+            dict.Add(32, 651000);
+            dict.Add(33, 692000);
+            dict.Add(34, 733000);
+            dict.Add(35, 776000);
+            dict.Add(36, 819000);
+            dict.Add(37, 864000);
+            dict.Add(38, 909000);
+            dict.Add(39, 956000);
+            dict.Add(40, 1003000);
+            dict.Add(41, 1052000);
+            dict.Add(42, 1101000);
+            dict.Add(43, 1152000);
+            dict.Add(44, 1203000);
+            dict.Add(45, 1256000);
+            dict.Add(46, 1309000);
+            dict.Add(47, 1364000);
+            dict.Add(48, 1419000);
+            dict.Add(49, 1476000);
+            dict.Add(50, 1533000);
+            return dict;
+        }
+
         public static Dictionary<string, Image> FindImages()
         {
             var dict = new Dictionary<string, Image>();
@@ -400,13 +481,14 @@ namespace TinyClicker
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
                 dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
+                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
                 dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
-                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
+                
 
                 dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
                 //dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
