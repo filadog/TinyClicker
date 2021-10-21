@@ -215,7 +215,11 @@ namespace TinyClicker
             if (MatchImage("buildNewFloorNotification"))
             {
                 Click(230, 320);
-                ConfigManager.AddNewFloor();
+                Wait(1);
+                if (!MatchImage("newFloorNoCoinsNotification"))
+                {
+                    ConfigManager.AddNewFloor();
+                }
             }
         }
 
@@ -265,7 +269,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.366"+
+                "TinyClicker build v0.367"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -485,12 +489,13 @@ namespace TinyClicker
             try
             {
                 // Order is important
-
+                
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
                 //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
+                dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
                 dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
