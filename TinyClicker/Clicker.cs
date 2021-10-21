@@ -60,8 +60,8 @@ namespace TinyClicker
 
             balance = TextRecognition.ParseBalance(gameWindow);
             Actions.CheckBuildableFloor(currentFloor, balance);
-            Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
-            Console.WriteLine("Current balance: {0}", balance);
+            //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
+            //Console.WriteLine("Current balance: {0}", balance);
 
             gameWindow.Dispose();
 

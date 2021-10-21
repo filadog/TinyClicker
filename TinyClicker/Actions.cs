@@ -191,10 +191,17 @@ namespace TinyClicker
 
         public static void CheckBuildableFloor(int currentFloor, int balance)
         {
-            int targetPrice = floors[currentFloor + 1];
-            if (targetPrice < balance)
+            if (currentFloor != 50)
             {
-                BuyFloor();
+                int targetPrice = floors[currentFloor + 1];
+                if (targetPrice < balance)
+                {
+                    BuyFloor();
+                }
+            }
+            else
+            {
+                RebuildTower();
             }
         }
 
@@ -210,6 +217,12 @@ namespace TinyClicker
                 Click(230, 320);
                 ConfigManager.AddNewFloor();
             }
+        }
+
+        public static void RebuildTower()
+        {
+            // Add code for rebuilding and reset floor count back to 1
+            // Add automatic tutorial passing
         }
 
         public static void MoveUp()
@@ -252,7 +265,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.365"+
+                "TinyClicker build v0.366"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
