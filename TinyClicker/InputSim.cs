@@ -5,7 +5,7 @@ namespace TinyClicker
 {
     // Simulates mouse actions
 
-    public static class MouseSim
+    public static class InputSim
     {
         // The WM_COMMAND message is sent when the user selects a command item from 
         // a menu, when a control sends a notification message to its parent window, 
@@ -13,8 +13,10 @@ namespace TinyClicker
 
         public const int WM_LBUTTON = 0x01;
         public const int WM_RBUTTON = 0x02;
+
         public const int WM_KEYDOWN = 0x100;
         public const int WM_KEYUP = 0x101;
+
         public const int WM_COMMAND = 0x111;
         public const int WM_LBUTTONDOWN = 0x201;
         public const int WM_LBUTTONUP = 0x202;
@@ -22,6 +24,8 @@ namespace TinyClicker
         public const int WM_RBUTTONDOWN = 0x204;
         public const int WM_RBUTTONUP = 0x205;
         public const int WM_RBUTTONDBLCLK = 0x206;
+        public const int VK_ESCAPE = 0x1B;
+        //public const int WM_KEYDOWN1 = 0x0100;
 
         // The FindWindow function retrieves a handle to the top-level window whose
         // class name and window name match the specified strings.
@@ -45,17 +49,6 @@ namespace TinyClicker
             string strWindowName);
 
 
-        // The SendMessage function sends the specified message to a window or windows. 
-        // It calls the window procedure for the specified window and does not return
-        // until the window procedure has processed the message. 
-
-        [DllImport("User32.dll")]
-        public static extern Int32 SendMessage(
-            IntPtr hWnd,               // handle to destination window
-            int Msg,                // message
-            int wParam,             // first message parameter
-            [MarshalAs(UnmanagedType.LPStr)] string lParam); // second message parameter (coordinates)
-
         [DllImport("User32.dll")]
         public static extern Int32 SendMessage(
             IntPtr hWnd,               // handle to destination window
@@ -63,7 +56,5 @@ namespace TinyClicker
             int wParam,             // first message parameter
             int lParam);            // second message parameter (coordinates)
 
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
     }
 }

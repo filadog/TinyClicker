@@ -33,18 +33,26 @@ namespace TinyClicker
         {
             //PlayRaffle();
             int processId = Actions.processId;
-
+            int foundNothing = 0;
             while (processId != -1 && !suspended)
             {
                 MatchImages();
+                
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
                 foreach (var image in matchedImages)
                 {
                     Console.WriteLine(dateTimeNow + " Found {0}", image.Key);
+                    foundNothing = 0;
                 }
                 if (matchedImages.Count == 0)
                 {
-                    Console.WriteLine(dateTimeNow + " Found nothing");
+                    foundNothing++;
+                    Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
+                    if (foundNothing >= 20) // Restart the game after 20 attempts
+                    {
+                        Console.WriteLine("Restarting the app");
+                        Actions.RestartApp();
+                    }
                 }
                 PerformActions();
                 Thread.Sleep(1000); // Object detection performed ~once a second
@@ -60,7 +68,7 @@ namespace TinyClicker
             balance = TextRecognition.ParseBalance(gameWindow);
             Actions.CheckBuildableFloor(currentFloor, balance);
             //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
-            //Console.WriteLine("Current balance: {0}", balance);
+            Console.WriteLine("Current balance: {0}", balance);
 
             gameWindow.Dispose();
 
@@ -138,6 +146,7 @@ namespace TinyClicker
                     case "deliverBitizens": Actions.DeliverBitizens(); break;
                     case "newFloorMenu": Actions.CloseNewFloorMenu(); break;
                     case "buildNewFloorNotification": Actions.CloseBuildNewFloorNotification(); break;
+                    case "gameIcon": Actions.OpenTheGame(); break;
                     default: break;
                 }
                 break;

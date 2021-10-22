@@ -45,6 +45,7 @@ namespace TinyClicker
             if(matchedImages.ContainsKey("closeAd_8") || matchedImages.ContainsKey("closeAd_9"))
             {
                 Click(22, 22);
+                Click(311, 22);
             }
             else
             {
@@ -163,6 +164,11 @@ namespace TinyClicker
             Click(230, 440); // Continue
         }
 
+        public static void OpenTheGame()
+        {
+            Click(Clicker.matchedImages["gameIcon"]);
+        }
+
         public static void CloseNewFloorMenu()
         {
             if (verbose) Console.WriteLine("Exiting");
@@ -194,7 +200,7 @@ namespace TinyClicker
             if (currentFloor != 50)
             {
                 int targetPrice = floors[currentFloor + 1];
-                if (targetPrice < balance)
+                if (targetPrice < balance && balance < targetPrice * 1.5f)
                 {
                     BuyFloor();
                 }
@@ -229,6 +235,13 @@ namespace TinyClicker
             if (verbose) Console.WriteLine("Rebuilding the tower");
             // Add code for rebuilding and reset floor count back to 1
             // Add automatic tutorial passing
+        }
+
+        public static void RestartApp()
+        {
+            PressEscape();
+            Wait(1);
+            Click(230, 380);
         }
 
         public static void MoveUp()
@@ -272,7 +285,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.367"+
+                "TinyClicker build v0.370"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -347,8 +360,8 @@ namespace TinyClicker
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, location);
-                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, location);
+                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONDOWN, 1, location);
+                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONUP, 0, location);
             }
         }
 
@@ -356,9 +369,17 @@ namespace TinyClicker
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONDOWN, 1, MakeParam(x, y));
-                MouseSim.SendMessage(clickableChildHandle, MouseSim.WM_LBUTTONUP, 0, MakeParam(x, y));
+                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(x, y));
+                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(x, y));
             }   
+        }
+
+        public static void PressEscape()
+        {
+            if (clickableChildHandle != IntPtr.Zero)
+            {
+                InputSim.SendMessage(clickableChildHandle, InputSim.WM_KEYDOWN, InputSim.VK_ESCAPE, 0);
+            }
         }
 
         public static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
@@ -499,20 +520,21 @@ namespace TinyClicker
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
                 //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
-                dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
+                
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
                 dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
+                dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
                 dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
-                
+                dict.Add("gameIcon", Image.FromFile(path + "game_icon.png"));
 
                 dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
                 //dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
