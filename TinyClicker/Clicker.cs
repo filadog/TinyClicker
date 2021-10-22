@@ -48,7 +48,7 @@ namespace TinyClicker
                 {
                     foundNothing++;
                     Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
-                    if (foundNothing >= 20) // Restart the game after 20 attempts
+                    if (foundNothing >= 25) // Restart the game after 25 attempts
                     {
                         Console.WriteLine("Restarting the app");
                         Actions.RestartApp();
