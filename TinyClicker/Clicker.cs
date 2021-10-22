@@ -71,7 +71,6 @@ namespace TinyClicker
             gameWindow.Dispose();
             Actions.CheckBuildableFloor(currentFloor, balance);
             //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
-            if (Actions.verbose) Console.WriteLine("Current balance: {0}", balance);
 
             Mat reference = BitmapConverter.ToMat(windowBitmap);
             windowBitmap.Dispose();

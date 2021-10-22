@@ -197,10 +197,25 @@ namespace TinyClicker
 
         public static void CheckBuildableFloor(int currentFloor, int balance)
         {
+            int newBalance = balance;
             if (currentFloor != 50)
             {
+                if (currentFloor > 37 && balance.ToString().Contains("41"))
+                {
+                    string temp = balance.ToString();
+                    if (temp.Length > 3)
+                    {
+                        string s = temp.Remove(4);
+                        string addMillions = s + "000";
+                        newBalance = Convert.ToInt32(addMillions);
+                        //Console.WriteLine("New balance: {0}", s);
+                    }
+                }
+
+                if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
+
                 int targetPrice = floors[currentFloor + 1];
-                if (targetPrice < balance && balance < targetPrice * 1.5f)
+                if (targetPrice < newBalance && newBalance < targetPrice * 1.5f)
                 {
                     BuyFloor();
                 }
@@ -290,7 +305,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.382"+
+                "TinyClicker build v0.384"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
