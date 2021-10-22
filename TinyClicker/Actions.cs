@@ -263,19 +263,23 @@ namespace TinyClicker
             Click(305, 565);
         }
 
-        public static void PlayRaffle()
+        public static int PlayRaffle(int currentHour)
         {
-            while (true)
+            if (currentHour != DateTime.Now.Hour)
             {
                 if (verbose) Console.WriteLine("Playing the raffle");
-                Click(305, 575);
-                Thread.Sleep(500);
+
+                Click(300, 570);
+                Wait(1);
                 Click(275, 440);
-                Thread.Sleep(5000);
+                Wait(2);
                 Click(165, 375);
-                Thread.Sleep(2000);
-                Click(165, 375);
-                Thread.Sleep(216000000); // wait 1 hour
+
+                return DateTime.Now.Hour;
+            }
+            else
+            {
+                return currentHour;
             }
         }
 
@@ -286,7 +290,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.372"+
+                "TinyClicker build v0.382"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -537,12 +541,12 @@ namespace TinyClicker
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
                 dict.Add("gameIcon", Image.FromFile(path + "game_icon.png"));
 
-                dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
+                //dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
                 //dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
                 
                 //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
                 //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
-                dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
+                //dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
                 dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
                 
                 dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));

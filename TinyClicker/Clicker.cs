@@ -34,6 +34,7 @@ namespace TinyClicker
             //PlayRaffle();
             int processId = Actions.processId;
             int foundNothing = 0;
+            int currentHour = DateTime.Now.Hour - 1;
             while (processId != -1 && !suspended)
             {
                 MatchImages();
@@ -54,9 +55,11 @@ namespace TinyClicker
                         Actions.RestartApp();
                     }
                 }
+                currentHour = Actions.PlayRaffle(currentHour);
                 PerformActions();
                 Thread.Sleep(1000); // Object detection performed ~once a second
                 matchedImages.Clear();
+                GC.Collect();
             }
         }
 
