@@ -13,7 +13,7 @@ namespace TinyClicker
 {
     internal static class Actions
     {
-        static bool verbose = true;
+        public static bool verbose = true;
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcessId();
@@ -248,6 +248,7 @@ namespace TinyClicker
         {
             if (verbose) Console.WriteLine("Moving up");
             Click(160, 8);
+            Wait(1);
         }
 
         public static void MoveDown()
@@ -285,7 +286,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.370"+
+                "TinyClicker build v0.372"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -528,7 +529,7 @@ namespace TinyClicker
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
-                dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
+                
                 dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
@@ -558,6 +559,7 @@ namespace TinyClicker
                 dict.Add("hurryConstructionPrompt", Image.FromFile(path + "hurry_construction_prompt.png"));
                 dict.Add("roofCustomizationWindow", Image.FromFile(path + "roof_customization_window.png"));
                 dict.Add("giftChute", Image.FromFile(path + "gift_chute.png"));
+                dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
 
                 return dict;
             }

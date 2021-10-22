@@ -64,13 +64,11 @@ namespace TinyClicker
         {
             Image gameWindow = Actions.MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
-
             balance = TextRecognition.ParseBalance(gameWindow);
+            gameWindow.Dispose();
             Actions.CheckBuildableFloor(currentFloor, balance);
             //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
-            Console.WriteLine("Current balance: {0}", balance);
-
-            gameWindow.Dispose();
+            if (Actions.verbose) Console.WriteLine("Current balance: {0}", balance);
 
             Mat reference = BitmapConverter.ToMat(windowBitmap);
             windowBitmap.Dispose();
