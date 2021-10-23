@@ -7,16 +7,10 @@ namespace TinyClicker
 
     public static class InputSim
     {
-        // The WM_COMMAND message is sent when the user selects a command item from 
-        // a menu, when a control sends a notification message to its parent window, 
-        // or when an accelerator keystroke is translated.
-
         public const int WM_LBUTTON = 0x01;
         public const int WM_RBUTTON = 0x02;
-
         public const int WM_KEYDOWN = 0x100;
         public const int WM_KEYUP = 0x101;
-
         public const int WM_COMMAND = 0x111;
         public const int WM_LBUTTONDOWN = 0x201;
         public const int WM_LBUTTONUP = 0x202;
@@ -25,36 +19,15 @@ namespace TinyClicker
         public const int WM_RBUTTONUP = 0x205;
         public const int WM_RBUTTONDBLCLK = 0x206;
         public const int VK_ESCAPE = 0x1B;
-        //public const int WM_KEYDOWN1 = 0x0100;
-
-        // The FindWindow function retrieves a handle to the top-level window whose
-        // class name and window name match the specified strings.
-        // This function does not search child windows.
-        // This function does not perform a case-sensitive search.
 
         [DllImport("User32.dll")]
         public static extern int FindWindow(string strClassName, string strWindowName);
 
-        // The FindWindowEx function retrieves a handle to a window whose class name 
-        // and window name match the specified strings.
-        // The function searches child windows, beginning with the one following the
-        // specified child window.
-        // This function does not perform a case-sensitive search.
+        [DllImport("User32.dll")]
+        public static extern int FindWindowEx(int hwndParent, int hwndChildAfter, string strClassName, string strWindowName);
 
         [DllImport("User32.dll")]
-        public static extern int FindWindowEx(
-            int hwndParent,
-            int hwndChildAfter,
-            string strClassName,
-            string strWindowName);
-
-
-        [DllImport("User32.dll")]
-        public static extern Int32 SendMessage(
-            IntPtr hWnd,               // handle to destination window
-            int Msg,                // message
-            int wParam,             // first message parameter
-            int lParam);            // second message parameter (coordinates)
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);            
 
     }
 }

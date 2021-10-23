@@ -12,9 +12,10 @@ namespace TinyClicker
             int balance;
             Bitmap source = ImageHandler.CropCurrentBalance(window);
             string text;
+
             try
             {
-                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.Default)) //@"./tessdata", "eng", EngineMode.Default
+                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.Default))
                 {
                     using (var img = source)
                     {
@@ -30,10 +31,6 @@ namespace TinyClicker
             }
             catch (Exception)
             {
-                //Trace.TraceError(e.ToString());
-                //Console.WriteLine("Unexpected Error: " + e.Message);
-                //Console.WriteLine("Details: ");
-                //Console.WriteLine(e.ToString());
                 return 0;
             }
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TinyClicker
 {
@@ -18,11 +17,6 @@ namespace TinyClicker
             {
                 case "s":
                     Clicker.StartClicker();
-                    break;
-
-                case "l":
-                    Actions.PrintAllProcesses();
-                    Main();
                     break;
 
                 case "q":

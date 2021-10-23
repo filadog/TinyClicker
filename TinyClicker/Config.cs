@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
 
@@ -38,6 +34,7 @@ namespace TinyClicker
             float elevatorSpeed;
             bool vipPackage;
             int floors;
+
             try
             {
                 Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) true or false");
@@ -67,10 +64,11 @@ namespace TinyClicker
                 string json = JsonSerializer.Serialize(config, options);
                 File.WriteAllText(configPath, json);
                 Console.WriteLine("Success! Restart the app");
+                Console.ReadKey();
             }
             catch (Exception)
             {
-                Console.WriteLine("Error: Incorrect input, make sure you use correct values");
+                Console.WriteLine("Error: Incorrect input, make sure you use the correct values");
                 CreateNewConfig();
             }
         }
@@ -81,6 +79,7 @@ namespace TinyClicker
             config.FloorsNumber += 1;
             SaveConfig(config);
         }
+
         public static void SaveNewFloor(int floor)
         {
             var config = Clicker.currentConfig;

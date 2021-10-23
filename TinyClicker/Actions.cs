@@ -425,14 +425,13 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.411"+
+                "TinyClicker build v0.413"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
-                "\ns - Enable clicker" +
-                "\nl - Display all processes" +
-                "\nq - Quit the application" +
+                "\ns - Enable TinyClicker" +
+                "\nq - Quit" +
                 "\nss - Capture and save a screenshot" +
-                "\ncc - Create new config", 
+                "\ncc - Create a new config", 
                 Clicker.currentConfig.VipPackage, 
                 Clicker.currentConfig.ElevatorSpeed, 
                 Clicker.currentConfig.FloorsNumber);
@@ -448,7 +447,7 @@ namespace TinyClicker
         {
             // Returns true if image is found 
 
-            Image gameWindow = Actions.MakeScreenshot();
+            Image gameWindow = MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
             gameWindow.Dispose();
 
@@ -464,7 +463,7 @@ namespace TinyClicker
                 Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                 Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
 
-                double minval, maxval, threshold = 0.7; // default 0.5
+                double minval, maxval, threshold = 0.7;
                 Point minloc, maxloc;
                 Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                 GC.Collect();
@@ -487,9 +486,9 @@ namespace TinyClicker
             {
                 if (!string.IsNullOrEmpty(process.MainWindowTitle) && process.ProcessName == processName)
                 {
-                    //Console.WriteLine("Process:   {0}", process.ProcessName);
-                    //Console.WriteLine("    ID   : {0}", process.Id);
-                    //Console.WriteLine("    Title: {0} \n", process.MainWindowTitle);
+                    //Console.WriteLine("Process: {0}", process.ProcessName);
+                    //Console.WriteLine("ID: {0}", process.Id);
+                    //Console.WriteLine("Title: {0} \n", process.MainWindowTitle);
                     return process;
                 }
             }
@@ -658,9 +657,7 @@ namespace TinyClicker
                 // Order is important
                 
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
-                //dict.Add("menuButton", Image.FromFile(samplesPath + "menu_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
-                
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
@@ -668,22 +665,12 @@ namespace TinyClicker
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
-                
-                //dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
                 dict.Add("gameIcon", Image.FromFile(path + "game_icon.png"));
-
-                //dict.Add("raffleIconMenu", Image.FromFile(path + "raffle_icon_menu.png"));
-                //dict.Add("enterRaffleButton", Image.FromFile(path + "enter_raffle_button.png"));
-                
-                //dict.Add("rushAllButton", Image.FromFile(samplesPath + "rush_all_button.png"));
-                //dict.Add("stockAllButton", Image.FromFile(samplesPath + "stock_all_button.png"));
-                //dict.Add("moveIn", Image.FromFile(path + "move_in.png"));
                 dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
-                
                 dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
                 dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
                 dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));

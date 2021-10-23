@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
@@ -78,9 +73,6 @@ namespace TinyClicker
         static void MatchImages(Image gameWindow)
         {
             var windowBitmap = new Bitmap(gameWindow);
-            
-            //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
-
             Mat reference = BitmapConverter.ToMat(windowBitmap);
             windowBitmap.Dispose();
 
@@ -120,44 +112,41 @@ namespace TinyClicker
                     }
                 }
             }
-            GC.Collect(); // Important
+            GC.Collect();
         }
 
         static void PerformActions()
         {
-            foreach (var key in matchedImages.Keys)
+            string key = matchedImages.Keys.FirstOrDefault();
+            switch (key)
             {
-                switch (key)
-                {
-                    case "roofCustomizationWindow": Actions.ExitRoofCustomizationMenu(); break;
-                    case "hurryConstructionPrompt": Actions.CancelHurryConstruction(); break;
-                    case "closeAd": 
-                    case "closeAd_2":
-                    case "closeAd_3":
-                    case "closeAd_4":
-                    case "closeAd_5": 
-                    case "closeAd_6": 
-                    case "closeAd_7": 
-                    case "closeAd_8": Actions.CloseAd(); break;
-                    case "continueButton": Actions.PressContinue(); break;
-                    case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
-                    case "restockButton": Actions.Restock(); break;
-                    case "freeBuxCollectButton": Actions.CollectFreeBux(); break;
-                    case "freeBuxButton": Actions.PressFreeBuxButton(); break;
-                    case "giftChute": Actions.ClickOnChute(); break;
-                    case "backButton": Actions.PressExitButton(); break;
-                    case "elevatorButton": Actions.RideElevator(); break;
-                    case "questButton": Actions.PressQuestButton(); break;
-                    case "completedQuestButton": Actions.CompleteQuest(); break;
-                    case "watchAdPromptBux": Actions.WatchAd(); break;
-                    case "findBitizens": Actions.FindBitizens(); break;
-                    case "deliverBitizens": Actions.DeliverBitizens(); break;
-                    case "newFloorMenu": Actions.CloseNewFloorMenu(); break;
-                    case "buildNewFloorNotification": Actions.CloseBuildNewFloorNotification(); break;
-                    case "gameIcon": Actions.OpenTheGame(); break;
-                    default: break;
-                }
-                break;
+                case "roofCustomizationWindow": Actions.ExitRoofCustomizationMenu(); break;
+                case "hurryConstructionPrompt": Actions.CancelHurryConstruction(); break;
+                case "closeAd":
+                case "closeAd_2":
+                case "closeAd_3":
+                case "closeAd_4":
+                case "closeAd_5":
+                case "closeAd_6":
+                case "closeAd_7":
+                case "closeAd_8": Actions.CloseAd(); break;
+                case "continueButton": Actions.PressContinue(); break;
+                case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
+                case "restockButton": Actions.Restock(); break;
+                case "freeBuxCollectButton": Actions.CollectFreeBux(); break;
+                case "freeBuxButton": Actions.PressFreeBuxButton(); break;
+                case "giftChute": Actions.ClickOnChute(); break;
+                case "backButton": Actions.PressExitButton(); break;
+                case "elevatorButton": Actions.RideElevator(); break;
+                case "questButton": Actions.PressQuestButton(); break;
+                case "completedQuestButton": Actions.CompleteQuest(); break;
+                case "watchAdPromptBux": Actions.WatchAd(); break;
+                case "findBitizens": Actions.FindBitizens(); break;
+                case "deliverBitizens": Actions.DeliverBitizens(); break;
+                case "newFloorMenu": Actions.CloseNewFloorMenu(); break;
+                case "buildNewFloorNotification": Actions.CloseBuildNewFloorNotification(); break;
+                case "gameIcon": Actions.OpenTheGame(); break;
+                default: break;
             }
         }
     }

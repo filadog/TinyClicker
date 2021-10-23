@@ -13,11 +13,11 @@ namespace TinyClicker
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumChildWindows(IntPtr window, EnumWindowProc callback, IntPtr lParam);
 
-        private IntPtr _MainHandle;
+        private IntPtr _mainHandle;
 
         public WindowHandleInfo(IntPtr handle)
         {
-            _MainHandle = handle;
+            _mainHandle = handle;
         }
 
         public List<IntPtr> GetAllChildHandles()
@@ -30,7 +30,7 @@ namespace TinyClicker
             try
             {
                 EnumWindowProc childProc = new EnumWindowProc(EnumWindow);
-                EnumChildWindows(this._MainHandle, childProc, pointerChildHandlesList);
+                EnumChildWindows(_mainHandle, childProc, pointerChildHandlesList);
             }
             finally
             {
