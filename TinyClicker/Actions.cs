@@ -208,7 +208,7 @@ namespace TinyClicker
             int newBalance = balance;
             if (currentFloor != 50)
             {
-                if (currentFloor > 37 && balance.ToString().Contains("41"))
+                if (currentFloor > 37)
                 {
                     string temp = balance.ToString();
                     if (temp.Length > 3)
@@ -223,12 +223,12 @@ namespace TinyClicker
                 if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
 
                 int targetPrice = floors[currentFloor + 1];
-                if (targetPrice < newBalance)
+                if (targetPrice < newBalance && newBalance < 1850000)
                 {
                     BuyFloor();
                 }
             }
-            if (currentFloor == 50)
+            if (currentFloor == 50 )
             {
                 RebuildTower();
             }
@@ -236,6 +236,7 @@ namespace TinyClicker
 
         public static void BuyFloor()
         {
+            if (verbose) Console.WriteLine("Building a new floor");
             MoveUp();
             Wait(2);
             Click(195, 390);
@@ -248,7 +249,7 @@ namespace TinyClicker
                 if (!MatchImage("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddNewFloor();
-                    Console.WriteLine("Building a new floor");
+                    Console.WriteLine("Built a new floor");
                 }
             }
         }
@@ -425,7 +426,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.413"+
+                "TinyClicker build v0.415"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable TinyClicker" +
@@ -660,10 +661,10 @@ namespace TinyClicker
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
+                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
                 dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
-                dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
