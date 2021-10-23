@@ -16,7 +16,7 @@ namespace TinyClicker
         public static bool verbose = true;
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
-        public static int processId = GetProcessId();
+        public static int processId = GetProcess().Id;
 
         static Dictionary<int, int> floors = Floors();
 
@@ -148,6 +148,12 @@ namespace TinyClicker
             {
                 FindBitizens();
             }
+            else
+            {
+                Click(90, 440); // Skip the quest
+                Wait(1);
+                Click(230, 380); // Confirm
+            }
         }
 
         public static void FindBitizens()
@@ -195,8 +201,10 @@ namespace TinyClicker
             Wait(31);
         }
 
-        public static void CheckBuildableFloor(int currentFloor, int balance)
+        public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
         {
+            int balance = TextRecognition.ParseBalance(gameWindow);
+
             int newBalance = balance;
             if (currentFloor != 50)
             {
@@ -215,12 +223,12 @@ namespace TinyClicker
                 if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
 
                 int targetPrice = floors[currentFloor + 1];
-                if (targetPrice < newBalance && newBalance < targetPrice * 1.5f)
+                if (targetPrice < newBalance)
                 {
                     BuyFloor();
                 }
             }
-            else
+            if (currentFloor == 50)
             {
                 RebuildTower();
             }
@@ -229,7 +237,7 @@ namespace TinyClicker
         public static void BuyFloor()
         {
             MoveUp();
-            Wait(1);
+            Wait(2);
             Click(195, 390);
             Wait(1);
 
@@ -248,15 +256,127 @@ namespace TinyClicker
         public static void RebuildTower()
         {
             if (verbose) Console.WriteLine("Rebuilding the tower");
-            // Add code for rebuilding and reset floor count back to 1
-            // Add automatic tutorial passing
+
+            Click(305, 570);
+            Wait(1);
+            Click(165, 435);
+            Wait(1);
+            Click(165, 440);
+            Wait(1);
+            Click(230, 380);
+            Wait(5);
+            ConfigManager.SaveNewFloor(1);
+        }
+
+        public static void PassTheTutorial()
+        {
+            Click(195, 260); // Build the new floor
+            Wait(1);
+            Click(230, 380); // Confirm
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(190, 300); // Click on new floor
+            Wait(1);
+            Click(240, 150); // Build residential
+            Wait(1);
+            Click(160, 375); // Continue
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(30, 535); // Ride elevator
+            Wait(5);
+            Click(230, 380); // Continue
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(190, 200); // Build new floor
+            Wait(1);
+            Click(225, 380); // Confirm
+            Wait(1);
+            Click(200, 200); // Open the new floor
+            Wait(1);
+            Click(90, 340); // Build random food
+            Wait(1);
+            Click(170, 375); // Continue
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(200, 200); // Open food floor
+            Wait(1);
+            Click(75, 210); // Hire
+            Wait(1);
+            Click(80, 100); // Select our bitizen
+            Wait(1);
+            Click(230, 380); // Hire him
+            Wait(1);
+            Click(160, 380); // Continue on dream job assignement
+            Wait(1);
+            Click(300, 560); // Exit the food store
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(200, 200); // Open food store again
+            Wait(1);
+            Click(200, 210); // Restock first item in the store
+            Wait(10);
+            Click(305, 190); // Restock
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Continue
+            Wait(1);
+            Click(200, 200); // Open food store again
+            Wait(1);
+            Click(170, 130); // Click upgrade
+            Wait(1);
+            Click(230, 375); // Confirm
+            Wait(1);
+            Click(165, 375); // Continue
+            Wait(1);
+            Click(300, 560); // Exit the food store
+            Wait(1);
+            Click(20, 60); // Complete quest
+            Wait(1);
+            Click(170, 435); // Collect bux
+            Wait(1);
+            Click(170, 435); // Colect more bux
+            Wait(1);
+            Click(165, 375); // Continue
+            ConfigManager.SaveNewFloor(3);
         }
 
         public static void RestartApp()
         {
-            PressEscape();
+            IntPtr mainHandle = GetProcess().MainWindowHandle;
+            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
+            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(98, 17));
+
             Wait(1);
-            Click(230, 380);
+            //PressEscape();
+            //Click(230, 380);
         }
 
         public static void MoveUp()
@@ -283,7 +403,7 @@ namespace TinyClicker
             if (currentHour != DateTime.Now.Hour)
             {
                 if (verbose) Console.WriteLine("Playing the raffle");
-
+                Wait(1);
                 Click(300, 570);
                 Wait(1);
                 Click(275, 440);
@@ -305,7 +425,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.384"+
+                "TinyClicker build v0.411"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable clicker" +
@@ -360,20 +480,20 @@ namespace TinyClicker
             }
         }
 
-        public static int GetProcessId()
+        public static Process GetProcess()
         {
             Process[] processlist = Process.GetProcesses();
             foreach (Process process in processlist)
             {
-                if (!String.IsNullOrEmpty(process.MainWindowTitle) && process.ProcessName == processName)
+                if (!string.IsNullOrEmpty(process.MainWindowTitle) && process.ProcessName == processName)
                 {
                     //Console.WriteLine("Process:   {0}", process.ProcessName);
                     //Console.WriteLine("    ID   : {0}", process.Id);
                     //Console.WriteLine("    Title: {0} \n", process.MainWindowTitle);
-                    return process.Id;
+                    return process;
                 }
             }
-            return -1;
+            return null;
         }
 
         public static void Click(int location)
@@ -413,7 +533,7 @@ namespace TinyClicker
             }
             else
             {
-                Console.WriteLine("LDPlayer process not found - clicker function is not possible. Launch LDPlayer and restart the app.");
+                Console.WriteLine("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
                 Console.ReadLine();
                 return IntPtr.Zero;
             }
@@ -549,7 +669,7 @@ namespace TinyClicker
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 
-                dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
+                //dict.Add("vipButton", Image.FromFile(path + "vip_button.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
                 dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));

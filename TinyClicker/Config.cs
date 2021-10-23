@@ -81,6 +81,12 @@ namespace TinyClicker
             config.FloorsNumber += 1;
             SaveConfig(config);
         }
+        public static void SaveNewFloor(int floor)
+        {
+            var config = Clicker.currentConfig;
+            config.FloorsNumber = floor;
+            SaveConfig(config);
+        }
 
         public static Config GetConfig()
         {

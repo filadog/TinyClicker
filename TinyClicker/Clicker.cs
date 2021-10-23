@@ -22,8 +22,6 @@ namespace TinyClicker
         public static float elevatorSpeed = currentConfig.ElevatorSpeed;
         public static bool vipPackage = currentConfig.VipPackage;
 
-        static bool suspended = false;
-
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = Actions.FindImages();
         public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
@@ -35,26 +33,40 @@ namespace TinyClicker
             int processId = Actions.processId;
             int foundNothing = 0;
             int currentHour = DateTime.Now.Hour - 1;
-            while (processId != -1 && !suspended)
+            int currentMinute = DateTime.Now.Minute - 1;
+
+            while (processId != -1)
             {
-                MatchImages();
-                
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
+                Image gameWindow = Actions.MakeScreenshot();
+                MatchImages(gameWindow);
+
+                // Check the balance every minute
+                if (currentMinute != DateTime.Now.Minute)
+                {
+                    currentMinute = DateTime.Now.Minute;
+                    Actions.CheckBuildableFloor(currentFloor, gameWindow);
+                }
+                gameWindow.Dispose();
+
+
                 foreach (var image in matchedImages)
                 {
                     Console.WriteLine(dateTimeNow + " Found {0}", image.Key);
                     foundNothing = 0;
                 }
+
                 if (matchedImages.Count == 0)
                 {
                     foundNothing++;
                     Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
-                    if (foundNothing >= 25) // Restart the game after 25 attempts
+                    if (foundNothing >= 30) // Restart the game after 30 attempts
                     {
                         Console.WriteLine("Restarting the app");
                         Actions.RestartApp();
                     }
                 }
+                if (currentFloor == 1) Actions.PassTheTutorial();
                 currentHour = Actions.PlayRaffle(currentHour);
                 PerformActions();
                 Thread.Sleep(1000); // Object detection performed ~once a second
@@ -63,13 +75,10 @@ namespace TinyClicker
             }
         }
 
-        static void MatchImages()
+        static void MatchImages(Image gameWindow)
         {
-            Image gameWindow = Actions.MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
-            balance = TextRecognition.ParseBalance(gameWindow);
-            gameWindow.Dispose();
-            Actions.CheckBuildableFloor(currentFloor, balance);
+            
             //Console.WriteLine("Current number of floors: {0}", currentConfig.FloorsNumber);
 
             Mat reference = BitmapConverter.ToMat(windowBitmap);
@@ -87,9 +96,8 @@ namespace TinyClicker
                     Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
                     gref.Dispose();
                     gtpl.Dispose();
-                    GC.Collect();
 
-                    while (!suspended)
+                    while (true)
                     {
                         double minval, maxval, threshold = 0.78; // default 0.78
                         Point minloc, maxloc;
