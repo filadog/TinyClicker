@@ -29,21 +29,22 @@ namespace TinyClicker
             int foundNothing = 0;
             int currentHour = DateTime.Now.Hour - 1;
             int currentMinute = DateTime.Now.Minute - 1;
+            
 
             while (processId != -1)
             {
+                currentFloor = ConfigManager.GetConfig().FloorsNumber;
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
                 Image gameWindow = Actions.MakeScreenshot();
                 MatchImages(gameWindow);
 
                 // Check the balance every minute
-                if (currentMinute != DateTime.Now.Minute)
+                if (currentMinute != DateTime.Now.Minute && currentFloor != 1)
                 {
                     currentMinute = DateTime.Now.Minute;
                     Actions.CheckBuildableFloor(currentFloor, gameWindow);
                 }
                 gameWindow.Dispose();
-
 
                 foreach (var image in matchedImages)
                 {
@@ -55,15 +56,18 @@ namespace TinyClicker
                 {
                     foundNothing++;
                     Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
-                    if (foundNothing >= 30) // Restart the game after 30 attempts
+                    if (foundNothing >= 30)
                     {
-                        Console.WriteLine("Restarting the app");
-                        Actions.RestartApp();
+                        Actions.CloseHiddenAd();
                     }
+                    if (foundNothing >= 35) Actions.RestartApp();
                 }
                 if (currentFloor == 1) Actions.PassTheTutorial();
-                currentHour = Actions.PlayRaffle(currentHour);
-                PerformActions();
+                if (currentFloor != 50)
+                {
+                    currentHour = Actions.PlayRaffle(currentHour);
+                    PerformActions();
+                } 
                 Thread.Sleep(1000); // Object detection performed ~once a second
                 matchedImages.Clear();
                 GC.Collect();

@@ -172,7 +172,16 @@ namespace TinyClicker
 
         public static void OpenTheGame()
         {
+            Wait(1);
             Click(Clicker.matchedImages["gameIcon"]);
+            Wait(10);
+        }
+
+        public static void CloseHiddenAd()
+        {
+            if (verbose) Console.WriteLine("Closing the hidden ad");
+            Wait(1);
+            Click(310, 10);
         }
 
         public static void CloseNewFloorMenu()
@@ -203,6 +212,7 @@ namespace TinyClicker
 
         public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
         {
+            Clicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
             int balance = TextRecognition.ParseBalance(gameWindow);
 
             int newBalance = balance;
@@ -221,8 +231,9 @@ namespace TinyClicker
                 }
 
                 if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
-
                 int targetPrice = floors[currentFloor + 1];
+                if (verbose) Console.WriteLine("Current goal: {0}", targetPrice);
+
                 if (targetPrice < newBalance && newBalance < 1850000)
                 {
                     BuyFloor();
@@ -265,12 +276,20 @@ namespace TinyClicker
             Click(165, 440);
             Wait(1);
             Click(230, 380);
+            Wait(1);
+            Click(230, 380);
             Wait(5);
             ConfigManager.SaveNewFloor(1);
         }
 
         public static void PassTheTutorial()
         {
+            if (verbose) Console.WriteLine("Passing the tutorial");
+            Wait(5);
+            Click(170, 435); // Continue
+            Wait(3);
+            MoveDown();
+            Wait(1);
             Click(195, 260); // Build the new floor
             Wait(1);
             Click(230, 380); // Confirm
@@ -340,7 +359,7 @@ namespace TinyClicker
             Click(200, 200); // Open food store again
             Wait(1);
             Click(200, 210); // Restock first item in the store
-            Wait(10);
+            Wait(15);
             Click(305, 190); // Restock
             Wait(1);
             Click(20, 60); // Complete quest
@@ -371,6 +390,7 @@ namespace TinyClicker
 
         public static void RestartApp()
         {
+            if (verbose) Console.WriteLine("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
             InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
             InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(98, 17));
@@ -426,7 +446,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.415"+
+                "TinyClicker build v0.425"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable TinyClicker" +
