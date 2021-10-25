@@ -56,11 +56,11 @@ namespace TinyClicker
                 {
                     foundNothing++;
                     Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
-                    if (foundNothing >= 30)
+                    if (foundNothing >= 27)
                     {
                         Actions.CloseHiddenAd();
                     }
-                    if (foundNothing >= 35) Actions.RestartApp();
+                    if (foundNothing >= 30) Actions.RestartApp();
                 }
                 if (currentFloor == 1) Actions.PassTheTutorial();
                 if (currentFloor != 50)

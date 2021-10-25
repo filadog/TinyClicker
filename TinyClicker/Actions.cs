@@ -400,6 +400,12 @@ namespace TinyClicker
             //Click(230, 380);
         }
 
+        public static void RestartLDPlayer()
+        {
+            // Add call to close the player first, close it and then restart it
+            //Process start()
+        }
+
         public static void MoveUp()
         {
             if (verbose) Console.WriteLine("Moving up");
@@ -446,7 +452,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.425"+
+                "TinyClicker build v0.426"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable TinyClicker" +
