@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using Point = OpenCvSharp.Point;
 
 namespace TinyClicker
 {
@@ -21,15 +20,12 @@ namespace TinyClicker
         public static Dictionary<string, Image> images = Actions.FindImages();
         public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
         
-
         public static void StartClicker()
         {
-            //PlayRaffle();
             int processId = Actions.processId;
             int foundNothing = 0;
             int currentHour = DateTime.Now.Hour - 1;
             int currentMinute = DateTime.Now.Minute - 1;
-            
 
             while (processId != -1)
             {
@@ -38,7 +34,7 @@ namespace TinyClicker
                 Image gameWindow = Actions.MakeScreenshot();
                 MatchImages(gameWindow);
 
-                // Check the balance every minute
+                // Check buildable floor every minute
                 if (currentMinute != DateTime.Now.Minute && currentFloor != 1)
                 {
                     currentMinute = DateTime.Now.Minute;
@@ -58,11 +54,13 @@ namespace TinyClicker
                     Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
                     if (foundNothing >= 27)
                     {
-                        Actions.CloseHiddenAd();
+                        Actions.CloseHiddenAd(); // Close the hidden ad after 27 attempts
                     }
                     if (foundNothing >= 30) Actions.RestartApp();
                 }
+
                 if (currentFloor == 1) Actions.PassTheTutorial();
+
                 if (currentFloor != 50)
                 {
                     currentHour = Actions.PlayRaffle(currentHour);
@@ -82,38 +80,13 @@ namespace TinyClicker
 
             foreach (var template in templates)
             {
-                Thread.Sleep(12); // Smoothing the CPU peak load
-                using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
+                if (matchedImages.Count == 0)
                 {
-                    Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
-                    Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
-
-                    Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
-                    Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
-                    gref.Dispose();
-                    gtpl.Dispose();
-
-                    while (true)
-                    {
-                        double minval, maxval, threshold = 0.78; // default 0.78
-                        Point minloc, maxloc;
-                        Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
-                        res.Dispose();
-                        
-                        if (maxval >= threshold)
-                        {
-                            if (!matchedImages.ContainsKey(template.Key))
-                            {
-                                matchedImages.Add(template.Key, Actions.MakeParam(maxloc.X, maxloc.Y));
-                                //Console.WriteLine(image.Key + " is found");
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                    Actions.MatchImage(template, reference);
+                }
+                else
+                {
+                    break;
                 }
             }
             GC.Collect();

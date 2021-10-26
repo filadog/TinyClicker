@@ -16,7 +16,7 @@ namespace TinyClicker
         public int FloorsNumber { get => _floorsNumber; set => _floorsNumber = value; }
         public int Coins { get => _coins; set => _coins = value; }
 
-        public Config() : this(true, 10f, 0) { }
+        public Config() : this(true, 10f, 1) { }
         public Config(bool vip, float elevatorSpeed, int floorsNumber)
         {
             VipPackage = vip;
@@ -29,7 +29,7 @@ namespace TinyClicker
     {
         static readonly string configPath = Environment.CurrentDirectory + @"\Config.txt";
 
-        public static void CreateNewConfig()
+        public static void CreateNewConfigCommand()
         {
             float elevatorSpeed;
             bool vipPackage;
@@ -37,10 +37,10 @@ namespace TinyClicker
 
             try
             {
-                Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) true or false");
+                Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) enter true or false");
                 bool.TryParse(Console.ReadLine(), out vipPackage);
 
-                Console.WriteLine("Provide value for elevator speed (e.g: 10 or 9.25), leave empty for the default value (10)");
+                Console.WriteLine("Provide value for the elevator speed (e.g: 10 or 9.25), leave empty for the default value (10)");
                 string input = Console.ReadLine();
                 if (input.Length == 0)
                 {
@@ -52,7 +52,7 @@ namespace TinyClicker
                     if (elevatorSpeed > 10 || elevatorSpeed < 0)
                     {
                         Console.WriteLine("Error: elevator speed cannot be lower than zero or greater than 10");
-                        CreateNewConfig();
+                        CreateNewConfigCommand();
                     }
                 }
 
@@ -69,7 +69,7 @@ namespace TinyClicker
             catch (Exception)
             {
                 Console.WriteLine("Error: Incorrect input, make sure you use the correct values");
-                CreateNewConfig();
+                CreateNewConfigCommand();
             }
         }
 

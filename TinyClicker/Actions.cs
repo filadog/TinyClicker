@@ -215,31 +215,33 @@ namespace TinyClicker
             Clicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
             int balance = TextRecognition.ParseBalance(gameWindow);
 
-            int newBalance = balance;
-            if (currentFloor != 50)
+            if (balance != -1)
             {
-                if (currentFloor > 37)
+                int newBalance = balance;
+                if (currentFloor != 50)
                 {
-                    string temp = balance.ToString();
-                    if (temp.Length > 3)
+                    if (currentFloor > 37)
                     {
-                        string s = temp.Remove(4);
-                        string addMillions = s + "000";
-                        newBalance = Convert.ToInt32(addMillions);
-                        //Console.WriteLine("New balance: {0}", s);
+                        string temp = balance.ToString();
+                        if (temp.Length > 3)
+                        {
+                            string s = temp.Remove(4);
+                            string addMillions = s + "000";
+                            newBalance = Convert.ToInt32(addMillions);
+                        }
+                    }
+
+                    if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
+                    int targetPrice = floors[currentFloor + 1];
+                    if (verbose) Console.WriteLine("Current goal: {0}", targetPrice);
+
+                    if (targetPrice < newBalance && newBalance < 1850000) // Helps with incorrect balance detection
+                    {
+                        BuyFloor();
                     }
                 }
-
-                if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
-                int targetPrice = floors[currentFloor + 1];
-                if (verbose) Console.WriteLine("Current goal: {0}", targetPrice);
-
-                if (targetPrice < newBalance && newBalance < 1850000)
-                {
-                    BuyFloor();
-                }
             }
-            if (currentFloor == 50 )
+            if (currentFloor == 50)
             {
                 RebuildTower();
             }
@@ -396,13 +398,11 @@ namespace TinyClicker
             InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(98, 17));
 
             Wait(1);
-            //PressEscape();
-            //Click(230, 380);
         }
 
         public static void RestartLDPlayer()
         {
-            // Add call to close the player first, close it and then restart it
+            // Add a call to close the player first, close it and then restart it
             //Process start()
         }
 
@@ -502,6 +502,40 @@ namespace TinyClicker
                 else
                 {
                     return false;
+                }
+            }
+        }
+
+        public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
+        {
+            using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
+            {
+                Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+                Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+                gref.Dispose();
+                gtpl.Dispose();
+
+                while (true)
+                {
+                    double minval, maxval, threshold = 0.78;
+                    Point minloc, maxloc;
+                    Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+                    res.Dispose();
+
+                    if (maxval >= threshold)
+                    {
+                        if (!Clicker.matchedImages.ContainsKey(template.Key))
+                        {
+                            Clicker.matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
