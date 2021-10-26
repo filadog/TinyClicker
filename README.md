@@ -24,7 +24,7 @@ Console application can be minimized. Player interactions with the game are poss
 
 - In case there is no VIP package, open the file Config.txt, located inside the TinyClicker folder with notepad. Locate the "VipPackage": setting and change it to "false" without quotes. If you have the VIP package leave the setting at true. You can also provide the current number of floors (e.g. 14 or 27 etc) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc). Only use the format provided by examples in brackets.\
 This step can be skipped entirely with the console, to do so type "cc" without quotes to the console after launching TinyClicker and follow the instructions. Restart the clicker at the end of the setup.\
-The setup is done once unless some of the parameters such as elevator speed or VIP status change. If editing config manually, close the clicker and restart it after the new config has been saved.
+The setup is done once unless some of the parameters such as elevator speed or VIP status change. In case the config was edited manually, close the clicker before and restart it after the new config was saved.
 
 - When the setup is done, LDPlayer is launched first, then the Clicker. To start the clicker type letter s to the console and press the Enter key, TinyClicker will find the game if it is on the screen and will start working on its own. 
 
