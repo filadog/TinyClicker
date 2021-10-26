@@ -15,7 +15,7 @@ The clicker utilizes computer vision to help you play Tiny Tower via LDPlayer An
 
 ## Before running
 Make sure to run only one instance of LDPlayer. 
-Emulator window can be covered with other windows, but do not minimize it to the tray. 
+Emulator window can be covered with other windows, but do not minimize it to tray. 
 Console application can be minimized. Player interactions with the game are possible but not recommended.\
 Avoid checking the tower on your mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress may be lost.
 
