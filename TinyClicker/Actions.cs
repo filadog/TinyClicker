@@ -226,8 +226,8 @@ namespace TinyClicker
                         if (temp.Length > 3)
                         {
                             string s = temp.Remove(4);
-                            string addMillions = s + "000";
-                            newBalance = Convert.ToInt32(addMillions);
+                            string toMillions = s + "000";
+                            newBalance = Convert.ToInt32(toMillions);
                         }
                     }
 
@@ -452,7 +452,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.426"+
+                "TinyClicker build v0.437"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Enable TinyClicker" +
@@ -508,6 +508,7 @@ namespace TinyClicker
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
+            Thread.Sleep(15); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
