@@ -452,7 +452,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.439"+
+                "TinyClicker build v0.441"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -629,13 +629,18 @@ namespace TinyClicker
         {
             if (processId != -1)
             {
+                if (!Directory.Exists(Environment.CurrentDirectory + @"\screenshots"))
+                {
+                    Directory.CreateDirectory(Environment.CurrentDirectory + @"\screenshots");
+                }
+
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
                 ScreenToImage sc = new ScreenToImage();
 
                 // Captures screenshot of a window and saves it to screenshots folder
 
-                sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + "\\screenshots\\window.png", ImageFormat.Png);
-                Console.WriteLine("Made a screenshot. Screenshots can be found inside TinyClicker\\screenshots directory");
+                sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
+                Console.WriteLine(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
             }
         }
 
@@ -743,6 +748,7 @@ namespace TinyClicker
                 dict.Add("closeAd_6", Image.FromFile(path + "close_ad_button_6.png"));
                 dict.Add("closeAd_7", Image.FromFile(path + "close_ad_button_7.png"));
                 dict.Add("closeAd_8", Image.FromFile(path + "close_ad_button_8.png"));
+                dict.Add("closeAd_9", Image.FromFile(path + "close_ad_button_9.png"));
                 dict.Add("fullyStockedBonus", Image.FromFile(path + "fully_stocked_bonus.png"));
                 dict.Add("hurryConstructionPrompt", Image.FromFile(path + "hurry_construction_prompt.png"));
                 dict.Add("roofCustomizationWindow", Image.FromFile(path + "roof_customization_window.png"));
