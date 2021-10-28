@@ -42,7 +42,7 @@ namespace TinyClicker
             if (verbose) Console.WriteLine("Closing the advertisement");
 
             var matchedImages = Clicker.matchedImages;
-            if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8") || matchedImages.ContainsKey("closeAd_9"))
+            if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8"))
             {
                 Click(22, 22);
                 Click(311, 22);
@@ -182,6 +182,9 @@ namespace TinyClicker
             if (verbose) Console.WriteLine("Closing the hidden ad");
             Wait(1);
             Click(310, 10);
+            Wait(1);
+            Click(311, 22);
+
         }
 
         public static void CloseNewFloorMenu()
@@ -452,7 +455,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.441"+
+                "TinyClicker build v0.443"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +

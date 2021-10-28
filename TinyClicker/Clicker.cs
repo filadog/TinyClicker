@@ -106,7 +106,8 @@ namespace TinyClicker
                 case "closeAd_5":
                 case "closeAd_6":
                 case "closeAd_7":
-                case "closeAd_8": Actions.CloseAd(); break;
+                case "closeAd_8":
+                case "closeAd_9": Actions.CloseAd(); break;
                 case "continueButton": Actions.PressContinue(); break;
                 case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
                 case "restockButton": Actions.Restock(); break;
