@@ -39,10 +39,10 @@ namespace TinyClicker
 
         public static void CloseAd()
         {
-            if (verbose) Console.WriteLine("Closing advertisement");
+            if (verbose) Console.WriteLine("Closing the advertisement");
 
             var matchedImages = Clicker.matchedImages;
-            if(matchedImages.ContainsKey("closeAd_8") || matchedImages.ContainsKey("closeAd_9"))
+            if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8") || matchedImages.ContainsKey("closeAd_9"))
             {
                 Click(22, 22);
                 Click(311, 22);
@@ -452,13 +452,13 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.437"+
+                "TinyClicker build v0.439"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
-                "\ns - Enable TinyClicker" +
+                "\ns - Start TinyClicker" +
                 "\nq - Quit" +
                 "\nss - Capture and save a screenshot" +
-                "\ncc - Create a new config", 
+                "\ncc - Create a new Config", 
                 Clicker.currentConfig.VipPackage, 
                 Clicker.currentConfig.ElevatorSpeed, 
                 Clicker.currentConfig.FloorsNumber);

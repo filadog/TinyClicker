@@ -1,0 +1,6 @@
+{
+  "VipPackage": true,
+  "ElevatorSpeed": 10,
+  "FloorsNumber": 40,
+  "Coins": 0
+}
