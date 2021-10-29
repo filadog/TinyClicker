@@ -12,7 +12,7 @@ The clicker utilizes computer vision to help you play Tiny Tower via LDPlayer An
 - Hourly raffle automatic paticipation
 - Configure once, launch and forget about it
 
-## External Libraries
+## Libraries
 OpenCVSharp  [Apache License 2.0](https://github.com/shimat/opencvsharp/blob/master/LICENSE)\
 Tesseract OCR  [Apache License 2.0](https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE)
 
