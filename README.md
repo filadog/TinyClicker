@@ -13,8 +13,8 @@ The clicker utilizes computer vision to help you play Tiny Tower via LDPlayer An
 - Configure once, launch and forget about it
 
 ## Libraries
-OpenCVSharp  [Apache License 2.0](https://github.com/shimat/opencvsharp/blob/master/LICENSE)\
-Tesseract OCR  [Apache License 2.0](https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE)
+shimat/opencvsharp  [Apache License 2.0](https://github.com/shimat/opencvsharp/blob/master/LICENSE)\
+charlesw/tesseract  [Apache License 2.0](https://github.com/charlesw/tesseract/blob/master/LICENSE.txt)
 
 
 ## Before running
