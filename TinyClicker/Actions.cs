@@ -184,7 +184,6 @@ namespace TinyClicker
             Click(310, 10);
             Wait(1);
             Click(311, 22);
-
         }
 
         public static void CloseNewFloorMenu()
@@ -273,7 +272,7 @@ namespace TinyClicker
         public static void RebuildTower()
         {
             if (verbose) Console.WriteLine("Rebuilding the tower");
-
+            SaveStatRebuildTime();
             Click(305, 570);
             Wait(1);
             Click(165, 435);
@@ -455,7 +454,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.443"+
+                "TinyClicker build v0.455"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -661,6 +660,24 @@ namespace TinyClicker
             }
         }
 
+        public static void SaveStatRebuildTime()
+        {
+            DateTime dateNow = DateTime.Now;
+            DateTime lastRebuild = ConfigManager.GetConfig().LastRebuildTime;
+            double totalHours = 0d;
+            if (lastRebuild != DateTime.MinValue)
+            {
+                TimeSpan diff = dateNow - lastRebuild;
+                totalHours = diff.TotalHours;
+            }
+            string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
+            
+            ConfigManager.SaveNewRebuildTime(dateNow);
+
+            string data = dateNow.ToString() + $" Rebuilt the tower\nHours since the last rebuild: {totalHours:0.00}\n";
+            File.AppendAllText(statsPath, data);
+        }
+        
         public static Dictionary<int, int> Floors()
         {
             // Prices for each floor
