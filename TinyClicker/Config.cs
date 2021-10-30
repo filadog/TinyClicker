@@ -18,14 +18,13 @@ namespace TinyClicker
         public int Coins { get => _coins; set => _coins = value; }
         public DateTime LastRebuildTime { get => _lastRebuildTime; set => _lastRebuildTime = value; }
 
-        public Config() : this(true, 10f, 1) { }
+        public Config() : this(true, 10f, 3) { }
         public Config(bool vip, float elevatorSpeed, int floorsNumber)
         {
             VipPackage = vip;
             ElevatorSpeed = elevatorSpeed;
             FloorsNumber = floorsNumber;
             Coins = 0;
-            LastRebuildTime = DateTime.MinValue;
         }
     }
 
@@ -44,7 +43,7 @@ namespace TinyClicker
                 Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) enter true or false");
                 bool.TryParse(Console.ReadLine(), out vipPackage);
 
-                Console.WriteLine("Provide value for the elevator speed (e.g: 10 or 9.25), leave empty for the default value (10)");
+                Console.WriteLine("Provide value for the elevator speed (e.g: 10 or 9.25), leave empty for default value (10)");
                 string input = Console.ReadLine();
                 if (input.Length == 0)
                 {
@@ -64,6 +63,7 @@ namespace TinyClicker
                 floors = Convert.ToInt32(Console.ReadLine());
 
                 Config config = new Config(vipPackage, elevatorSpeed, floors);
+
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string json = JsonSerializer.Serialize(config, options);
                 File.WriteAllText(configPath, json);

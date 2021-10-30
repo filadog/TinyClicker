@@ -9,8 +9,7 @@ namespace TinyClicker
         public static Bitmap CropCurrentBalance(Image window)
         {
             // Crop the image
-
-            Rectangle crop = new Rectangle(16, 602, 75, 20); // 16, 603, 70, 17
+            Rectangle crop = new Rectangle(16, 602, 75, 20);
             var bitmap = new Bitmap(crop.Width, crop.Height);
             using (var gr = Graphics.FromImage(bitmap))
             {
@@ -18,7 +17,6 @@ namespace TinyClicker
             }
             
             // Invert the image
-
             for (int y = 0; (y <= (bitmap.Height - 1)); y++)
             {
                 for (int x = 0; (x <= (bitmap.Width - 1)); x++)
@@ -28,8 +26,8 @@ namespace TinyClicker
                     bitmap.SetPixel(x, y, inv);
                 }
             }
+
             bitmap = AdjustImage(bitmap);
-            //bitmap.Save(Environment.CurrentDirectory + "\\screenshots\\cropped_balance.png", ImageFormat.Png);
             GC.Collect();
             return bitmap;
         }
@@ -37,7 +35,6 @@ namespace TinyClicker
         static Bitmap AdjustImage(Bitmap bitmap)
         {
             // Adjust the brightness of the image to be more readable for Tesseract
-
             Bitmap adjustedImage = new Bitmap(bitmap);
             Bitmap originalImage = bitmap;
 
@@ -46,9 +43,8 @@ namespace TinyClicker
             float gamma = 1.0f;
             float adjustedBrightness = brightness - 1.0f;
 
-            // Create matrix that will brighten and contrast the image
-
-            float[][] ptsArray ={
+            // Create a matrix that will brighten and contrast the image
+            float[][] ptsArray = {
             new float[] {contrast, 0, 0, 0, 0}, // Red
             new float[] {0, contrast, 0, 0, 0}, // Green
             new float[] {0, 0, contrast, 0, 0}, // Blue

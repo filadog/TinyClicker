@@ -399,7 +399,7 @@ namespace TinyClicker
             InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
             InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(98, 17));
 
-            Wait(1);
+            Wait(5);
         }
 
         public static void MoveUp()
@@ -448,7 +448,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.457"+
+                "TinyClicker build v0.458"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
