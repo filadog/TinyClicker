@@ -237,7 +237,7 @@ namespace TinyClicker
                     int targetPrice = floors[currentFloor + 1];
                     if (verbose) Console.WriteLine("Current goal: {0}", targetPrice);
 
-                    if (targetPrice < newBalance && newBalance < 1850000) // Helps with incorrect balance detection
+                    if (targetPrice < newBalance && newBalance < 1900000) // Helps with incorrect balance detection
                     {
                         BuyFloor();
                     }
@@ -402,12 +402,6 @@ namespace TinyClicker
             Wait(1);
         }
 
-        public static void RestartLDPlayer()
-        {
-            // Add a call to close the player first, close it and then restart it
-            //Process start()
-        }
-
         public static void MoveUp()
         {
             if (verbose) Console.WriteLine("Moving up");
@@ -454,7 +448,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.456"+
+                "TinyClicker build v0.457"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -674,7 +668,7 @@ namespace TinyClicker
 
             string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
             ConfigManager.SaveNewRebuildTime(dateNow);
-            string data = dateNow.ToString() + $" Rebuilt the tower\nHours since the last rebuild: {totalHours:0.00}\n";
+            string data = "\n" + dateNow.ToString() + $" - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
             File.AppendAllText(statsPath, data);
         }
         
