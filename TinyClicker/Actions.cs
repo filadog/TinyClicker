@@ -448,7 +448,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.458"+
+                "TinyClicker build v0.459"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -606,13 +606,6 @@ namespace TinyClicker
 
                 Image img = sc.CaptureWindow(handle);
                 return img;
-
-                // Captures screenshot of a window and saves it to screenshots folder
-
-                //sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + "\\screenshots\\mainWindow.png", ImageFormat.Png);
-                ////sc.CaptureScreenToFile(Environment.CurrentDirectory + "\\screenshots\\temp.png", ImageFormat.Png);
-                //Console.WriteLine("Made a screenchot you bastard");
-                //Thread.Sleep(500);
             }
             else
             {
@@ -656,19 +649,25 @@ namespace TinyClicker
 
         public static void SaveStatRebuildTime()
         {
-            DateTime dateNow = DateTime.Now;
+            DateTime dateTimeNow = DateTime.Now;
             DateTime lastRebuild = ConfigManager.GetConfig().LastRebuildTime;
             double totalHours = 0d;
 
             if (lastRebuild != DateTime.MinValue)
             {
-                TimeSpan diff = dateNow - lastRebuild;
+                TimeSpan diff = dateTimeNow - lastRebuild;
                 totalHours = diff.TotalHours;
             }
 
             string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
-            ConfigManager.SaveNewRebuildTime(dateNow);
-            string data = "\n" + dateNow.ToString() + $" - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
+
+            if (!Directory.Exists(statsPath))
+            {
+                Directory.CreateDirectory(statsPath);
+            }
+
+            ConfigManager.SaveNewRebuildTime(dateTimeNow);
+            string data = "\n" + dateTimeNow.ToString() + $" - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
             File.AppendAllText(statsPath, data);
         }
         
