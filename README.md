@@ -9,7 +9,7 @@ The clicker utilizes computer vision to help you play Tiny Tower via LDPlayer An
 - 100% autonomous work
 - Fully automated tower rebuilding at level 50 and completion of the obligatory tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profits
-- Hourly raffle automatic paticipation
+- Automatic paticipation in hourly raffle
 - Configure once, launch and forget about it
 
 ## Libraries
