@@ -18,7 +18,7 @@ namespace TinyClicker
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcess().Id;
 
-        static Dictionary<int, int> floors = Floors();
+        static Dictionary<int, int> floorPrices = CalculateFloorPrices();
 
         #region Clicker Actions
 
@@ -234,7 +234,7 @@ namespace TinyClicker
                     }
 
                     if (verbose) Console.WriteLine("Current balance: {0}", newBalance);
-                    int targetPrice = floors[currentFloor + 1];
+                    int targetPrice = floorPrices[currentFloor + 1];
                     if (verbose) Console.WriteLine("Current goal: {0}", targetPrice);
 
                     if (targetPrice < newBalance && newBalance < 1900000) // Helps with incorrect balance detection
@@ -448,7 +448,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.459"+
+                "TinyClicker build v0.460"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -671,59 +671,29 @@ namespace TinyClicker
             File.AppendAllText(statsPath, data);
         }
         
-        public static Dictionary<int, int> Floors()
+        public static Dictionary<int, int> CalculateFloorPrices()
         {
-            // Prices for each floor
             var dict = new Dictionary<int, int>();
-            dict.Add(2, 5000);
-            dict.Add(3, 5000);
-            dict.Add(4, 5000);
-            dict.Add(5, 5000);
-            dict.Add(6, 5000);
-            dict.Add(7, 5000);
-            dict.Add(8, 5000);
-            dict.Add(9, 5000);
-            dict.Add(10, 13000);
-            dict.Add(11, 32000);
-            dict.Add(12, 51000);
-            dict.Add(13, 72000);
-            dict.Add(14, 93000);
-            dict.Add(15, 116000);
-            dict.Add(16, 139000);
-            dict.Add(17, 164000);
-            dict.Add(18, 189000);
-            dict.Add(19, 216000);
-            dict.Add(20, 243000);
-            dict.Add(21, 272000);
-            dict.Add(22, 301000);
-            dict.Add(23, 332000);
-            dict.Add(24, 363000);
-            dict.Add(25, 396000);
-            dict.Add(26, 429000);
-            dict.Add(27, 464000);
-            dict.Add(28, 499000);
-            dict.Add(29, 536000);
-            dict.Add(30, 573000);
-            dict.Add(31, 612000);
-            dict.Add(32, 651000);
-            dict.Add(33, 692000);
-            dict.Add(34, 733000);
-            dict.Add(35, 776000);
-            dict.Add(36, 819000);
-            dict.Add(37, 864000);
-            dict.Add(38, 909000);
-            dict.Add(39, 956000);
-            dict.Add(40, 1003000);
-            dict.Add(41, 1052000);
-            dict.Add(42, 1101000);
-            dict.Add(43, 1152000);
-            dict.Add(44, 1203000);
-            dict.Add(45, 1256000);
-            dict.Add(46, 1309000);
-            dict.Add(47, 1364000);
-            dict.Add(48, 1419000);
-            dict.Add(49, 1476000);
-            dict.Add(50, 1533000);
+
+            // Floors 1 through 9 cost 5000
+            for (int i = 1; i <= 9; i++)
+            {
+                dict.Add(i, 5000);
+            }
+
+            // Calculate the prices for floors 10 through 50+
+            for (int i = 10; i <= 50; i++)
+            {
+                float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
+
+                // Round up the result to match the game prices
+                if (i % 2 != 0)
+                {
+                    floorCost += 500;
+                }
+
+                dict.Add(i, (int)floorCost);
+            }
             return dict;
         }
 
