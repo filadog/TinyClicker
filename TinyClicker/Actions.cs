@@ -448,7 +448,7 @@ namespace TinyClicker
         public static void PrintInfo()
         {
             Console.WriteLine(
-                "TinyClicker build v0.460"+
+                "TinyClicker build v0.461"+
                 "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
                 "\n\nCommands:" +
                 "\ns - Start TinyClicker" +
@@ -661,13 +661,13 @@ namespace TinyClicker
 
             string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
 
-            if (!Directory.Exists(statsPath))
-            {
-                Directory.CreateDirectory(statsPath);
-            }
+            //if (!File.Exists(statsPath))
+            //{
+            //    Directory.CreateDirectory(statsPath);
+            //}
 
             ConfigManager.SaveNewRebuildTime(dateTimeNow);
-            string data = "\n" + dateTimeNow.ToString() + $" - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
+            string data = $"\n{dateTimeNow} - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
             File.AppendAllText(statsPath, data);
         }
         
