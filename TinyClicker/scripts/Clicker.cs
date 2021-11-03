@@ -12,7 +12,7 @@ namespace TinyClickerUI
 {
     public static class Clicker
     {
-
+        public static bool stopped = false;
         public static Config currentConfig = ConfigManager.GetConfig();
         public static int balance = currentConfig.Coins;
         public static int currentFloor = currentConfig.FloorsNumber;
@@ -42,7 +42,7 @@ namespace TinyClickerUI
             int currentHour = DateTime.Now.Hour - 1;
             int currentMinute = DateTime.Now.Minute - 1;
 
-            while (processId != -1)
+            while (processId != -1 && stopped == false)
             {
                 currentFloor = ConfigManager.GetConfig().FloorsNumber;
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");

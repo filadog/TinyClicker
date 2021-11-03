@@ -34,20 +34,6 @@ namespace TinyClickerUI
             StopButton.Visibility = Visibility.Visible;
 
             Clicker.Start();
-            
-            //Parallel.Invoke(() => Clicker.StartClicker());
-            //Clicker clicker = new Clicker();
-
-            //clicker.Start();
-            //await Task.Run(async () => { await Clicker.StartClicker(); });
-            //Task task = Task.Run((Action)Clicker.StartClicker());
-            
-
-            //await Task.Run(() => Clicker.StartClicker);
-
-
-            //Task t1 = new(Clicker.StartClicker().Start);
-            //t1.Start();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -57,6 +43,8 @@ namespace TinyClickerUI
             StartedImage.Visibility = Visibility.Hidden;
             StopButton.Visibility= Visibility.Hidden;
             ExitButton.Visibility= Visibility.Visible;
+
+            Clicker.stopped = true;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
