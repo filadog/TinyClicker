@@ -33,6 +33,7 @@ namespace TinyClickerUI
             ExitButton.Visibility = Visibility.Hidden;
             StopButton.Visibility = Visibility.Visible;
 
+            Clicker.stopped = false;
             Clicker.Start();
         }
 
