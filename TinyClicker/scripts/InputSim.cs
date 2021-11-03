@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TinyClicker
+namespace TinyClickerUI
 {
     // Simulates mouse actions
 

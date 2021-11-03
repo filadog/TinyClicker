@@ -3,7 +3,7 @@ using Tesseract;
 using System.Drawing;
 using System.Text.RegularExpressions;
 
-namespace TinyClicker
+namespace TinyClickerUI
 {
     internal class TextRecognition
     {

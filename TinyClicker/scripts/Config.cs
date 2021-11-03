@@ -2,9 +2,9 @@
 using System.Text.Json;
 using System.IO;
 
-namespace TinyClicker
+namespace TinyClickerUI
 {
-    internal class Config
+    public class Config
     {
         private bool _vipPackage;
         private float _elevatorSpeed;
@@ -28,54 +28,54 @@ namespace TinyClicker
         }
     }
 
-    internal class ConfigManager
+    public class ConfigManager
     {
         static readonly string configPath = Environment.CurrentDirectory + @"\Config.txt";
 
-        public static void CreateNewConfigCommand()
-        {
-            float elevatorSpeed;
-            bool vipPackage;
-            int floors;
+        //public static void CreateNewConfigCommand()
+        //{
+        //    float elevatorSpeed;
+        //    bool vipPackage;
+        //    int floors;
 
-            try
-            {
-                Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) enter true or false");
-                bool.TryParse(Console.ReadLine(), out vipPackage);
+        //    try
+        //    {
+        //        Console.WriteLine("New config. Enter the value and press enter.\nDo you have the VIP package? (!) enter true or false");
+        //        bool.TryParse(Console.ReadLine(), out vipPackage);
 
-                Console.WriteLine("Provide value for the elevator speed (e.g: 10 or 9.25), leave empty for default value (10)");
-                string input = Console.ReadLine();
-                if (input.Length == 0)
-                {
-                    elevatorSpeed = 10f;
-                }
-                else
-                {
-                    elevatorSpeed = float.Parse(input);
-                    if (elevatorSpeed > 10 || elevatorSpeed < 0)
-                    {
-                        Console.WriteLine("Error: elevator speed cannot be lower than zero or greater than 10");
-                        CreateNewConfigCommand();
-                    }
-                }
+        //        Console.WriteLine("Provide value for the elevator speed (e.g: 10 or 9.25), leave empty for default value (10)");
+        //        string input = Console.ReadLine();
+        //        if (input.Length == 0)
+        //        {
+        //            elevatorSpeed = 10f;
+        //        }
+        //        else
+        //        {
+        //            elevatorSpeed = float.Parse(input);
+        //            if (elevatorSpeed > 10 || elevatorSpeed < 0)
+        //            {
+        //                Console.WriteLine("Error: elevator speed cannot be lower than zero or greater than 10");
+        //                CreateNewConfigCommand();
+        //            }
+        //        }
 
-                Console.WriteLine("Provide the current number of floors (e.g: 15)");
-                floors = Convert.ToInt32(Console.ReadLine());
+        //        Console.WriteLine("Provide the current number of floors (e.g: 15)");
+        //        floors = Convert.ToInt32(Console.ReadLine());
 
-                Config config = new Config(vipPackage, elevatorSpeed, floors);
+        //        Config config = new Config(vipPackage, elevatorSpeed, floors);
 
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                string json = JsonSerializer.Serialize(config, options);
-                File.WriteAllText(configPath, json);
-                Console.WriteLine("Success! Restart the app");
-                Console.ReadKey();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error: Incorrect input, make sure you use the correct values");
-                CreateNewConfigCommand();
-            }
-        }
+        //        var options = new JsonSerializerOptions { WriteIndented = true };
+        //        string json = JsonSerializer.Serialize(config, options);
+        //        File.WriteAllText(configPath, json);
+        //        Console.WriteLine("Success! Restart the app");
+        //        Console.ReadKey();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        Console.WriteLine("Error: Incorrect input, make sure you use the correct values");
+        //        CreateNewConfigCommand();
+        //    }
+        //}
 
         public static void AddNewFloor()
         {
