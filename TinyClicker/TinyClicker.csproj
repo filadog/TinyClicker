@@ -41,7 +41,6 @@
     <Resource Include="UI\images\stop_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="main_window.png" />
   </ItemGroup>
 
   <ItemGroup>
