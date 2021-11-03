@@ -1,9 +1,13 @@
 	
 	IMPORTANT:
 
-	Make sure to run only one instance of LDPlayer. 
-	You can cover the emulator window with other windows, but do not minimize it to tray. You can move it as well. 
-	Console can be minimized. Player interactions with the game are possible but not recommended. 
+	Make sure to run only one instance of the LDPlayer. 
+	You can cover the emulator window with other windows, but do not minimize it to tray. You can move it elsewhere. 
+	Player interactions with the game are possible but not recommended. 
+
+	Do not hide the vertical panel on the right side of the LDPlayer with window controls (where the Home and Back buttons are located) 
+	as it is used by TinyClicker in cases when the restart of the game is needed. Restart is performed automatically when certain ads refuse to 
+	close or any other unexpected behaivour of the game occurs.
 
 
 	SETUP:
@@ -17,10 +21,7 @@
 	You can also provide the current number of floors (e.g. 14 or 27 etc) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc).
 	Only use the format provided by examples in brackets.
 
-	You can skip this step entirely and provide all the information through the console, to do so type "cc" without quotes to the console after 
-	launching the clicker and follow the instructions.
-
-     3. When setup is done, simply launch LDPlayer, then the game and lastly the clicker. Follow the instructions inside the console. 
+     3. When setup is done, simply launch LDPlayer, then the game and lastly the clicker. 
 	This setup is done once unless some of the parameters such as elevator speed or VIP status changes.
 
      4. ???
