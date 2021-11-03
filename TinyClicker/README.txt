@@ -17,8 +17,8 @@
 	This is important and TinyClicker won't work without the correct resolution.
 
      2. If you don't have the VIP Tiny Tower package, open the file Config.txt, located inside the TinyClicker folder with notepad.
-	Locate the "VipPackage": setting and change it to "false" without quotes. If you have the VIP package set the setting to true. 
-	You can also provide the current number of floors (e.g. 14 or 27 etc) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc).
+	Locate the "VipPackage": setting and change it to "false" without quotes. If you have the VIP package leave the setting at true. 
+	You can also provide the current number of floors (e.g. 14 or 27 etc.) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc.).
 	Only use the format provided by examples in brackets.
 
      3. When setup is done, simply launch LDPlayer, then the game and lastly the clicker. 
