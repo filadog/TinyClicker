@@ -1,7 +1,7 @@
 ## TinyClicker
 
 TinyClicker is an automated clicker for the Tiny Tower mobile game. 
-The clicker utilizes computer vision to help you play Tiny Tower via LDPlayer Android mobile emulator on Windows.
+The clicker utilizes computer vision to help you play Tiny Tower on LDPlayer Android OS emulator.
 
 ![TinyClicker](https://user-images.githubusercontent.com/51026900/140165371-999ee88c-6d1e-44ef-bd62-c5ede942049b.png)
 
