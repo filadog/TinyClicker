@@ -7,8 +7,8 @@
 
 	Do not hide the vertical panel on the right side of the LDPlayer with window controls (where the Home and Back buttons are located) 
 	as it is used by TinyClicker in cases when the restart of the game is needed. Restart is performed automatically when certain ads refuse to 
-	close or any other unexpected behaivour of the game occurs.
-
+	close or any other unexpected behaviour of the game occurs.
+b
 
 	SETUP:
 
