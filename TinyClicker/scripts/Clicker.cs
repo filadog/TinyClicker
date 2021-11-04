@@ -25,7 +25,7 @@ namespace TinyClickerUI
 
         public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
-        public async static void Start()
+        public static void Start()
         {
             //await StartClicker();
             Parallel.Invoke
@@ -36,7 +36,6 @@ namespace TinyClickerUI
 
         public static async void StartClicker()
         {
-            
             int processId = Actions.processId;
             int foundNothing = 0;
             int currentHour = DateTime.Now.Hour - 1;
@@ -57,11 +56,11 @@ namespace TinyClickerUI
                 }
                 gameWindow.Dispose();
 
+                // Print the name of the found object
                 foreach (var image in matchedImages)
                 {
                     string msg = dateTimeNow + " Found " + image.Key;
                     window.Print(msg);
-                    //Console.WriteLine(dateTimeNow + " Found {0}", image.Key);
                     foundNothing = 0;
                 }
 
@@ -70,7 +69,6 @@ namespace TinyClickerUI
                     foundNothing++;
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
                     window.Print(msg);
-                    //Console.WriteLine(dateTimeNow + " Found nothing x{0}", foundNothing);
                     if (foundNothing >= 27)
                     {
                         Actions.CloseHiddenAd(); // Close the hidden ad after 27 attempts
@@ -80,6 +78,7 @@ namespace TinyClickerUI
 
                 if (currentFloor == 1) Actions.PassTheTutorial();
 
+                // Play raffle at the beginning of every hour
                 if (currentFloor != 50)
                 {
                     currentHour = Actions.PlayRaffle(currentHour);

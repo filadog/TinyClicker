@@ -28,17 +28,13 @@ namespace TinyClickerUI
 
         public static void ExitRoofCustomizationMenu()
         {
-            //if (verbose) Console.WriteLine("Exiting the roof customization menu");
             window.Print("Exiting the roof customization menu");
-
-
             PressExitButton();
             Wait(1);
         }
 
         public static void CancelHurryConstruction()
         {
-            //if (verbose) Console.WriteLine("Exiting the construction menu");
             window.Print("Exiting the construction menu");
 
             Click(100, 375); // Cancel action
@@ -47,7 +43,6 @@ namespace TinyClickerUI
 
         public static void CloseAd()
         {
-            //if (verbose) Console.WriteLine("Closing the advertisement");
             window.Print("Closing the advertisement");
 
             var matchedImages = Clicker.matchedImages;
@@ -65,7 +60,6 @@ namespace TinyClickerUI
 
         public static void PressContinue()
         {
-            //if (verbose) Console.WriteLine("Clicking continue");
             window.Print("Clicking continue");
 
             Click(Clicker.matchedImages["continueButton"]);
@@ -75,14 +69,12 @@ namespace TinyClickerUI
 
         public static void CloseChuteNotification()
         {
-            //if (verbose) Console.WriteLine("Closing the parachute notification");
             window.Print("Closing the parachute notification");
             Click(165, 375); // Close the notification
         }
 
         public static void Restock()
         {
-            //if (verbose) Console.WriteLine("Restocking");
             window.Print("Restocking");
             MoveDown();
             Wait(1);
@@ -109,7 +101,6 @@ namespace TinyClickerUI
 
         public static void PressFreeBuxButton()
         {
-            //if (verbose) Console.WriteLine("Pressing free bux icon");
             window.Print("Pressing free bux icon");
             Click(Clicker.matchedImages["freeBuxButton"]);
             Wait(1);
@@ -119,14 +110,12 @@ namespace TinyClickerUI
 
         public static void CollectFreeBux()
         {
-            //if (verbose) Console.WriteLine("Collecting free bux");
             window.Print("Collecting free bux");
             Click(Clicker.matchedImages["freeBuxCollectButton"]);
         }
 
         public static void ClickOnChute()
         {
-            //if (verbose) Console.WriteLine("Clicking on the parachute");
             window.Print("Clicking on the parachute");
             Click(Clicker.matchedImages["giftChute"]);
             Wait(1);
@@ -153,7 +142,6 @@ namespace TinyClickerUI
 
         public static void PressQuestButton()
         {
-            //if (verbose) Console.WriteLine("Clicking on the quest button");
             window.Print("Clicking on the quest button");
             Click(Clicker.matchedImages["questButton"]);
             Wait(1);
@@ -175,7 +163,6 @@ namespace TinyClickerUI
 
         public static void FindBitizens()
         {
-            //if (verbose) Console.WriteLine("Skipping the quest");
             window.Print("Skipping the quest");
             Click(95, 445); // Skip the quest
             Wait(1);
@@ -184,7 +171,6 @@ namespace TinyClickerUI
 
         public static void DeliverBitizens()
         {
-            //if (verbose) Console.WriteLine("Delivering bitizens");
             window.Print("Delivering bitizens");
             Click(230, 440); // Continue
         }
@@ -198,7 +184,6 @@ namespace TinyClickerUI
 
         public static void CloseHiddenAd()
         {
-            //if (verbose) Console.WriteLine("Closing the hidden ad");
             window.Print("Closing the hidden ad");
             Wait(1);
             Click(310, 10);
@@ -208,7 +193,6 @@ namespace TinyClickerUI
 
         public static void CloseNewFloorMenu()
         {
-            //if (verbose) Console.WriteLine("Exiting");
             window.Print("Exiting");
             PressExitButton();
         }
@@ -287,7 +271,6 @@ namespace TinyClickerUI
                 if (!MatchImage("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddNewFloor();
-                    //Console.WriteLine("Built a new floor");
                     window.Print("Built a new floor");
                 }
             }
@@ -295,7 +278,6 @@ namespace TinyClickerUI
 
         public static void RebuildTower()
         {
-            //if (verbose) Console.WriteLine("Rebuilding the tower");
             window.Print("Rebuilding the tower");
             SaveStatRebuildTime();
             Click(305, 570);
@@ -432,14 +414,12 @@ namespace TinyClickerUI
 
         public static void MoveUp()
         {
-            //window.Print("Moving up");
             Click(160, 8);
             Wait(1);
         }
 
         public static void MoveDown()
         {
-            window.Print("Moving down");
             Click(230, 580);
         }
 
@@ -498,7 +478,6 @@ namespace TinyClickerUI
         static bool MatchImage(string imageKey)
         {
             // Returns true if image is found 
-
             Image gameWindow = MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
             gameWindow.Dispose();
