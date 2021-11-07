@@ -228,7 +228,7 @@ namespace TinyClickerUI
                 int newBalance = balance;
                 if (currentFloor != 50)
                 {
-                    if (currentFloor > 37)
+                    if (currentFloor > 36)
                     {
                         string temp = balance.ToString();
                         if (temp.Length > 3)
@@ -243,8 +243,7 @@ namespace TinyClickerUI
                     int targetPrice = floorPrices[currentFloor + 1];
                     window.Print("Current goal: " + targetPrice);
 
-                    // Helps with incorrect balance detection
-                    if (targetPrice < newBalance && newBalance < 2500000) 
+                    if (targetPrice < newBalance) 
                     {
                         BuyFloor();
                     }
@@ -289,7 +288,7 @@ namespace TinyClickerUI
             Click(230, 380);
             Wait(1);
             Click(230, 380);
-            Wait(5);
+            Wait(4);
             ConfigManager.SaveNewFloor(1);
         }
 
