@@ -545,7 +545,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static Process GetProcess()
+        public static Process? GetProcess()
         {
             Process[] processlist = Process.GetProcesses();
             foreach (Process process in processlist)
@@ -605,7 +605,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static Image MakeScreenshot()
+        public static Image? MakeScreenshot()
         {
             if (processId != -1)
             {
