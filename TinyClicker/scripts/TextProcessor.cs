@@ -5,12 +5,13 @@ using System.Text.RegularExpressions;
 
 namespace TinyClickerUI
 {
-    internal class TextRecognition
+    internal class TextProcessor
     {
         public static int ParseBalance(Image window)
         {
             int balance;
-            Bitmap source = ImageHandler.CropCurrentBalance(window);
+            Bitmap source = ImageProcessor.FetchBalanceImageAdjusted(window);
+            //Bitmap source = ImageHandler.CropCurrentBalance(window);
             string text;
 
             try

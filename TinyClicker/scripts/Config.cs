@@ -34,21 +34,21 @@ namespace TinyClickerUI
 
         public static void AddNewFloor()
         {
-            var config = Clicker.currentConfig;
+            var config = TinyClicker.currentConfig;
             config.FloorsNumber += 1;
             SaveConfig(config);
         }
 
         public static void SaveNewFloor(int floor)
         {
-            var config = Clicker.currentConfig;
+            var config = TinyClicker.currentConfig;
             config.FloorsNumber = floor;
             SaveConfig(config);
         }
 
         public static void SaveNewRebuildTime(DateTime rebuildTime)
         {
-            var config = Clicker.currentConfig;
+            var config = TinyClicker.currentConfig;
             config.LastRebuildTime = rebuildTime;
             SaveConfig(config);
         }

@@ -1,14 +1,25 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace TinyClickerUI
 {
-    internal class ImageHandler
+    internal class ImageProcessor
     {
+        public static Bitmap FetchBalanceImageAdjusted(Image window)
+        {
+            Bitmap result = AdjustImage(CropCurrentBalance(window));
+
+            // Save the result for manual checking
+            result.Save(Environment.CurrentDirectory + @"\screenshots\balance.png", ImageFormat.Png);
+
+            return result;
+        }
+
         public static Bitmap CropCurrentBalance(Image window)
         {
-            // Crop the image
+            // Crops the image
             Rectangle crop = new Rectangle(16, 602, 75, 20);
             var bitmap = new Bitmap(crop.Width, crop.Height);
             using (var gr = Graphics.FromImage(bitmap))
@@ -16,7 +27,7 @@ namespace TinyClickerUI
                 gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), crop, GraphicsUnit.Pixel);
             }
             
-            // Invert the image
+            // Inverts the image
             for (int y = 0; (y <= (bitmap.Height - 1)); y++)
             {
                 for (int x = 0; (x <= (bitmap.Width - 1)); x++)
@@ -29,12 +40,13 @@ namespace TinyClickerUI
 
             bitmap = AdjustImage(bitmap);
             GC.Collect();
+
             return bitmap;
         }
 
         static Bitmap AdjustImage(Bitmap bitmap)
         {
-            // Adjust the brightness of the image to be more readable for Tesseract
+            // Adjusts the brightness of the image to be more readable for Tesseract
             Bitmap adjustedImage = new Bitmap(bitmap);
             Bitmap originalImage = bitmap;
 
@@ -43,12 +55,12 @@ namespace TinyClickerUI
             float gamma = 1.0f;
             float adjustedBrightness = brightness - 1.0f;
 
-            // Create a matrix that will brighten and contrast the image
+            // Creates a matrix that will brighten and contrast the image
             float[][] ptsArray = {
             new float[] {contrast, 0, 0, 0, 0}, // Red
             new float[] {0, contrast, 0, 0, 0}, // Green
             new float[] {0, 0, contrast, 0, 0}, // Blue
-            new float[] {0, 0, 0, 1.0f, 0}, // Alpha
+            new float[] {0, 0, 0, 1.0f, 0},     // Alpha
             new float[] {adjustedBrightness, adjustedBrightness, adjustedBrightness, 0, 1}};
 
             ImageAttributes imageAttributes = new ImageAttributes();
@@ -58,6 +70,7 @@ namespace TinyClickerUI
             Graphics g = Graphics.FromImage(adjustedImage);
             g.DrawImage(originalImage, new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height) , 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
             GC.Collect();
+
             return adjustedImage;
         }
     }

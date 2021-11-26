@@ -4,16 +4,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
-using TinyClickerUI;
 using System.Threading.Tasks;
 
 namespace TinyClickerUI
 {
-    internal static class Actions
+    internal static class ClickerActions
     {
         public static bool verbose = true;
         public const string processName = "dnplayer";
@@ -22,7 +20,7 @@ namespace TinyClickerUI
 
         static Dictionary<int, int> floorPrices = CalculateFloorPrices();
 
-        static MainWindow window = Clicker.window;
+        static MainWindow window = TinyClicker.window;
 
         #region Clicker Actions
 
@@ -45,7 +43,7 @@ namespace TinyClickerUI
         {
             window.Print("Closing the advertisement");
 
-            var matchedImages = Clicker.matchedImages;
+            var matchedImages = TinyClicker.matchedImages;
             if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8"))
             {
                 Click(22, 22);
@@ -62,7 +60,7 @@ namespace TinyClickerUI
         {
             window.Print("Clicking continue");
 
-            Click(Clicker.matchedImages["continueButton"]);
+            Click(TinyClicker.matchedImages["continueButton"]);
             Wait(1);
             MoveUp();
         }
@@ -102,7 +100,7 @@ namespace TinyClickerUI
         public static void PressFreeBuxButton()
         {
             window.Print("Pressing free bux icon");
-            Click(Clicker.matchedImages["freeBuxButton"]);
+            Click(TinyClicker.matchedImages["freeBuxButton"]);
             Wait(1);
             Click(230, 375);
             Wait(1);
@@ -111,13 +109,13 @@ namespace TinyClickerUI
         public static void CollectFreeBux()
         {
             window.Print("Collecting free bux");
-            Click(Clicker.matchedImages["freeBuxCollectButton"]);
+            Click(TinyClicker.matchedImages["freeBuxCollectButton"]);
         }
 
         public static void ClickOnChute()
         {
             window.Print("Clicking on the parachute");
-            Click(Clicker.matchedImages["giftChute"]);
+            Click(TinyClicker.matchedImages["giftChute"]);
             Wait(1);
             if (MatchImage("watchAdPromptBux") || MatchImage("watchAdPromptCoins"))
             {
@@ -143,7 +141,7 @@ namespace TinyClickerUI
         public static void PressQuestButton()
         {
             window.Print("Clicking on the quest button");
-            Click(Clicker.matchedImages["questButton"]);
+            Click(TinyClicker.matchedImages["questButton"]);
             Wait(1);
             if (MatchImage("deliverBitizens"))
             {
@@ -178,7 +176,7 @@ namespace TinyClickerUI
         public static void OpenTheGame()
         {
             Wait(1);
-            Click(Clicker.matchedImages["gameIcon"]);
+            Click(TinyClicker.matchedImages["gameIcon"]);
             Wait(10);
         }
 
@@ -208,7 +206,7 @@ namespace TinyClickerUI
             window.Print("Completing the quest");
             
             Wait(1);
-            Click(Clicker.matchedImages["completedQuestButton"]);
+            Click(TinyClicker.matchedImages["completedQuestButton"]);
         }
 
         public static void WatchAd()
@@ -220,8 +218,8 @@ namespace TinyClickerUI
 
         public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
         {
-            Clicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
-            int balance = TextRecognition.ParseBalance(gameWindow);
+            TinyClicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
+            int balance = TextProcessor.ParseBalance(gameWindow);
 
             if (balance != -1)
             {
@@ -402,11 +400,11 @@ namespace TinyClickerUI
         {
             window.Print("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
-            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
-            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(98, 17));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(98, 17));
             Wait(1);
-            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(355, 547));
-            InputSim.SendMessage(mainHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(355, 547));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(355, 547));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(355, 547));
             Wait(1);
 
         }
@@ -450,6 +448,7 @@ namespace TinyClickerUI
 
         #endregion
 
+
         #region Utility Methods
 
         public static void PrintInfo()
@@ -462,9 +461,9 @@ namespace TinyClickerUI
                 "\nq - Quit" +
                 "\nss - Capture and save a screenshot" +
                 "\ncc - Create a new Config", 
-                Clicker.currentConfig.VipPackage, 
-                Clicker.currentConfig.ElevatorSpeed, 
-                Clicker.currentConfig.FloorsNumber);
+                TinyClicker.currentConfig.VipPackage, 
+                TinyClicker.currentConfig.ElevatorSpeed, 
+                TinyClicker.currentConfig.FloorsNumber);
         }
 
         static void Wait(int seconds)
@@ -484,7 +483,7 @@ namespace TinyClickerUI
             Mat reference = BitmapConverter.ToMat(windowBitmap);
             windowBitmap.Dispose();
 
-            var template = Clicker.templates[imageKey];
+            var template = TinyClicker.templates[imageKey];
             using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -531,9 +530,9 @@ namespace TinyClickerUI
 
                     if (maxval >= threshold)
                     {
-                        if (!Clicker.matchedImages.ContainsKey(template.Key))
+                        if (!TinyClicker.matchedImages.ContainsKey(template.Key))
                         {
-                            Clicker.matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
+                            TinyClicker.matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
                         }
                         break;
                     }
@@ -565,8 +564,8 @@ namespace TinyClickerUI
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONDOWN, 1, location);
-                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONUP, 0, location);
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, location);
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, location);
             }
         }
 
@@ -574,8 +573,8 @@ namespace TinyClickerUI
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONDOWN, 1, MakeParam(x, y));
-                InputSim.SendMessage(clickableChildHandle, InputSim.WM_LBUTTONUP, 0, MakeParam(x, y));
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(x, y));
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(x, y));
             }   
         }
 
@@ -583,7 +582,7 @@ namespace TinyClickerUI
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                InputSim.SendMessage(clickableChildHandle, InputSim.WM_KEYDOWN, InputSim.VK_ESCAPE, 0);
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_KEYDOWN, InputSimulator.VK_ESCAPE, 0);
             }
         }
 
@@ -611,7 +610,7 @@ namespace TinyClickerUI
             {
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
 
-                ScreenToImage sc = new ScreenToImage();
+                ScreenshotManager sc = new ScreenshotManager();
 
                 Image img = sc.CaptureWindow(handle);
                 return img;
@@ -634,7 +633,7 @@ namespace TinyClickerUI
                 }
 
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-                ScreenToImage sc = new ScreenToImage();
+                ScreenshotManager sc = new ScreenshotManager();
 
                 // Captures screenshot of a window and saves it to screenshots folder
 
@@ -672,11 +671,6 @@ namespace TinyClickerUI
             }
 
             string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
-
-            //if (!File.Exists(statsPath))
-            //{
-            //    Directory.CreateDirectory(statsPath);
-            //}
 
             ConfigManager.SaveNewRebuildTime(dateTimeNow);
             string data = $"\n{dateTimeNow} - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";

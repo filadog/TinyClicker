@@ -5,7 +5,7 @@ namespace TinyClickerUI
 {
     // Simulates mouse actions
 
-    public static class InputSim
+    public static class InputSimulator
     {
         public const int WM_LBUTTON = 0x01;
         public const int WM_RBUTTON = 0x02;

@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 
 namespace TinyClickerUI
 {
-    public class ScreenToImage
+    public class ScreenshotManager
     {
         public Image CaptureScreen()
         {
@@ -13,38 +13,45 @@ namespace TinyClickerUI
         }
 
         // Creates an Image object containing a screenshot of a specific window
-
         public Image CaptureWindow(IntPtr handle)
         {
-            // get te hDC of the target window
+            // Get the hDC of the target window
             IntPtr hdcSrc = User32.GetWindowDC(handle);
-            // get the size
+
+            // Get the size
             User32.RECT windowRect = new User32.RECT();
             User32.GetWindowRect(handle, ref windowRect);
             int width = windowRect.right - windowRect.left;
             int height = windowRect.bottom - windowRect.top;
-            // create a device context we can copy to
+
+            // Create a device context we can copy to
             IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
-            // create a bitmap we can copy it to,
-            // using GetDeviceCaps to get the width/height
+
+            // Create a bitmap we can copy it to, using GetDeviceCaps to get the width/height
             IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc, width, height);
-            // select the bitmap object
+
+            // Select the bitmap object
             IntPtr hOld = GDI32.SelectObject(hdcDest, hBitmap);
-            // bitblt over
+
+            // BitBlt over
             GDI32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, GDI32.SRCCOPY);
-            // restore selection
+
+            // Restore selection
             GDI32.SelectObject(hdcDest, hOld);
-            // clean up
+
+            // Clean up
             GDI32.DeleteDC(hdcDest);
             User32.ReleaseDC(handle, hdcSrc);
-            // get a .NET image object for it
+
+            // Get a .NET image object for it
             Image img = Image.FromHbitmap(hBitmap);
-            // free up the Bitmap object
+
+            // Free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
             return img;
         }
 
-        // Captures a screen shot of a specific window, and saves it to a file
+        // Captures a screenshot of a specific window, and saves it to a file
 
         public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {

@@ -33,8 +33,8 @@ namespace TinyClickerUI
             ExitButton.Visibility = Visibility.Hidden;
             StopButton.Visibility = Visibility.Visible;
 
-            Clicker.stopped = false;
-            Clicker.Start();
+            TinyClicker.stopped = false;
+            TinyClicker.Start();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -45,7 +45,7 @@ namespace TinyClickerUI
             StopButton.Visibility= Visibility.Hidden;
             ExitButton.Visibility= Visibility.Visible;
 
-            Clicker.stopped = true;
+            TinyClicker.stopped = true;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

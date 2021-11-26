@@ -10,7 +10,7 @@ using OpenCvSharp.Extensions;
 
 namespace TinyClickerUI
 {
-    public static class Clicker
+    public static class TinyClicker
     {
         public static bool stopped = false;
         public static Config currentConfig = ConfigManager.GetConfig();
@@ -20,8 +20,8 @@ namespace TinyClickerUI
         public static bool vipPackage = currentConfig.VipPackage;
 
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
-        public static Dictionary<string, Image> images = Actions.FindImages();
-        public static Dictionary<string, Mat> templates = Actions.MakeTemplates(images);
+        public static Dictionary<string, Image> images = ClickerActions.FindImages();
+        public static Dictionary<string, Mat> templates = ClickerActions.MakeTemplates(images);
 
         public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
@@ -36,7 +36,7 @@ namespace TinyClickerUI
 
         public static async void StartClicker()
         {
-            int processId = Actions.processId;
+            int processId = ClickerActions.processId;
             int foundNothing = 0;
             int currentHour = DateTime.Now.Hour - 1;
             int currentMinute = DateTime.Now.Minute - 1;
@@ -45,14 +45,14 @@ namespace TinyClickerUI
             {
                 currentFloor = ConfigManager.GetConfig().FloorsNumber;
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
-                Image gameWindow = Actions.MakeScreenshot();
+                Image gameWindow = ClickerActions.MakeScreenshot();
                 MatchImages(gameWindow);
 
                 // Check buildable floor every minute
                 if (currentMinute != DateTime.Now.Minute && currentFloor != 1)
                 {
                     currentMinute = DateTime.Now.Minute;
-                    Actions.CheckBuildableFloor(currentFloor, gameWindow);
+                    ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
                 }
                 gameWindow.Dispose();
 
@@ -71,17 +71,17 @@ namespace TinyClickerUI
                     window.Print(msg);
                     if (foundNothing >= 27)
                     {
-                        Actions.CloseHiddenAd(); // Close the hidden ad after 27 attempts
+                        ClickerActions.CloseHiddenAd(); // Close the hidden ad after 27 attempts
                     }
-                    if (foundNothing >= 30) Actions.RestartApp();
+                    if (foundNothing >= 30) ClickerActions.RestartApp();
                 }
 
-                if (currentFloor == 1) Actions.PassTheTutorial();
+                if (currentFloor == 1) ClickerActions.PassTheTutorial();
 
                 // Play raffle at the beginning of every hour
                 if (currentFloor != 50)
                 {
-                    currentHour = Actions.PlayRaffle(currentHour);
+                    currentHour = ClickerActions.PlayRaffle(currentHour);
                     PerformActions();
                 }
 
@@ -105,7 +105,7 @@ namespace TinyClickerUI
             {
                 if (matchedImages.Count == 0)
                 {
-                    Actions.MatchImage(template, reference);
+                    ClickerActions.MatchImage(template, reference);
                 }
                 else
                 {
@@ -123,8 +123,8 @@ namespace TinyClickerUI
                 key = matchedImages.Keys.First();
                 switch (key)
                 {
-                    case "roofCustomizationWindow": Actions.ExitRoofCustomizationMenu(); break;
-                    case "hurryConstructionPrompt": Actions.CancelHurryConstruction(); break;
+                    case "roofCustomizationWindow": ClickerActions.ExitRoofCustomizationMenu(); break;
+                    case "hurryConstructionPrompt": ClickerActions.CancelHurryConstruction(); break;
                     case "closeAd":
                     case "closeAd_2":
                     case "closeAd_3":
@@ -133,23 +133,23 @@ namespace TinyClickerUI
                     case "closeAd_6":
                     case "closeAd_7":
                     case "closeAd_8":
-                    case "closeAd_9": Actions.CloseAd(); break;
-                    case "continueButton": Actions.PressContinue(); break;
-                    case "foundCoinsChuteNotification": Actions.CloseChuteNotification(); break;
-                    case "restockButton": Actions.Restock(); break;
-                    case "freeBuxCollectButton": Actions.CollectFreeBux(); break;
-                    case "freeBuxButton": Actions.PressFreeBuxButton(); break;
-                    case "giftChute": Actions.ClickOnChute(); break;
-                    case "backButton": Actions.PressExitButton(); break;
-                    case "elevatorButton": Actions.RideElevator(); break;
-                    case "questButton": Actions.PressQuestButton(); break;
-                    case "completedQuestButton": Actions.CompleteQuest(); break;
-                    case "watchAdPromptBux": Actions.WatchAd(); break;
-                    case "findBitizens": Actions.FindBitizens(); break;
-                    case "deliverBitizens": Actions.DeliverBitizens(); break;
-                    case "newFloorMenu": Actions.CloseNewFloorMenu(); break;
-                    case "buildNewFloorNotification": Actions.CloseBuildNewFloorNotification(); break;
-                    case "gameIcon": Actions.OpenTheGame(); break;
+                    case "closeAd_9": ClickerActions.CloseAd(); break;
+                    case "continueButton": ClickerActions.PressContinue(); break;
+                    case "foundCoinsChuteNotification": ClickerActions.CloseChuteNotification(); break;
+                    case "restockButton": ClickerActions.Restock(); break;
+                    case "freeBuxCollectButton": ClickerActions.CollectFreeBux(); break;
+                    case "freeBuxButton": ClickerActions.PressFreeBuxButton(); break;
+                    case "giftChute": ClickerActions.ClickOnChute(); break;
+                    case "backButton": ClickerActions.PressExitButton(); break;
+                    case "elevatorButton": ClickerActions.RideElevator(); break;
+                    case "questButton": ClickerActions.PressQuestButton(); break;
+                    case "completedQuestButton": ClickerActions.CompleteQuest(); break;
+                    case "watchAdPromptBux": ClickerActions.WatchAd(); break;
+                    case "findBitizens": ClickerActions.FindBitizens(); break;
+                    case "deliverBitizens": ClickerActions.DeliverBitizens(); break;
+                    case "newFloorMenu": ClickerActions.CloseNewFloorMenu(); break;
+                    case "buildNewFloorNotification": ClickerActions.CloseBuildNewFloorNotification(); break;
+                    case "gameIcon": ClickerActions.OpenTheGame(); break;
                     default: break;
                 }
             }
