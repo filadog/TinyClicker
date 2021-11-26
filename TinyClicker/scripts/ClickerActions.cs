@@ -221,7 +221,7 @@ namespace TinyClickerUI
             TinyClicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
             int balance = TextProcessor.ParseBalance(gameWindow);
 
-            if (balance != 0 && balance != -1)
+            if (balance != 0 && balance != -1 && currentFloor >= 3)
             {
                 int targetPrice = floorPrices[currentFloor + 1];
                 if (balance > targetPrice && currentFloor < 50)
