@@ -2,6 +2,7 @@
 using Tesseract;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace TinyClickerUI
 {
@@ -11,7 +12,6 @@ namespace TinyClickerUI
         {
             int balance;
             Bitmap source = ImageProcessor.FetchBalanceImageAdjusted(window);
-            //Bitmap source = ImageHandler.CropCurrentBalance(window);
             string text;
 
             try
@@ -20,14 +20,26 @@ namespace TinyClickerUI
                 {
                     using (var img = source)
                     {
-                        using (var page = engine.Process(img))
+                        using (var page = engine.Process(img, PageSegMode.SingleLine))
                         {
                             text = page.GetText();
                         }
                     }
                 }
 
-                balance = Convert.ToInt32(Regex.Replace(text, "[^0-9]", ""));
+                // Check the balance if it is in range of thousands or millions
+                if (text[1] == '.' || text[1] == ',')
+                {
+                    text = Regex.Replace(text, "[^0-9]", "");
+                    text = text.Remove(4);
+                    text = text + "000";
+                    balance = Convert.ToInt32(text);
+                }
+                else
+                {
+                    balance = Convert.ToInt32(Regex.Replace(text, "[^0-9]", ""));
+                }
+
                 return balance;
             }
             catch (Exception)

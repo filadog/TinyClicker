@@ -38,8 +38,8 @@ namespace TinyClickerUI
         {
             int processId = ClickerActions.processId;
             int foundNothing = 0;
-            int currentHour = DateTime.Now.Hour - 1;
-            int currentMinute = DateTime.Now.Minute - 1;
+            int curHour = DateTime.Now.Hour - 1;
+            int curSecond = DateTime.Now.Second - 1;
 
             while (processId != -1 && stopped == false)
             {
@@ -48,10 +48,10 @@ namespace TinyClickerUI
                 Image gameWindow = ClickerActions.MakeScreenshot();
                 MatchImages(gameWindow);
 
-                // Check buildable floor every minute
-                if (currentMinute != DateTime.Now.Minute && currentFloor != 1)
+                // Check buildable floor every second
+                if (curSecond != DateTime.Now.Second && currentFloor != 1)
                 {
-                    currentMinute = DateTime.Now.Minute;
+                    curSecond = DateTime.Now.Second;
                     ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
                 }
                 gameWindow.Dispose();
@@ -81,7 +81,7 @@ namespace TinyClickerUI
                 // Play raffle at the beginning of every hour
                 if (currentFloor != 50)
                 {
-                    currentHour = ClickerActions.PlayRaffle(currentHour);
+                    curHour = ClickerActions.PlayRaffle(curHour);
                     PerformActions();
                 }
 

@@ -221,35 +221,17 @@ namespace TinyClickerUI
             TinyClicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
             int balance = TextProcessor.ParseBalance(gameWindow);
 
-            if (balance != -1)
+            if (balance != 0 && balance != -1)
             {
-                int newBalance = balance;
-                if (currentFloor != 50)
+                int targetPrice = floorPrices[currentFloor + 1];
+                if (balance > targetPrice && currentFloor < 50)
                 {
-                    if (currentFloor > 36)
-                    {
-                        string temp = balance.ToString();
-                        if (temp.Length > 3)
-                        {
-                            string s = temp.Remove(4);
-                            string toMillions = s + "000";
-                            newBalance = Convert.ToInt32(toMillions);
-                        }
-                    }
-
-                    window.Print("Current balance: " + newBalance);
-                    int targetPrice = floorPrices[currentFloor + 1];
-                    window.Print("Current goal: " + targetPrice);
-
-                    if (targetPrice < newBalance) 
-                    {
-                        BuyFloor();
-                    }
+                    BuyFloor();
                 }
-            }
-            if (currentFloor == 50)
-            {
-                RebuildTower();
+                if (currentFloor == 50)
+                {
+                    RebuildTower();
+                }
             }
         }
 
@@ -510,8 +492,7 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            //Thread.Sleep(15); 
-            Task.Delay(15).Wait(); // Smooth the CPU load between templates
+            Task.Delay(12).Wait(); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -635,12 +616,10 @@ namespace TinyClickerUI
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
                 ScreenshotManager sc = new ScreenshotManager();
 
-                // Captures screenshot of a window and saves it to screenshots folder
-
+                // Captures screenshot of a window and saves it to the screenshots folder
                 sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
 
                 window.Print(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
-                //Console.WriteLine(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
             }
         }
 
@@ -750,7 +729,7 @@ namespace TinyClickerUI
             {
                 string msg = "Cannot import all sample images, some are missing or renamed. Clicker will continue nonetheless.\nMissing image path: " + ex.Message;
                 window.Print(msg);
-                //Console.WriteLine("Cannot import all sample images, some are missing or renamed. Clicker will continue nonetheless.\nMissing image path: " + ex.Message);
+
                 return dict;
             }
         }

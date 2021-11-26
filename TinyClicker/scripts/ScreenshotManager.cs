@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace TinyClickerUI
 {
@@ -10,6 +11,15 @@ namespace TinyClickerUI
         public Image CaptureScreen()
         {
             return CaptureWindow(User32.GetDesktopWindow());
+        }
+
+        public static void SaveScreenshot(Image screenshot, string filename)
+        {
+            if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + @"/screenshots");
+            }
+            screenshot.Save(filename, ImageFormat.Png);
         }
 
         // Creates an Image object containing a screenshot of a specific window
@@ -52,7 +62,6 @@ namespace TinyClickerUI
         }
 
         // Captures a screenshot of a specific window, and saves it to a file
-
         public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {
             Image img = CaptureWindow(handle);
@@ -60,7 +69,6 @@ namespace TinyClickerUI
         }
 
         // Captures a screen shot of the entire desktop, and saves it to a file
-
         public void CaptureScreenToFile(string filename, ImageFormat format)
         {
             Image img = CaptureScreen();
@@ -68,7 +76,6 @@ namespace TinyClickerUI
         }
 
         // Helper class containing Gdi32 API functions
-
         private class GDI32
         {
 
@@ -96,7 +103,6 @@ namespace TinyClickerUI
         }
 
         // Helper class containing User32 API functions
-
         private class User32
         {
             [StructLayout(LayoutKind.Sequential)]

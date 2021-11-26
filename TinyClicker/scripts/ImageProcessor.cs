@@ -12,7 +12,8 @@ namespace TinyClickerUI
             Bitmap result = AdjustImage(CropCurrentBalance(window));
 
             // Save the result for manual checking
-            result.Save(Environment.CurrentDirectory + @"\screenshots\balance.png", ImageFormat.Png);
+            //string filename = Environment.CurrentDirectory + @"\screenshots\balance.png";
+            //ScreenshotManager.SaveScreenshot(result, filename);
 
             return result;
         }
