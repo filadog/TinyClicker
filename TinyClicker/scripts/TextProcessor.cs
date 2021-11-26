@@ -23,12 +23,13 @@ namespace TinyClickerUI
                         using (var page = engine.Process(img, PageSegMode.SingleLine))
                         {
                             text = page.GetText();
+                            text = text.Trim();
                         }
                     }
                 }
-
+                
                 // Check the balance if it is in the range of thousands or millions
-                if (text[1] == '.' && text.Length > 5 || text[1] == ',' && text.Length > 5)
+                if (text.Length > 5 && text[1] == '.' || text[1] == ',')
                 {
                     text = Regex.Replace(text, "[^0-9]", "");
                     text = text.Remove(4);
