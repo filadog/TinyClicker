@@ -25,16 +25,12 @@ namespace TinyClickerUI
 
         public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
-        public static void Start()
+        public static async void Start()
         {
-            //await StartClicker();
-            Parallel.Invoke
-            (
-                () => StartClicker()
-            );
+            await StartClicker();
         }
 
-        public static async void StartClicker()
+        public static async Task StartClicker()
         {
             int processId = ClickerActions.processId;
             int foundNothing = 0;
