@@ -27,8 +27,6 @@ namespace TinyClickerUI
                     }
                 }
 
-                File.WriteAllText(Environment.CurrentDirectory + @"\balance.txt", text);
-
                 // Check the balance if it is in the range of thousands or millions
                 if (text[1] == '.' && text.Length > 4 || text[1] == ',' && text.Length > 4)
                 {
@@ -41,8 +39,6 @@ namespace TinyClickerUI
                 {
                     balance = Convert.ToInt32(Regex.Replace(text, "[^0-9]", ""));
                 }
-
-                
 
                 return balance;
             }
