@@ -28,7 +28,7 @@ namespace TinyClickerUI
                 }
 
                 // Check the balance if it is in the range of thousands or millions
-                if (text[1] == '.' && text.Length > 4 || text[1] == ',' && text.Length > 4)
+                if (text[1] == '.' && text.Length > 5 || text[1] == ',' && text.Length > 5)
                 {
                     text = Regex.Replace(text, "[^0-9]", "");
                     text = text.Remove(4);

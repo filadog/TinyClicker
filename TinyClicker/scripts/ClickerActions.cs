@@ -494,7 +494,7 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Task.Delay(12).Wait(); // Smooth the CPU load between templates
+            Task.Delay(6).Wait(); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
