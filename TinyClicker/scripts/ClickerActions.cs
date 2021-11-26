@@ -270,6 +270,7 @@ namespace TinyClickerUI
             Click(230, 380);
             Wait(3);
             ConfigManager.SaveNewFloor(1);
+            TinyClicker.currentFloor = 1;
         }
 
         public static void PassTheTutorial()
@@ -376,6 +377,7 @@ namespace TinyClickerUI
             Wait(1);
             Click(165, 375); // Continue
             ConfigManager.SaveNewFloor(3);
+            TinyClicker.currentFloor = 3;
         }
 
         public static void RestartApp()
