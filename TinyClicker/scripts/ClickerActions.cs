@@ -224,11 +224,11 @@ namespace TinyClickerUI
             if (balance != 0 && balance != -1 && currentFloor >= 3)
             {
                 int targetPrice = floorPrices[currentFloor + 1];
-                if (balance > targetPrice && currentFloor < 50)
+                if (balance > targetPrice && currentFloor < TinyClicker.floorToRebuildAt)
                 {
                     BuyFloor();
                 }
-                if (currentFloor == 50)
+                if (currentFloor == TinyClicker.floorToRebuildAt)
                 {
                     RebuildTower();
                 }
@@ -268,14 +268,14 @@ namespace TinyClickerUI
             Click(230, 380);
             Wait(1);
             Click(230, 380);
-            Wait(4);
+            Wait(3);
             ConfigManager.SaveNewFloor(1);
         }
 
         public static void PassTheTutorial()
         {
             window.Print("Passing the tutorial");
-            Wait(5);
+            Wait(3);
             Click(170, 435); // Continue
             Wait(3);
             MoveDown();
@@ -667,7 +667,7 @@ namespace TinyClickerUI
             }
 
             // Calculate the prices for floors 10 through 50+
-            for (int i = 10; i <= 50; i++)
+            for (int i = 10; i <= TinyClicker.floorToRebuildAt + 1; i++)
             {
                 float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 

@@ -18,6 +18,7 @@ namespace TinyClickerUI
         public static int currentFloor = currentConfig.FloorsNumber;
         public static float elevatorSpeed = currentConfig.ElevatorSpeed;
         public static bool vipPackage = currentConfig.VipPackage;
+        public static int floorToRebuildAt = 50;
 
         public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = ClickerActions.FindImages();
@@ -75,7 +76,7 @@ namespace TinyClickerUI
                 if (currentFloor == 1) ClickerActions.PassTheTutorial();
 
                 // Play raffle at the beginning of every hour
-                if (currentFloor != 50)
+                if (currentFloor != floorToRebuildAt)
                 {
                     curHour = ClickerActions.PlayRaffle(curHour);
                     PerformActions();
