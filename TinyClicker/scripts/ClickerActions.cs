@@ -228,8 +228,9 @@ namespace TinyClickerUI
                 {
                     BuyFloor();
                 }
-                if (currentFloor == TinyClicker.floorToRebuildAt)
+                if (currentFloor >= TinyClicker.floorToRebuildAt + 1)
                 {
+                    Wait(1);
                     RebuildTower();
                 }
             }

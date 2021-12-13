@@ -75,21 +75,17 @@ namespace TinyClickerUI
 
                 if (currentFloor == 1) ClickerActions.PassTheTutorial();
 
-                // Play raffle at the beginning of every hour
+                // Play the hourly raffle at the beginning of every hour and perform all actions
                 if (currentFloor != floorToRebuildAt)
                 {
                     curHour = ClickerActions.PlayRaffle(curHour);
                     PerformActions();
                 }
 
-                //Thread.Sleep(1000); // Object detection performed ~once a second
                 GC.Collect();
                 matchedImages.Clear();
-                //Task.Delay(1000).Wait();
                 await Task.Delay(1000);
             }
-
-            //return Task.CompletedTask;
         }
 
         static void MatchImages(Image gameWindow)
