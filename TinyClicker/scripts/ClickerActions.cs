@@ -83,7 +83,7 @@ namespace TinyClickerUI
             Click(225, 375);
             Wait(1);
 
-            if (MatchImage("fullyStockedBonus"))
+            if (FindImage("fullyStockedBonus"))
             {
                 Click(165, 375); // Close the bonus tooltip
                 Wait(1);
@@ -119,7 +119,7 @@ namespace TinyClickerUI
             window.Print("Clicking on the parachute");
             Click(TinyClicker.matchedImages["giftChute"]);
             Wait(1);
-            if (MatchImage("watchAdPromptBux") || MatchImage("watchAdPromptCoins"))
+            if (FindImage("watchAdPromptBux") || FindImage("watchAdPromptCoins"))
             {
                 WatchAd();
             }
@@ -130,7 +130,7 @@ namespace TinyClickerUI
             window.Print("Riding the elevator");
             Click(45, 535);
             Wait(4);
-            if (MatchImage("giftChute"))
+            if (FindImage("giftChute"))
             {
                 return;
             }
@@ -145,11 +145,11 @@ namespace TinyClickerUI
             window.Print("Clicking on the quest button");
             Click(TinyClicker.matchedImages["questButton"]);
             Wait(1);
-            if (MatchImage("deliverBitizens"))
+            if (FindImage("deliverBitizens"))
             {
                 DeliverBitizens();
             }
-            else if (MatchImage("findBitizens"))
+            else if (FindImage("findBitizens"))
             {
                 FindBitizens();
             }
@@ -230,7 +230,7 @@ namespace TinyClickerUI
                 {
                     BuyFloor();
                 }
-                if (currentFloor >= TinyClicker.floorToRebuildAt + 1)
+                if (currentFloor >= TinyClicker.floorToRebuildAt)
                 {
                     Wait(1);
                     RebuildTower();
@@ -246,11 +246,11 @@ namespace TinyClickerUI
             Click(195, 390);
             Wait(1);
 
-            if (MatchImage("buildNewFloorNotification"))
+            if (FindImage("buildNewFloorNotification"))
             {
                 Click(230, 320);
                 Wait(1);
-                if (!MatchImage("newFloorNoCoinsNotification"))
+                if (!FindImage("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddNewFloor();
                     window.Print("Built a new floor");
@@ -445,9 +445,8 @@ namespace TinyClickerUI
             Task.Delay(milliseconds).Wait();
         }
 
-        static bool MatchImage(string imageKey)
+        static bool FindImage(string imageKey) // Returns true if the image is found 
         {
-            // Returns true if the image is found 
             Image gameWindow = MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
             gameWindow.Dispose();
@@ -482,7 +481,7 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Thread.Sleep(15); // Smooth the CPU load between templates
+            Thread.Sleep(10); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);

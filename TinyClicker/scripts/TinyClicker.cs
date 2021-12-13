@@ -56,13 +56,12 @@ namespace TinyClickerUI
                 // Update the list of found images via template matching
                 MatchImages(gameWindow);
 
-                // Check buildable floor
-                if (curSecond != DateTime.Now.Second && currentFloor != 1)
+                // Cancel the execution of the next loop iteration if cancelling is requested
+                if (worker.CancellationPending)
                 {
-                    curSecond = DateTime.Now.Second;
-                    ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
+                    window.Print("Stopped!");
+                    break;
                 }
-                gameWindow.Dispose();
 
                 // Print the name of the found object
                 foreach (var image in matchedImages)
@@ -97,13 +96,14 @@ namespace TinyClickerUI
                     PerformActions();
                 }
 
-                // Cancel the execution of the next loop iteration if cancelling is requested
-                if (worker.CancellationPending)
+                // Check buildable floor
+                if (curSecond != DateTime.Now.Second && currentFloor != 1)
                 {
-                    window.Print("Stopped!");
-                    break;
+                    curSecond = DateTime.Now.Second;
+                    ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
                 }
-
+                gameWindow.Dispose();
+                
                 GC.Collect();
                 matchedImages.Clear();
                 Thread.Sleep(1000);

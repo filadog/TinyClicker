@@ -36,7 +36,7 @@ namespace TinyClickerUI
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             worker.CancelAsync();
-            Print("Stopping...");
+            Print("Stopped!");
             ShowExitButton();
         }
 
