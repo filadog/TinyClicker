@@ -78,9 +78,12 @@ namespace TinyClickerUI
                     foundNothing++;
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
                     window.Print(msg);
+
+                    // Close the hidden ad after 27 attempts
                     if (foundNothing >= 27)
                     {
-                        ClickerActions.CloseHiddenAd(); // Close the hidden ad after 27 attempts
+                        
+                        ClickerActions.CloseHiddenAd(); 
                     }
                     if (foundNothing >= 30) ClickerActions.RestartApp();
                 }

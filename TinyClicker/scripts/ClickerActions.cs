@@ -426,12 +426,6 @@ namespace TinyClickerUI
                 Click(275, 440);
                 Wait(2);
                 Click(165, 375);
-                Wait(1);
-                Click(170, 435); // Continue
-                Wait(1);
-                PressExitButton();
-                Wait(1);
-                PressExitButton();
 
                 return DateTime.Now.Hour;
             }
@@ -488,7 +482,7 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Thread.Sleep(10); // Smooth the CPU load between templates
+            Thread.Sleep(15); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
