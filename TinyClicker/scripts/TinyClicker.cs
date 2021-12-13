@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -12,7 +12,9 @@ namespace TinyClickerUI
 {
     public static class TinyClicker
     {
-        public static bool stopped = false;
+        #region Fields
+
+        public static bool stopped;
         public static Config currentConfig = ConfigManager.GetConfig();
         public static int balance = currentConfig.Coins;
         public static int currentFloor = currentConfig.FloorsNumber;
@@ -26,26 +28,35 @@ namespace TinyClickerUI
 
         public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
-        public static async void Start()
+        #endregion
+
+        public static void StartInBackground(BackgroundWorker worker)
         {
-            await StartClicker();
+            worker.DoWork += (s, e) =>
+            {
+                RunClickerLoop(worker);
+            };
+            worker.RunWorkerAsync();
         }
 
-        public static async Task StartClicker()
+        // Main loop of the clicker
+        public static void RunClickerLoop(BackgroundWorker worker)
         {
             int processId = ClickerActions.processId;
             int foundNothing = 0;
             int curHour = DateTime.Now.Hour - 1;
             int curSecond = DateTime.Now.Second - 1;
 
-            while (processId != -1 && stopped == false)
+            while (processId != -1 && !worker.CancellationPending)
             {
                 currentFloor = ConfigManager.GetConfig().FloorsNumber;
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
                 Image gameWindow = ClickerActions.MakeScreenshot();
+
+                // Update the list of found images via template matching
                 MatchImages(gameWindow);
 
-                // Check buildable floor every second
+                // Check buildable floor
                 if (curSecond != DateTime.Now.Second && currentFloor != 1)
                 {
                     curSecond = DateTime.Now.Second;
@@ -61,6 +72,7 @@ namespace TinyClickerUI
                     foundNothing = 0;
                 }
 
+                // Print if nothing is found and restart the app if nothing is found for too long
                 if (matchedImages.Count == 0)
                 {
                     foundNothing++;
@@ -82,9 +94,16 @@ namespace TinyClickerUI
                     PerformActions();
                 }
 
+                // Cancel the execution of the next loop iteration if cancelling is requested
+                if (worker.CancellationPending)
+                {
+                    window.Print("Stopped!");
+                    break;
+                }
+
                 GC.Collect();
                 matchedImages.Clear();
-                await Task.Delay(1000);
+                Thread.Sleep(1000);
             }
         }
 

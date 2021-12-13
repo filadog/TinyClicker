@@ -8,19 +8,21 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace TinyClickerUI
 {
     internal static class ClickerActions
     {
-        public static bool verbose = true;
+        #region Fields
+
         public const string processName = "dnplayer";
         static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
         public static int processId = GetProcess().Id;
 
         static Dictionary<int, int> floorPrices = CalculateFloorPrices();
-
         static MainWindow window = TinyClicker.window;
+        #endregion
 
         #region Clicker Actions
 
@@ -385,13 +387,15 @@ namespace TinyClickerUI
         {
             window.Print("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
-            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(98, 17));
-            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(98, 17));
-            Wait(1);
-            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(355, 547));
-            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(355, 547));
-            Wait(1);
 
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(98, 17));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(98, 17));
+
+            Wait(1);
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(355, 547));
+            InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(355, 547));
+
+            Wait(1);
         }
 
         public static void MoveUp()
@@ -422,6 +426,12 @@ namespace TinyClickerUI
                 Click(275, 440);
                 Wait(2);
                 Click(165, 375);
+                Wait(1);
+                Click(170, 435); // Continue
+                Wait(1);
+                PressExitButton();
+                Wait(1);
+                PressExitButton();
 
                 return DateTime.Now.Hour;
             }
@@ -433,34 +443,17 @@ namespace TinyClickerUI
 
         #endregion
 
-
         #region Utility Methods
-
-        public static void PrintInfo()
-        {
-            Console.WriteLine(
-                "TinyClicker build v0.461"+
-                "\nCurrent config: Vip = {0}, Elevator Speed = {1} FPS, Number of floors = {2}"+
-                "\n\nCommands:" +
-                "\ns - Start TinyClicker" +
-                "\nq - Quit" +
-                "\nss - Capture and save a screenshot" +
-                "\ncc - Create a new Config", 
-                TinyClicker.currentConfig.VipPackage, 
-                TinyClicker.currentConfig.ElevatorSpeed, 
-                TinyClicker.currentConfig.FloorsNumber);
-        }
 
         static void Wait(int seconds)
         {
             int milliseconds = seconds * 1000;
-            //Thread.Sleep(milliseconds);
             Task.Delay(milliseconds).Wait();
         }
 
         static bool MatchImage(string imageKey)
         {
-            // Returns true if image is found 
+            // Returns true if the image is found 
             Image gameWindow = MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
             gameWindow.Dispose();
@@ -495,7 +488,7 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Task.Delay(6).Wait(); // Smooth the CPU load between templates
+            Thread.Sleep(10); // Smooth the CPU load between templates
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -516,7 +509,7 @@ namespace TinyClickerUI
                     {
                         if (!TinyClicker.matchedImages.ContainsKey(template.Key))
                         {
-                            TinyClicker.matchedImages.Add(template.Key, MakeParam(maxloc.X, maxloc.Y));
+                            TinyClicker.matchedImages.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
                         }
                         break;
                     }
@@ -557,8 +550,8 @@ namespace TinyClickerUI
         {
             if (clickableChildHandle != IntPtr.Zero)
             {
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, MakeParam(x, y));
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, MakeParam(x, y));
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(x, y));
+                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(x, y));
             }   
         }
 
@@ -570,7 +563,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static int MakeParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+        public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generates coordinates for the image within the game screen
 
         public static IntPtr FindClickableChildHandles(string processName)
         {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -10,7 +8,7 @@ namespace TinyClickerUI
 {
     public partial class MainWindow : Window
     {
-        private readonly BackgroundWorker worker = new BackgroundWorker();
+        private BackgroundWorker worker = new BackgroundWorker();
 
         public MainWindow()
         {
@@ -27,25 +25,19 @@ namespace TinyClickerUI
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            Print("Started!");
-            StartButton.Visibility = Visibility.Hidden;
-            StartedImage.Visibility = Visibility.Visible;
-            ExitButton.Visibility = Visibility.Hidden;
-            StopButton.Visibility = Visibility.Visible;
-
             TinyClicker.stopped = false;
-            TinyClicker.Start();
+            worker.WorkerSupportsCancellation = true;
+            TinyClicker.StartInBackground(worker);
+            
+            Print("Started!");
+            ShowStartedButton();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            Print("Stopped!");
-            StartButton.Visibility = Visibility.Visible;
-            StartedImage.Visibility = Visibility.Hidden;
-            StopButton.Visibility= Visibility.Hidden;
-            ExitButton.Visibility= Visibility.Visible;
-
-            TinyClicker.stopped = true;
+            worker.CancelAsync();
+            Print("Stopping...");
+            ShowExitButton();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -55,7 +47,26 @@ namespace TinyClickerUI
 
         public void Print(string msg)
         {
-            TextBoxLog.Text = msg;
+            Dispatcher.Invoke(() =>
+            {
+                TextBoxLog.Text = msg;
+            });
+        }
+
+        private void ShowExitButton()
+        {
+            StartButton.Visibility = Visibility.Visible;
+            StartedImage.Visibility = Visibility.Hidden;
+            StopButton.Visibility = Visibility.Hidden;
+            ExitButton.Visibility = Visibility.Visible;
+        }
+
+        private void ShowStartedButton()
+        {
+            StartButton.Visibility = Visibility.Hidden;
+            StartedImage.Visibility = Visibility.Visible;
+            ExitButton.Visibility = Visibility.Hidden;
+            StopButton.Visibility = Visibility.Visible;
         }
     }
 }
