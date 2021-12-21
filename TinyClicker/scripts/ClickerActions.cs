@@ -54,8 +54,10 @@ namespace TinyClickerUI
             else
             {
                 Click(311, 22);
+                Click(22, 22);
+                //RestartApp();
             }
-            Wait(1);
+            //Wait(1);
         }
 
         public static void PressContinue()
