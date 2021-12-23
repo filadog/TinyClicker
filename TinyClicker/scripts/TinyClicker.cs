@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -59,7 +60,7 @@ namespace TinyClickerUI
                 // Cancel the execution of the next loop iteration if cancelling is requested
                 if (worker.CancellationPending)
                 {
-                    window.Print("Stopped!");
+                    window.Log("Stopped!");
                     break;
                 }
 
@@ -67,7 +68,7 @@ namespace TinyClickerUI
                 foreach (var image in matchedImages)
                 {
                     string msg = dateTimeNow + " Found " + image.Key;
-                    window.Print(msg);
+                    window.Log(msg);
                     foundNothing = 0;
                 }
 
@@ -76,7 +77,7 @@ namespace TinyClickerUI
                 {
                     foundNothing++;
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
-                    window.Print(msg);
+                    window.Log(msg);
 
                     // Close the hidden ad after 27 attempts
                     if (foundNothing >= 27)
@@ -106,7 +107,7 @@ namespace TinyClickerUI
                 
                 GC.Collect();
                 matchedImages.Clear();
-                Thread.Sleep(1000);
+                Task.Delay(1500).Wait();
             }
         }
 
@@ -120,14 +121,17 @@ namespace TinyClickerUI
             {
                 if (matchedImages.Count == 0)
                 {
-                    ClickerActions.MatchImage(template, reference);
+                    if (!matchedImages.ContainsKey(template.Key))
+                    {
+                        ClickerActions.MatchImage(template, reference);
+                    }
                 }
                 else
                 {
                     break;
                 }
             }
-            GC.Collect();
+            reference.Dispose();
         }
 
         static void PerformActions()

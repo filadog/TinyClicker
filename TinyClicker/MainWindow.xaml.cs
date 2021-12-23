@@ -29,14 +29,14 @@ namespace TinyClickerUI
             worker.WorkerSupportsCancellation = true;
             TinyClicker.StartInBackground(worker);
             
-            Print("Started!");
+            Log("Started!");
             ShowStartedButton();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             worker.CancelAsync();
-            Print("Stopped!");
+            Log("Stopped!");
             ShowExitButton();
         }
 
@@ -45,7 +45,7 @@ namespace TinyClickerUI
             Application.Current.Shutdown();
         }
 
-        public void Print(string msg)
+        public void Log(string msg)
         {
             Dispatcher.Invoke(() =>
             {

@@ -14,28 +14,25 @@ namespace TinyClickerUI
 {
     internal static class ClickerActions
     {
-        #region Fields
-
         public const string processName = "dnplayer";
-        static IntPtr clickableChildHandle = FindClickableChildHandles(processName);
+        static IntPtr clickableChildHandle = GetClickableChildHandles(processName);
         public static int processId = GetProcess().Id;
-
         static Dictionary<int, int> floorPrices = CalculateFloorPrices();
         static MainWindow window = TinyClicker.window;
-        #endregion
+        
 
         #region Clicker Actions
 
         public static void ExitRoofCustomizationMenu()
         {
-            window.Print("Exiting the roof customization menu");
+            window.Log("Exiting the roof customization menu");
             PressExitButton();
             Wait(1);
         }
 
         public static void CancelHurryConstruction()
         {
-            window.Print("Exiting the construction menu");
+            window.Log("Exiting the construction menu");
 
             Click(100, 375); // Cancel action
             Wait(1);
@@ -43,7 +40,7 @@ namespace TinyClickerUI
 
         public static void CloseAd()
         {
-            window.Print("Closing the advertisement");
+            window.Log("Closing the advertisement");
 
             var matchedImages = TinyClicker.matchedImages;
             if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8"))
@@ -55,14 +52,12 @@ namespace TinyClickerUI
             {
                 Click(311, 22);
                 Click(22, 22);
-                //RestartApp();
             }
-            //Wait(1);
         }
 
         public static void PressContinue()
         {
-            window.Print("Clicking continue");
+            window.Log("Clicking continue");
 
             Click(TinyClicker.matchedImages["continueButton"]);
             Wait(1);
@@ -71,13 +66,13 @@ namespace TinyClickerUI
 
         public static void CloseChuteNotification()
         {
-            window.Print("Closing the parachute notification");
+            window.Log("Closing the parachute notification");
             Click(165, 375); // Close the notification
         }
 
         public static void Restock()
         {
-            window.Print("Restocking");
+            window.Log("Restocking");
             MoveDown();
             Wait(1);
             Click(100, 480); // Stock all
@@ -103,7 +98,7 @@ namespace TinyClickerUI
 
         public static void PressFreeBuxButton()
         {
-            window.Print("Pressing free bux icon");
+            window.Log("Pressing free bux icon");
             Click(TinyClicker.matchedImages["freeBuxButton"]);
             Wait(1);
             Click(230, 375);
@@ -112,13 +107,13 @@ namespace TinyClickerUI
 
         public static void CollectFreeBux()
         {
-            window.Print("Collecting free bux");
+            window.Log("Collecting free bux");
             Click(TinyClicker.matchedImages["freeBuxCollectButton"]);
         }
 
         public static void ClickOnChute()
         {
-            window.Print("Clicking on the parachute");
+            window.Log("Clicking on the parachute");
             Click(TinyClicker.matchedImages["giftChute"]);
             Wait(1);
             if (FindImage("watchAdPromptBux") || FindImage("watchAdPromptCoins"))
@@ -129,7 +124,7 @@ namespace TinyClickerUI
 
         public static void RideElevator()
         {
-            window.Print("Riding the elevator");
+            window.Log("Riding the elevator");
             Click(45, 535);
             Wait(4);
             if (FindImage("giftChute"))
@@ -144,7 +139,7 @@ namespace TinyClickerUI
 
         public static void PressQuestButton()
         {
-            window.Print("Clicking on the quest button");
+            window.Log("Clicking on the quest button");
             Click(TinyClicker.matchedImages["questButton"]);
             Wait(1);
             if (FindImage("deliverBitizens"))
@@ -165,7 +160,7 @@ namespace TinyClickerUI
 
         public static void FindBitizens()
         {
-            window.Print("Skipping the quest");
+            window.Log("Skipping the quest");
             Click(95, 445); // Skip the quest
             Wait(1);
             Click(225, 380); // Confirm skip
@@ -173,7 +168,7 @@ namespace TinyClickerUI
 
         public static void DeliverBitizens()
         {
-            window.Print("Delivering bitizens");
+            window.Log("Delivering bitizens");
             Click(230, 440); // Continue
         }
 
@@ -186,7 +181,7 @@ namespace TinyClickerUI
 
         public static void CloseHiddenAd()
         {
-            window.Print("Closing the hidden ad");
+            window.Log("Closing the hidden ad");
             Wait(1);
             Click(310, 10);
             Wait(1);
@@ -195,19 +190,19 @@ namespace TinyClickerUI
 
         public static void CloseNewFloorMenu()
         {
-            window.Print("Exiting");
+            window.Log("Exiting");
             PressExitButton();
         }
 
         public static void CloseBuildNewFloorNotification()
         {
-            window.Print("Closing the new floor notification");
+            window.Log("Closing the new floor notification");
             Click(105, 320); // Click no
         }
 
         public static void CompleteQuest()
         {
-            window.Print("Completing the quest");
+            window.Log("Completing the quest");
             
             Wait(1);
             Click(TinyClicker.matchedImages["completedQuestButton"]);
@@ -215,7 +210,7 @@ namespace TinyClickerUI
 
         public static void WatchAd()
         {
-            window.Print("Watching the advertisement");
+            window.Log("Watching the advertisement");
             Click(225, 375);
             Wait(31);
         }
@@ -242,7 +237,7 @@ namespace TinyClickerUI
 
         public static void BuyFloor()
         {
-            window.Print("Building a new floor");
+            window.Log("Building a new floor");
             MoveUp();
             Wait(2);
             Click(195, 390);
@@ -255,14 +250,14 @@ namespace TinyClickerUI
                 if (!FindImage("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddNewFloor();
-                    window.Print("Built a new floor");
+                    window.Log("Built a new floor");
                 }
             }
         }
 
         public static void RebuildTower()
         {
-            window.Print("Rebuilding the tower");
+            window.Log("Rebuilding the tower");
             SaveStatRebuildTime();
             Click(305, 570);
             Wait(1);
@@ -280,7 +275,7 @@ namespace TinyClickerUI
 
         public static void PassTheTutorial()
         {
-            window.Print("Passing the tutorial");
+            window.Log("Passing the tutorial");
             Wait(3);
             Click(170, 435); // Continue
             Wait(3);
@@ -387,7 +382,7 @@ namespace TinyClickerUI
 
         public static void RestartApp()
         {
-            window.Print("Restarting the app");
+            window.Log("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
 
             InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(98, 17));
@@ -413,7 +408,7 @@ namespace TinyClickerUI
 
         public static void PressExitButton()
         {
-            window.Print("Pressing the exit button");
+            window.Log("Pressing the exit button");
             Click(305, 565);
         }
 
@@ -421,7 +416,7 @@ namespace TinyClickerUI
         {
             if (currentHour != DateTime.Now.Hour)
             {
-                window.Print("Playing the raffle");
+                window.Log("Playing the raffle");
                 Wait(1);
                 Click(300, 570);
                 Wait(1);
@@ -468,7 +463,7 @@ namespace TinyClickerUI
                 double minval, maxval, threshold = 0.7;
                 Point minloc, maxloc;
                 Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
-                GC.Collect();
+                //GC.Collect();
 
                 if (maxval >= threshold)
                 {
@@ -483,7 +478,8 @@ namespace TinyClickerUI
 
         public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Thread.Sleep(10); // Smooth the CPU load between templates
+            Task.Delay(15).Wait(); // Smooth the CPU load between templates
+
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -502,10 +498,7 @@ namespace TinyClickerUI
 
                     if (maxval >= threshold)
                     {
-                        if (!TinyClicker.matchedImages.ContainsKey(template.Key))
-                        {
-                            TinyClicker.matchedImages.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
-                        }
+                        TinyClicker.matchedImages.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
                         break;
                     }
                     else
@@ -523,9 +516,6 @@ namespace TinyClickerUI
             {
                 if (!string.IsNullOrEmpty(process.MainWindowTitle) && process.ProcessName == processName)
                 {
-                    //Console.WriteLine("Process: {0}", process.ProcessName);
-                    //Console.WriteLine("ID: {0}", process.Id);
-                    //Console.WriteLine("Title: {0} \n", process.MainWindowTitle);
                     return process;
                 }
             }
@@ -560,7 +550,7 @@ namespace TinyClickerUI
 
         public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generates coordinates for the image within the game screen
 
-        public static IntPtr FindClickableChildHandles(string processName)
+        public static IntPtr GetClickableChildHandles(string processName)
         {
             if (WindowHandleInfo.GetChildren(processName) != null)
             {
@@ -570,7 +560,7 @@ namespace TinyClickerUI
             else
             {
                 //Console.WriteLine("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
-                window.Print("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
+                window.Log("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
                 //Console.ReadLine();
                 return IntPtr.Zero;
             }
@@ -590,7 +580,7 @@ namespace TinyClickerUI
             else
             {
                 //Console.WriteLine("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
-                window.Print("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
+                window.Log("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
                 return null;
             }
         }
@@ -610,7 +600,7 @@ namespace TinyClickerUI
                 // Captures screenshot of a window and saves it to the screenshots folder
                 sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
 
-                window.Print(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
+                window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
             }
         }
 
@@ -719,7 +709,7 @@ namespace TinyClickerUI
             catch (Exception ex)
             {
                 string msg = "Cannot import all sample images, some are missing or renamed. Clicker will continue nonetheless.\nMissing image path: " + ex.Message;
-                window.Print(msg);
+                window.Log(msg);
 
                 return dict;
             }
