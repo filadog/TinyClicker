@@ -559,9 +559,7 @@ namespace TinyClickerUI
             }
             else
             {
-                //Console.WriteLine("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
                 window.Log("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
-                //Console.ReadLine();
                 return IntPtr.Zero;
             }
         }
@@ -601,20 +599,6 @@ namespace TinyClickerUI
                 sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
 
                 window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
-            }
-        }
-
-        public static void PrintAllProcesses()
-        {
-            Process[] processlist = Process.GetProcesses();
-            foreach (Process process in processlist)
-            {
-                if (!String.IsNullOrEmpty(process.MainWindowTitle))
-                {
-                    Console.WriteLine("Process:   {0}", process.ProcessName);
-                    Console.WriteLine("    ID   : {0}", process.Id);
-                    Console.WriteLine("    Title: {0} \n", process.MainWindowTitle);
-                }
             }
         }
 
@@ -666,12 +650,11 @@ namespace TinyClickerUI
         public static Dictionary<string, Image> FindImages()
         {
             var dict = new Dictionary<string, Image>();
-            string path = Path.Combine(Environment.CurrentDirectory, "samples\\");
+            string path = Path.Combine(Environment.CurrentDirectory, @"samples\");
 
             try
             {
                 // Order is important
-                
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
@@ -708,7 +691,7 @@ namespace TinyClickerUI
             }
             catch (Exception ex)
             {
-                string msg = "Cannot import all sample images, some are missing or renamed. Clicker will continue nonetheless.\nMissing image path: " + ex.Message;
+                string msg = "Cannot import all sample images, some are missing or renamed. \nMissing image path: " + ex.Message;
                 window.Log(msg);
 
                 return dict;

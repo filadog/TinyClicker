@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using OpenCvSharp;
@@ -82,19 +81,22 @@ namespace TinyClickerUI
                     // Close the hidden ad after 27 attempts
                     if (foundNothing >= 27)
                     {
-                        
                         ClickerActions.CloseHiddenAd(); 
                     }
                     if (foundNothing >= 30) ClickerActions.RestartApp();
                 }
 
-                if (currentFloor == 1) ClickerActions.PassTheTutorial();
+                // Commence the turorial at first floor
+                if (currentFloor == 1)
+                {
+                    ClickerActions.PassTheTutorial();
+                }
 
                 // Play the hourly raffle at the beginning of every hour and perform all actions
                 if (currentFloor != floorToRebuildAt)
                 {
-                    curHour = ClickerActions.PlayRaffle(curHour);
                     PerformActions();
+                    curHour = ClickerActions.PlayRaffle(curHour);
                 }
 
                 // Check buildable floor
