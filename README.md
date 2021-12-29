@@ -1,7 +1,7 @@
 ## TinyClicker
 
-TinyClicker is a clicker for Tiny Tower mobile game. 
-The clicker utilizes computer vision to help you automate the quick rebuilding of your Tower via LDPlayer Android emulator.
+TinyClicker is a clicker for Tiny Tower mobile game developed by Nimblebit.\
+The clicker utilizes pattern matching and OCR to automate rebuilding of your Tiny Tower on desktop via LDPlayer.
 
 ![TinyClicker](https://user-images.githubusercontent.com/51026900/140165371-999ee88c-6d1e-44ef-bd62-c5ede942049b.png)
 
@@ -11,15 +11,15 @@ The clicker utilizes computer vision to help you automate the quick rebuilding o
 ## Features
 
 - 100% autonomous work
-- Fully automated tower rebuilding at desired floor and completion of the tutorial
+- Tower rebuilding at desired floor and completion of the tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profit
 - Automatic participation in the hourly raffle
-- Configure once, launch and forget about it
+- Configure once, launch and leave it
 
 ## Libraries in use
 
-shimat/opencvsharp  [Apache License 2.0](https://github.com/shimat/opencvsharp/blob/master/LICENSE)\
-charlesw/tesseract  [Apache License 2.0](https://github.com/charlesw/tesseract/blob/master/LICENSE.txt)
+[shimat/opencvsharp](https://github.com/shimat/opencvsharp)\
+[charlesw/tesseract](https://github.com/charlesw/tesseract)
 
 
 ## Before running
@@ -27,7 +27,7 @@ charlesw/tesseract  [Apache License 2.0](https://github.com/charlesw/tesseract/b
 Make sure to run only one instance of LDPlayer. 
 LDPlayer window with the game can be covered with other windows, but do not minimize it to tray. 
 Player interactions with the game are possible but not recommended.\
-Avoid checking the tower on your mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress may be lost.
+Avoid checking the tower on mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress may be lost.
 
 
 ## Setup
