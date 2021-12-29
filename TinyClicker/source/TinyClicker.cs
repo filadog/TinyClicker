@@ -78,12 +78,12 @@ namespace TinyClickerUI
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
                     window.Log(msg);
 
-                    // Close the hidden ad after 27 attempts
-                    if (foundNothing >= 27)
+                    // Try close ads with improper close button location after 20 attempts
+                    if (foundNothing >= 20)
                     {
                         ClickerActions.CloseHiddenAd(); 
                     }
-                    if (foundNothing >= 30) ClickerActions.RestartApp();
+                    if (foundNothing >= 23) ClickerActions.RestartApp();
                 }
 
                 // Commence the turorial at first floor
@@ -99,7 +99,7 @@ namespace TinyClickerUI
                     curHour = ClickerActions.PlayRaffle(curHour);
                 }
 
-                // Check buildable floor
+                // Check for buildable floor every second
                 if (curSecond != DateTime.Now.Second && currentFloor != 1)
                 {
                     curSecond = DateTime.Now.Second;

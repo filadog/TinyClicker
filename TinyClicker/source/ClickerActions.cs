@@ -42,8 +42,7 @@ namespace TinyClickerUI
         {
             window.Log("Closing the advertisement");
 
-            var matchedImages = TinyClicker.matchedImages;
-            if(matchedImages.ContainsKey("closeAd_7") || matchedImages.ContainsKey("closeAd_8"))
+            if(TinyClicker.matchedImages.ContainsKey("closeAd_7") || TinyClicker.matchedImages.ContainsKey("closeAd_8"))
             {
                 Click(22, 22);
                 Click(311, 22);
@@ -454,7 +453,7 @@ namespace TinyClickerUI
             windowBitmap.Dispose();
 
             var template = TinyClicker.templates[imageKey];
-            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_32FC1))
+            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
                 Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
