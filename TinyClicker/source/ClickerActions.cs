@@ -47,11 +47,13 @@ namespace TinyClickerUI
             {
                 Click(22, 22);
                 Click(311, 22);
+                Click(302, 52);
             }
             else
             {
                 Click(311, 22);
                 Click(22, 22);
+                Click(302, 52);
             }
         }
 
