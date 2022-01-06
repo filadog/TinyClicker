@@ -53,7 +53,7 @@ namespace TinyClickerUI
                 string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
                 Image gameWindow = ClickerActions.MakeScreenshot();
 
-                // Update the list of found images via template matching
+                // Update the static list of found images via template matching
                 MatchImages(gameWindow);
 
                 // Cancel the execution of the next loop iteration if cancelling is requested
@@ -78,19 +78,16 @@ namespace TinyClickerUI
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
                     window.Log(msg);
 
-                    // Try close ads with improper close button location after 20 attempts
+                    // Try to close ads with improper close button location after 20 attempts
                     if (foundNothing >= 20)
-                    {
                         ClickerActions.CloseHiddenAd(); 
-                    }
-                    if (foundNothing >= 23) ClickerActions.RestartApp();
+                    if (foundNothing >= 23) 
+                        ClickerActions.RestartGame();
                 }
 
                 // Commence the turorial at first floor
                 if (currentFloor == 1)
-                {
                     ClickerActions.PassTheTutorial();
-                }
 
                 // Play the hourly raffle at the beginning of every hour and perform all actions
                 if (currentFloor != floorToRebuildAt)

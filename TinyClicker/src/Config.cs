@@ -6,17 +6,11 @@ namespace TinyClickerUI
 {
     public class Config
     {
-        private bool _vipPackage;
-        private float _elevatorSpeed;
-        private int _floorsNumber;
-        private int _coins;
-        private DateTime _lastRebuildTime;
-
-        public bool VipPackage { get => _vipPackage; set => _vipPackage = value; }
-        public float ElevatorSpeed { get => _elevatorSpeed; set => _elevatorSpeed = value; }
-        public int FloorsNumber { get => _floorsNumber; set => _floorsNumber = value; }
-        public int Coins { get => _coins; set => _coins = value; }
-        public DateTime LastRebuildTime { get => _lastRebuildTime; set => _lastRebuildTime = value; }
+        private bool vipPackage;
+        private float elevatorSpeed;
+        private int floorsNumber;
+        private int coins;
+        private DateTime lastRebuildTime;
 
         public Config() : this(true, 10f, 3) { }
         public Config(bool vip, float elevatorSpeed, int floorsNumber)
@@ -26,20 +20,26 @@ namespace TinyClickerUI
             FloorsNumber = floorsNumber;
             Coins = 0;
         }
+
+        public bool VipPackage { get => vipPackage; set => vipPackage = value; }
+        public float ElevatorSpeed { get => elevatorSpeed; set => elevatorSpeed = value; }
+        public int FloorsNumber { get => floorsNumber; set => floorsNumber = value; }
+        public int Coins { get => coins; set => coins = value; }
+        public DateTime LastRebuildTime { get => lastRebuildTime; set => lastRebuildTime = value; }
     }
 
     public class ConfigManager
     {
         static readonly string configPath = Environment.CurrentDirectory + @"\Config.txt";
 
-        public static void AddNewFloor()
+        public static void AddOneFloor()
         {
             var config = TinyClicker.currentConfig;
             config.FloorsNumber += 1;
             SaveConfig(config);
         }
 
-        public static void SaveNewFloor(int floor)
+        public static void ChangeCurrentFloor(int floor)
         {
             var config = TinyClicker.currentConfig;
             config.FloorsNumber = floor;

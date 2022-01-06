@@ -8,7 +8,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using System.Threading.Tasks;
-using System.Threading;
 
 namespace TinyClickerUI
 {
@@ -250,7 +249,7 @@ namespace TinyClickerUI
                 Wait(1);
                 if (!FindImage("newFloorNoCoinsNotification"))
                 {
-                    ConfigManager.AddNewFloor();
+                    ConfigManager.AddOneFloor();
                     window.Log("Built a new floor");
                 }
             }
@@ -270,7 +269,7 @@ namespace TinyClickerUI
             Wait(1);
             Click(230, 380);
             Wait(3);
-            ConfigManager.SaveNewFloor(1);
+            ConfigManager.ChangeCurrentFloor(1);
             TinyClicker.currentFloor = 1;
         }
 
@@ -377,11 +376,11 @@ namespace TinyClickerUI
             Click(170, 435); // Colect more bux
             Wait(1);
             Click(165, 375); // Continue
-            ConfigManager.SaveNewFloor(3);
+            ConfigManager.ChangeCurrentFloor(3);
             TinyClicker.currentFloor = 3;
         }
 
-        public static void RestartApp()
+        public static void RestartGame()
         {
             window.Log("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
