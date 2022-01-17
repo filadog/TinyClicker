@@ -40,7 +40,6 @@ namespace TinyClickerUI
                 {
                     balance = Convert.ToInt32(Regex.Replace(text, "[^0-9]", ""));
                 }
-
                 return balance;
             }
             catch (Exception)

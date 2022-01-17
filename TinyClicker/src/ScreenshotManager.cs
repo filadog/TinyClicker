@@ -25,61 +25,38 @@ namespace TinyClickerUI
         // Creates an Image object containing a screenshot of a specific window
         public Image CaptureWindow(IntPtr handle)
         {
-            // Get the hDC of the target window
             IntPtr hdcSrc = User32.GetWindowDC(handle);
 
-            // Get the size
             User32.RECT windowRect = new User32.RECT();
             User32.GetWindowRect(handle, ref windowRect);
+
             int width = windowRect.right - windowRect.left;
             int height = windowRect.bottom - windowRect.top;
 
-            // Create a device context we can copy to
             IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
-
-            // Create a bitmap we can copy it to, using GetDeviceCaps to get the width/height
             IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc, width, height);
-
-            // Select the bitmap object
             IntPtr hOld = GDI32.SelectObject(hdcDest, hBitmap);
 
-            // BitBlt over
             GDI32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, GDI32.SRCCOPY);
-
-            // Restore selection
             GDI32.SelectObject(hdcDest, hOld);
-
-            // Clean up
             GDI32.DeleteDC(hdcDest);
             User32.ReleaseDC(handle, hdcSrc);
 
-            // Get a .NET image object for it
             Image img = Image.FromHbitmap(hBitmap);
-
-            // Free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
             return img;
         }
 
-        // Captures a screenshot of a specific window, and saves it to a file
+        // Captures a screenshot of a window and saves it to a file
         public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {
             Image img = CaptureWindow(handle);
             img.Save(filename, format);
         }
 
-        // Captures a screen shot of the entire desktop, and saves it to a file
-        public void CaptureScreenToFile(string filename, ImageFormat format)
-        {
-            Image img = CaptureScreen();
-            img.Save(filename, format);
-        }
-
-        // Helper class containing Gdi32 API functions
         private class GDI32
         {
-
-            public const int SRCCOPY = 0x00CC0020; // BitBlt dwRop parameter
+            public const int SRCCOPY = 0x00CC0020;
             [DllImport("gdi32.dll")]
             public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest,
                 int nWidth, int nHeight, IntPtr hObjectSource,

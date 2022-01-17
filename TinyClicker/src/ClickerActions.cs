@@ -548,7 +548,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generates coordinates for the image within the game screen
+        public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generates coordinates within the game screen
 
         public static IntPtr GetClickableChildHandles(string processName)
         {

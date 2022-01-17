@@ -58,7 +58,7 @@ namespace TinyClickerUI
         [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
-        public static List<IntPtr> GetChildren(string processName)
+        public static List<IntPtr>? GetChildren(string processName)
         {
             Process[] processes = Process.GetProcessesByName(processName);
             if (processes.Length == 0) return null;
