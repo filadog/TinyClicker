@@ -53,6 +53,8 @@ namespace TinyClickerUI
                 Click(22, 22);
                 Click(302, 52);
             }
+            // TODO: Add the ability to close ads that cause notification of lost reward to persist.
+            // Coordinates for the button are needed
         }
 
         public static void PressContinue()
@@ -120,6 +122,7 @@ namespace TinyClickerUI
             {
                 WatchAd();
             }
+
         }
 
         public static void RideElevator()
