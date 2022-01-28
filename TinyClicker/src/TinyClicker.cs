@@ -155,13 +155,13 @@ namespace TinyClickerUI
                     case "continueButton": ClickerActions.PressContinue(); break;
                     case "foundCoinsChuteNotification": ClickerActions.CloseChuteNotification(); break;
                     case "restockButton": ClickerActions.Restock(); break;
-                    case "freeBuxCollectButton": ClickerActions.CollectFreeBux(); break;
                     case "freeBuxButton": ClickerActions.PressFreeBuxButton(); break;
                     case "giftChute": ClickerActions.ClickOnChute(); break;
                     case "backButton": ClickerActions.PressExitButton(); break;
                     case "elevatorButton": ClickerActions.RideElevator(); break;
                     case "questButton": ClickerActions.PressQuestButton(); break;
                     case "completedQuestButton": ClickerActions.CompleteQuest(); break;
+                    case "watchAdPromptCoins":
                     case "watchAdPromptBux": ClickerActions.WatchAd(); break;
                     case "findBitizens": ClickerActions.FindBitizens(); break;
                     case "deliverBitizens": ClickerActions.DeliverBitizens(); break;

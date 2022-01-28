@@ -215,7 +215,7 @@ namespace TinyClickerUI
         {
             window.Log("Watching the advertisement");
             Click(225, 375);
-            Wait(35);
+            Wait(31);
         }
 
         public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
@@ -660,6 +660,7 @@ namespace TinyClickerUI
                 // Order is important
                 dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
                 dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
+                dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
                 dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
                 dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
                 dict.Add("backButton", Image.FromFile(path + "back_button.png"));
@@ -668,13 +669,12 @@ namespace TinyClickerUI
                 dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
                 dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
                 dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
-                dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
+                //dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
                 dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
                 dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
                 dict.Add("gameIcon", Image.FromFile(path + "game_icon.png"));
                 dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
-                dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
-                dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
+                //dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
                 dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));
                 dict.Add("closeAd_2", Image.FromFile(path + "close_ad_button_2.png"));
                 dict.Add("closeAd_3", Image.FromFile(path + "close_ad_button_3.png"));
