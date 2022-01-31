@@ -41,7 +41,7 @@ namespace TinyClickerUI
         {
             window.Log("Closing the advertisement");
 
-            if(TinyClicker.matchedImages.ContainsKey("closeAd_7") || TinyClicker.matchedImages.ContainsKey("closeAd_8"))
+            if(TinyClicker.matchedTemplates.ContainsKey("closeAd_7") || TinyClicker.matchedTemplates.ContainsKey("closeAd_8"))
             {
                 Click(22, 22);
                 Click(311, 22);
@@ -61,7 +61,7 @@ namespace TinyClickerUI
         {
             window.Log("Clicking continue");
 
-            Click(TinyClicker.matchedImages["continueButton"]);
+            Click(TinyClicker.matchedTemplates["continueButton"]);
             Wait(1);
             MoveUp();
         }
@@ -101,7 +101,7 @@ namespace TinyClickerUI
         public static void PressFreeBuxButton()
         {
             window.Log("Pressing free bux icon");
-            Click(TinyClicker.matchedImages["freeBuxButton"]);
+            Click(TinyClicker.matchedTemplates["freeBuxButton"]);
             Wait(1);
             Click(230, 375);
             Wait(1);
@@ -110,13 +110,13 @@ namespace TinyClickerUI
         public static void CollectFreeBux()
         {
             window.Log("Collecting free bux");
-            Click(TinyClicker.matchedImages["freeBuxCollectButton"]);
+            Click(TinyClicker.matchedTemplates["freeBuxCollectButton"]);
         }
 
         public static void ClickOnChute()
         {
             window.Log("Clicking on the parachute");
-            Click(TinyClicker.matchedImages["giftChute"]);
+            Click(TinyClicker.matchedTemplates["giftChute"]);
             Wait(1);
             if (FindImage("watchAdPromptBux") || FindImage("watchAdPromptCoins"))
             {
@@ -142,7 +142,7 @@ namespace TinyClickerUI
         public static void PressQuestButton()
         {
             window.Log("Clicking on the quest button");
-            Click(TinyClicker.matchedImages["questButton"]);
+            Click(TinyClicker.matchedTemplates["questButton"]);
             Wait(1);
             if (FindImage("deliverBitizens"))
             {
@@ -177,7 +177,7 @@ namespace TinyClickerUI
         public static void OpenTheGame()
         {
             Wait(1);
-            Click(TinyClicker.matchedImages["gameIcon"]);
+            Click(TinyClicker.matchedTemplates["gameIcon"]);
             Wait(10);
         }
 
@@ -218,7 +218,7 @@ namespace TinyClickerUI
             window.Log("Completing the quest");
             
             Wait(1);
-            Click(TinyClicker.matchedImages["completedQuestButton"]);
+            Click(TinyClicker.matchedTemplates["completedQuestButton"]);
         }
 
         public static void WatchAds()
@@ -489,9 +489,9 @@ namespace TinyClickerUI
             }
         }
 
-        public static void MatchImage(KeyValuePair<string, Mat> template, Mat reference)
+        public static void MatchSingleTemplate(KeyValuePair<string, Mat> template, Mat reference)
         {
-            Task.Delay(15).Wait(); // Smooth the CPU load between templates
+            //Task.Delay(15).Wait(); // Smooth the CPU load between templates
 
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
@@ -511,7 +511,7 @@ namespace TinyClickerUI
 
                     if (maxval >= threshold)
                     {
-                        TinyClicker.matchedImages.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
+                        TinyClicker.matchedTemplates.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
                         break;
                     }
                     else

@@ -22,7 +22,7 @@ namespace TinyClickerUI
         public static bool vipPackage = currentConfig.VipPackage;
         public static int floorToRebuildAt = 50;
 
-        public static Dictionary<string, int> matchedImages = new Dictionary<string, int>();
+        public static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = ClickerActions.FindImages();
         public static Dictionary<string, Mat> templates = ClickerActions.MakeTemplates(images);
 
@@ -54,7 +54,7 @@ namespace TinyClickerUI
                 Image gameWindow = ClickerActions.MakeScreenshot();
 
                 // Update the static list of found images via template matching
-                MatchImages(gameWindow);
+                MatchTemplates(gameWindow);
 
                 // Cancel the execution of the next loop iteration if cancelling is requested
                 if (worker.CancellationPending)
@@ -64,7 +64,7 @@ namespace TinyClickerUI
                 }
 
                 // Print the name of the found object
-                foreach (var image in matchedImages)
+                foreach (var image in matchedTemplates)
                 {
                     string msg = dateTimeNow + " Found " + image.Key;
                     window.Log(msg);
@@ -72,7 +72,7 @@ namespace TinyClickerUI
                 }
 
                 // Print if nothing is found and restart the app if nothing is found for too long
-                if (matchedImages.Count == 0)
+                if (matchedTemplates.Count == 0)
                 {
                     foundNothing++;
                     string msg = dateTimeNow + " Found nothing x" + foundNothing;
@@ -105,12 +105,12 @@ namespace TinyClickerUI
                 gameWindow.Dispose();
                 
                 GC.Collect();
-                matchedImages.Clear();
+                matchedTemplates.Clear();
                 Task.Delay(1500).Wait();
             }
         }
 
-        static void MatchImages(Image gameWindow)
+        static void MatchTemplates(Image gameWindow)
         {
             var windowBitmap = new Bitmap(gameWindow);
             Mat reference = BitmapConverter.ToMat(windowBitmap);
@@ -118,11 +118,12 @@ namespace TinyClickerUI
 
             foreach (var template in templates)
             {
-                if (matchedImages.Count == 0)
+                if (matchedTemplates.Count == 0)
                 {
-                    if (!matchedImages.ContainsKey(template.Key))
+                    if (!matchedTemplates.ContainsKey(template.Key))
                     {
-                        ClickerActions.MatchImage(template, reference);
+                        ClickerActions.MatchSingleTemplate(template, reference);
+                        Task.Delay(15).Wait(); // Smooth the CPU peak load
                     }
                 }
                 else
@@ -130,15 +131,16 @@ namespace TinyClickerUI
                     break;
                 }
             }
+
             reference.Dispose();
         }
 
         static void PerformActions()
         {
             string key;
-            if (matchedImages.Keys.Count > 0)
+            if (matchedTemplates.Keys.Count > 0)
             {
-                key = matchedImages.Keys.First();
+                key = matchedTemplates.Keys.First();
                 switch (key)
                 {
                     case "roofCustomizationWindow": ClickerActions.ExitRoofCustomizationMenu(); break;
