@@ -53,8 +53,8 @@ namespace TinyClickerUI
                 Click(22, 22);
                 Click(302, 52);
             }
-            // TODO: Add the ability to close ads that cause notification of lost reward to persist.
-            // Coordinates for the button are needed
+
+            CheckForLostAdsReward();
         }
 
         public static void PressContinue()
@@ -120,9 +120,8 @@ namespace TinyClickerUI
             Wait(1);
             if (FindImage("watchAdPromptBux") || FindImage("watchAdPromptCoins"))
             {
-                WatchAd();
+                WatchAds();
             }
-
         }
 
         public static void RideElevator()
@@ -189,6 +188,17 @@ namespace TinyClickerUI
             Click(310, 10);
             Wait(1);
             Click(311, 22);
+            CheckForLostAdsReward();
+        }
+
+        public static void CheckForLostAdsReward()
+        {
+            Wait(1);
+            if (FindImage("adsLostReward"))
+            {
+                Click(240, 344); // Click "Keep watching"
+                Wait(15);
+            }
         }
 
         public static void CloseNewFloorMenu()
@@ -211,7 +221,7 @@ namespace TinyClickerUI
             Click(TinyClicker.matchedImages["completedQuestButton"]);
         }
 
-        public static void WatchAd()
+        public static void WatchAds()
         {
             window.Log("Watching the advertisement");
             Click(225, 375);
@@ -689,6 +699,7 @@ namespace TinyClickerUI
                 dict.Add("roofCustomizationWindow", Image.FromFile(path + "roof_customization_window.png"));
                 dict.Add("giftChute", Image.FromFile(path + "gift_chute.png"));
                 dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
+                dict.Add("adsLostReward", Image.FromFile(path + "ads_lost_reward.png"));
 
                 return dict;
             }

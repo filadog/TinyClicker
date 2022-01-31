@@ -162,7 +162,7 @@ namespace TinyClickerUI
                     case "questButton": ClickerActions.PressQuestButton(); break;
                     case "completedQuestButton": ClickerActions.CompleteQuest(); break;
                     case "watchAdPromptCoins":
-                    case "watchAdPromptBux": ClickerActions.WatchAd(); break;
+                    case "watchAdPromptBux": ClickerActions.WatchAds(); break;
                     case "findBitizens": ClickerActions.FindBitizens(); break;
                     case "deliverBitizens": ClickerActions.DeliverBitizens(); break;
                     case "newFloorMenu": ClickerActions.CloseNewFloorMenu(); break;
