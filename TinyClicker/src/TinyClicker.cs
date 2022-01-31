@@ -143,6 +143,7 @@ namespace TinyClickerUI
                 key = matchedTemplates.Keys.First();
                 switch (key)
                 {
+                    case "freeBuxCollectButton": ClickerActions.CollectFreeBux(); break;
                     case "roofCustomizationWindow": ClickerActions.ExitRoofCustomizationMenu(); break;
                     case "hurryConstructionPrompt": ClickerActions.CancelHurryConstruction(); break;
                     case "closeAd":
