@@ -225,7 +225,7 @@ namespace TinyClickerUI
         {
             window.Log("Watching the advertisement");
             Click(225, 375);
-            Wait(31);
+            Wait(20);
         }
 
         public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
