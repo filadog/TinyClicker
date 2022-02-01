@@ -199,6 +199,10 @@ namespace TinyClickerUI
                 Click(240, 344); // Click "Keep watching"
                 Wait(15);
             }
+            else
+            {
+                Click(240, 344);
+            }
         }
 
         public static void CloseNewFloorMenu()
