@@ -171,6 +171,7 @@ namespace TinyClickerUI
                     case "newFloorMenu": ClickerActions.CloseNewFloorMenu(); break;
                     case "buildNewFloorNotification": ClickerActions.CloseBuildNewFloorNotification(); break;
                     case "gameIcon": ClickerActions.OpenTheGame(); break;
+                    case "adsLostReward": ClickerActions.CheckForLostAdsReward(); break;
                     default: break;
                 }
             }
