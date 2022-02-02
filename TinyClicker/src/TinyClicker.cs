@@ -21,6 +21,7 @@ namespace TinyClickerUI
         public static float elevatorSpeed = currentConfig.ElevatorSpeed;
         public static bool vipPackage = currentConfig.VipPackage;
         public static int floorToRebuildAt = 50;
+        public static bool acceptBuxVideoOffers = false; // Should be true by default
 
         public static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = ClickerActions.FindImages();
@@ -164,8 +165,8 @@ namespace TinyClickerUI
                     case "elevatorButton": ClickerActions.RideElevator(); break;
                     case "questButton": ClickerActions.PressQuestButton(); break;
                     case "completedQuestButton": ClickerActions.CompleteQuest(); break;
-                    case "watchAdPromptCoins":
-                    case "watchAdPromptBux": ClickerActions.WatchAds(); break;
+                    case "watchAdPromptCoins": ClickerActions.WatchCoinsAds(); break;
+                    case "watchAdPromptBux": ClickerActions.WatchBuxAds(); break;
                     case "findBitizens": ClickerActions.FindBitizens(); break;
                     case "deliverBitizens": ClickerActions.DeliverBitizens(); break;
                     case "newFloorMenu": ClickerActions.CloseNewFloorMenu(); break;

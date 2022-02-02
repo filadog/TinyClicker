@@ -82,7 +82,7 @@ namespace TinyClickerUI
             Click(225, 375);
             Wait(1);
 
-            if (FindImage("fullyStockedBonus"))
+            if (IsImageFound("fullyStockedBonus"))
             {
                 Click(165, 375); // Close the bonus tooltip
                 Wait(1);
@@ -118,9 +118,20 @@ namespace TinyClickerUI
             window.Log("Clicking on the parachute");
             Click(TinyClicker.matchedTemplates["giftChute"]);
             Wait(1);
-            if (FindImage("watchAdPromptBux") || FindImage("watchAdPromptCoins"))
+            if (IsImageFound("watchAdPromptCoins"))
             {
-                WatchAds();
+                WatchCoinsAds();
+            }
+            else if (TinyClicker.acceptBuxVideoOffers)
+            {
+                if (IsImageFound("watchAdPromptBux"))
+                {
+                    WatchBuxAds();
+                }
+            }
+            else
+            {
+                Click(105, 380); // Decline the video offer
             }
         }
 
@@ -129,7 +140,7 @@ namespace TinyClickerUI
             window.Log("Riding the elevator");
             Click(45, 535);
             Wait(4);
-            if (FindImage("giftChute"))
+            if (IsImageFound("giftChute"))
             {
                 return;
             }
@@ -144,11 +155,11 @@ namespace TinyClickerUI
             window.Log("Clicking on the quest button");
             Click(TinyClicker.matchedTemplates["questButton"]);
             Wait(1);
-            if (FindImage("deliverBitizens"))
+            if (IsImageFound("deliverBitizens"))
             {
                 DeliverBitizens();
             }
-            else if (FindImage("findBitizens"))
+            else if (IsImageFound("findBitizens"))
             {
                 FindBitizens();
             }
@@ -194,7 +205,7 @@ namespace TinyClickerUI
         public static void CheckForLostAdsReward()
         {
             Wait(1);
-            if (FindImage("adsLostReward"))
+            if (IsImageFound("adsLostReward"))
             {
                 Click(240, 344); // Click "Keep watching"
                 Wait(15);
@@ -225,7 +236,13 @@ namespace TinyClickerUI
             Click(TinyClicker.matchedTemplates["completedQuestButton"]);
         }
 
-        public static void WatchAds()
+        public static void WatchCoinsAds()
+        {
+            window.Log("Watching the advertisement");
+            Click(225, 375);
+            Wait(20);
+        }
+        public static void WatchBuxAds()
         {
             window.Log("Watching the advertisement");
             Click(225, 375);
@@ -260,11 +277,11 @@ namespace TinyClickerUI
             Click(195, 390);
             Wait(1);
 
-            if (FindImage("buildNewFloorNotification"))
+            if (IsImageFound("buildNewFloorNotification"))
             {
                 Click(230, 320);
                 Wait(1);
-                if (!FindImage("newFloorNoCoinsNotification"))
+                if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddOneFloor();
                     window.Log("Built a new floor");
@@ -459,7 +476,7 @@ namespace TinyClickerUI
             Task.Delay(milliseconds).Wait();
         }
 
-        static bool FindImage(string imageKey) // Returns true if the image is found 
+        static bool IsImageFound(string imageKey) // Returns true if the image is found 
         {
             Image gameWindow = MakeScreenshot();
             var windowBitmap = new Bitmap(gameWindow);
