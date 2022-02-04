@@ -16,7 +16,7 @@ namespace TinyClickerUI
 
             try
             {
-                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.Default))
+                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly))
                 {
                     using (var img = source)
                     {
