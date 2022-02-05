@@ -16,11 +16,12 @@ namespace TinyClickerUI
 
             try
             {
-                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly))
+                using (var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.LstmOnly))
                 {
+                    engine.SetVariable("tessedit_char_whitelist", "0123456789");
                     using (var img = source)
                     {
-                        using (var page = engine.Process(img, PageSegMode.SingleLine))
+                        using (var page = engine.Process(img, PageSegMode.SparseText))
                         {
                             text = page.GetText();
                             text = text.Trim();
