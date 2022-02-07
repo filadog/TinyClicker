@@ -20,7 +20,7 @@ namespace TinyClickerUI
 
         public static Bitmap CropCurrentBalance(Image window)
         {
-            // Crops the image
+            // Crop the image
             Rectangle crop = new Rectangle(14, 598, 72, 25);
             var bitmap = new Bitmap(crop.Width, crop.Height);
             using (var gr = Graphics.FromImage(bitmap))
@@ -28,10 +28,10 @@ namespace TinyClickerUI
                 gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), crop, GraphicsUnit.Pixel);
             }
             
-            // Inverts the image
-            for (int y = 0; (y <= (bitmap.Height - 1)); y++)
+            // Invert the image
+            for (int y = 0; y <= (bitmap.Height - 1); y++)
             {
-                for (int x = 0; (x <= (bitmap.Width - 1)); x++)
+                for (int x = 0; x <= (bitmap.Width - 1); x++)
                 {
                     Color inv = bitmap.GetPixel(x, y);
                     inv = Color.FromArgb(255, (255 - inv.R), (255 - inv.G), (255 - inv.B));
@@ -47,7 +47,7 @@ namespace TinyClickerUI
 
         static Bitmap AdjustImage(Bitmap bitmap)
         {
-            // Adjusts the brightness of the image to be more readable for Tesseract
+            // Adjust the brightness of the image to be more readable for Tesseract
             Bitmap adjustedImage = new Bitmap(bitmap);
             Bitmap originalImage = bitmap;
 
@@ -56,7 +56,7 @@ namespace TinyClickerUI
             float gamma = 1.0f;
             float adjustedBrightness = brightness - 1.0f;
 
-            // Creates a matrix that will brighten and contrast the image
+            // Create a matrix that will brighten and change the contrast of the image
             float[][] ptsArray = {
             new float[] {contrast, 0, 0, 0, 0}, // Red
             new float[] {0, contrast, 0, 0, 0}, // Green

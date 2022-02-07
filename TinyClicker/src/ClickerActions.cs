@@ -315,7 +315,7 @@ namespace TinyClickerUI
             Wait(3);
             MoveDown();
             Wait(1);
-            Click(195, 260); // Build the new floor
+            Click(195, 260); // Build a new floor
             Wait(1);
             Click(230, 380); // Confirm
             Wait(1);
@@ -327,7 +327,7 @@ namespace TinyClickerUI
             Wait(1);
             Click(190, 300); // Click on new floor
             Wait(1);
-            Click(240, 150); // Build residential
+            Click(240, 150); // Build a residential floor
             Wait(1);
             Click(160, 375); // Continue
             Wait(1);
@@ -512,8 +512,6 @@ namespace TinyClickerUI
 
         public static void MatchSingleTemplate(KeyValuePair<string, Mat> template, Mat reference)
         {
-            //Task.Delay(15).Wait(); // Smooth the CPU load between templates
-
             using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
