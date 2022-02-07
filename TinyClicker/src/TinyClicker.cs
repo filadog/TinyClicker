@@ -9,8 +9,6 @@ using System.Windows;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 
-[assembly: InternalsVisibleTo("TinyClickerTests")]
-
 namespace TinyClickerUI
 {
     public static class TinyClicker
@@ -58,9 +56,12 @@ namespace TinyClickerUI
                 Image gameWindow = ClickerActions.MakeScreenshot();
 
                 // Update the static list of found images via template matching
-                MatchTemplates(gameWindow);
+                if (gameWindow != null)
+                {
+                    MatchTemplates(gameWindow);
+                }
 
-                // Cancel the execution of the next loop iteration if cancelling is requested
+                // Cancel the execution of the next loop iteration if termination is requested
                 if (worker.CancellationPending)
                 {
                     window.Log("Stopped!");
@@ -75,7 +76,7 @@ namespace TinyClickerUI
                     foundNothing = 0;
                 }
 
-                // Print if nothing is found and restart the app if nothing is found for too long
+                // Print if nothing was found and restart the app if nothing was found for too long
                 if (matchedTemplates.Count == 0)
                 {
                     foundNothing++;
@@ -89,7 +90,7 @@ namespace TinyClickerUI
                         ClickerActions.RestartGame();
                 }
 
-                // Commence the turorial at first floor
+                // Commence the turorial at the first floor
                 if (currentFloor == 1)
                     ClickerActions.PassTheTutorial();
 
@@ -100,13 +101,16 @@ namespace TinyClickerUI
                     curHour = ClickerActions.PlayRaffle(curHour);
                 }
 
-                // Check for buildable floor every second
-                if (curSecond != DateTime.Now.Second && currentFloor != 1)
+                // Check for buildable floor every iteration
+                if (gameWindow != null)
                 {
-                    curSecond = DateTime.Now.Second;
-                    ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
+                    if (curSecond != DateTime.Now.Second && currentFloor != 1)
+                    {
+                        curSecond = DateTime.Now.Second;
+                        ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
+                    }
+                    gameWindow.Dispose();
                 }
-                gameWindow.Dispose();
                 
                 GC.Collect();
                 matchedTemplates.Clear();
