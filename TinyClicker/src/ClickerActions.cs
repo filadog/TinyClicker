@@ -14,24 +14,24 @@ namespace TinyClickerUI
     internal static class ClickerActions
     {
         public const string processName = "dnplayer";
-        static IntPtr clickableChildHandle = GetClickableChildHandles(processName);
+        static readonly IntPtr _clickableChildHandle = GetClickableChildHandles(processName);
         public static int processId = GetProcess().Id;
-        static Dictionary<int, int> floorPrices = CalculateFloorPrices();
-        static MainWindow window = TinyClicker.window;
+        static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
+        static readonly MainWindow _window = TinyClicker.window;
         
 
         #region Clicker Actions
 
         public static void ExitRoofCustomizationMenu()
         {
-            window.Log("Exiting the roof customization menu");
+            _window.Log("Exiting the roof customization menu");
             PressExitButton();
             Wait(1);
         }
 
         public static void CancelHurryConstruction()
         {
-            window.Log("Exiting the construction menu");
+            _window.Log("Exiting the construction menu");
 
             Click(100, 375); // Cancel action
             Wait(1);
@@ -39,7 +39,7 @@ namespace TinyClickerUI
 
         public static void CloseAd()
         {
-            window.Log("Closing the advertisement");
+            _window.Log("Closing the advertisement");
 
             if(TinyClicker.matchedTemplates.ContainsKey("closeAd_7") || TinyClicker.matchedTemplates.ContainsKey("closeAd_8"))
             {
@@ -59,7 +59,7 @@ namespace TinyClickerUI
 
         public static void PressContinue()
         {
-            window.Log("Clicking continue");
+            _window.Log("Clicking continue");
 
             Click(TinyClicker.matchedTemplates["continueButton"]);
             Wait(1);
@@ -68,13 +68,13 @@ namespace TinyClickerUI
 
         public static void CloseChuteNotification()
         {
-            window.Log("Closing the parachute notification");
+            _window.Log("Closing the parachute notification");
             Click(165, 375); // Close the notification
         }
 
         public static void Restock()
         {
-            window.Log("Restocking");
+            _window.Log("Restocking");
             MoveDown();
             Wait(1);
             Click(100, 480); // Stock all
@@ -100,7 +100,7 @@ namespace TinyClickerUI
 
         public static void PressFreeBuxButton()
         {
-            window.Log("Pressing free bux icon");
+            _window.Log("Pressing free bux icon");
             Click(TinyClicker.matchedTemplates["freeBuxButton"]);
             Wait(1);
             Click(230, 375);
@@ -109,13 +109,13 @@ namespace TinyClickerUI
 
         public static void CollectFreeBux()
         {
-            window.Log("Collecting free bux");
+            _window.Log("Collecting free bux");
             Click(TinyClicker.matchedTemplates["freeBuxCollectButton"]);
         }
 
         public static void ClickOnChute()
         {
-            window.Log("Clicking on the parachute");
+            _window.Log("Clicking on the parachute");
             Click(TinyClicker.matchedTemplates["giftChute"]);
             Wait(1);
             if (IsImageFound("watchAdPromptCoins"))
@@ -137,7 +137,7 @@ namespace TinyClickerUI
 
         public static void RideElevator()
         {
-            window.Log("Riding the elevator");
+            _window.Log("Riding the elevator");
             Click(45, 535);
             Wait(4);
             if (IsImageFound("giftChute"))
@@ -152,7 +152,7 @@ namespace TinyClickerUI
 
         public static void PressQuestButton()
         {
-            window.Log("Clicking on the quest button");
+            _window.Log("Clicking on the quest button");
             Click(TinyClicker.matchedTemplates["questButton"]);
             Wait(1);
             if (IsImageFound("deliverBitizens"))
@@ -173,7 +173,7 @@ namespace TinyClickerUI
 
         public static void FindBitizens()
         {
-            window.Log("Skipping the quest");
+            _window.Log("Skipping the quest");
             Click(95, 445); // Skip the quest
             Wait(1);
             Click(225, 380); // Confirm skip
@@ -181,7 +181,7 @@ namespace TinyClickerUI
 
         public static void DeliverBitizens()
         {
-            window.Log("Delivering bitizens");
+            _window.Log("Delivering bitizens");
             Click(230, 440); // Continue
         }
 
@@ -194,7 +194,7 @@ namespace TinyClickerUI
 
         public static void CloseHiddenAd()
         {
-            window.Log("Closing the hidden ad");
+            _window.Log("Closing the hidden ad");
             Wait(1);
             Click(310, 10);
             Wait(1);
@@ -218,19 +218,19 @@ namespace TinyClickerUI
 
         public static void CloseNewFloorMenu()
         {
-            window.Log("Exiting");
+            _window.Log("Exiting");
             PressExitButton();
         }
 
         public static void CloseBuildNewFloorNotification()
         {
-            window.Log("Closing the new floor notification");
+            _window.Log("Closing the new floor notification");
             Click(105, 320); // Click no
         }
 
         public static void CompleteQuest()
         {
-            window.Log("Completing the quest");
+            _window.Log("Completing the quest");
             
             Wait(1);
             Click(TinyClicker.matchedTemplates["completedQuestButton"]);
@@ -238,13 +238,13 @@ namespace TinyClickerUI
 
         public static void WatchCoinsAds()
         {
-            window.Log("Watching the advertisement");
+            _window.Log("Watching the advertisement");
             Click(225, 375);
             Wait(20);
         }
         public static void WatchBuxAds()
         {
-            window.Log("Watching the advertisement");
+            _window.Log("Watching the advertisement");
             Click(225, 375);
             Wait(20);
         }
@@ -256,7 +256,7 @@ namespace TinyClickerUI
 
             if (balance != 0 && balance != -1 && currentFloor >= 3)
             {
-                int targetPrice = floorPrices[currentFloor + 1];
+                int targetPrice = _floorPrices[currentFloor + 1];
                 if (balance > targetPrice && currentFloor < TinyClicker.floorToRebuildAt)
                 {
                     BuyFloor();
@@ -271,7 +271,7 @@ namespace TinyClickerUI
 
         public static void BuyFloor()
         {
-            window.Log("Building a new floor");
+            _window.Log("Building a new floor");
             MoveUp();
             Wait(2);
             Click(195, 390);
@@ -284,14 +284,14 @@ namespace TinyClickerUI
                 if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
                     ConfigManager.AddOneFloor();
-                    window.Log("Built a new floor");
+                    _window.Log("Built a new floor");
                 }
             }
         }
 
         public static void RebuildTower()
         {
-            window.Log("Rebuilding the tower");
+            _window.Log("Rebuilding the tower");
             SaveStatRebuildTime();
             Click(305, 570);
             Wait(1);
@@ -309,7 +309,7 @@ namespace TinyClickerUI
 
         public static void PassTheTutorial()
         {
-            window.Log("Passing the tutorial");
+            _window.Log("Passing the tutorial");
             Wait(3);
             Click(170, 435); // Continue
             Wait(3);
@@ -416,7 +416,7 @@ namespace TinyClickerUI
 
         public static void RestartGame()
         {
-            window.Log("Restarting the app");
+            _window.Log("Restarting the app");
             IntPtr mainHandle = GetProcess().MainWindowHandle;
 
             InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(98, 17));
@@ -442,7 +442,7 @@ namespace TinyClickerUI
 
         public static void PressExitButton()
         {
-            window.Log("Pressing the exit button");
+            _window.Log("Pressing the exit button");
             Click(305, 565);
         }
 
@@ -450,7 +450,7 @@ namespace TinyClickerUI
         {
             if (currentHour != DateTime.Now.Hour)
             {
-                window.Log("Playing the raffle");
+                _window.Log("Playing the raffle");
                 Wait(1);
                 Click(300, 570);
                 Wait(1);
@@ -486,7 +486,7 @@ namespace TinyClickerUI
             windowBitmap.Dispose();
 
             var template = TinyClicker.templates[imageKey];
-            using (Mat res = new Mat(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
+            using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
             {
                 Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
                 Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -494,9 +494,8 @@ namespace TinyClickerUI
                 Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
                 Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
 
-                double minval, maxval, threshold = 0.7;
-                Point minloc, maxloc;
-                Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+                double threshold = 0.7;
+                Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
                 //GC.Collect();
 
                 if (maxval >= threshold)
@@ -523,9 +522,8 @@ namespace TinyClickerUI
 
                 while (true)
                 {
-                    double minval, maxval, threshold = 0.78;
-                    Point minloc, maxloc;
-                    Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+                    double threshold = 0.78;
+                    Cv2.MinMaxLoc(res, out _, out double maxval, out _, out Point maxloc);
                     res.Dispose();
 
                     if (maxval >= threshold)
@@ -556,27 +554,27 @@ namespace TinyClickerUI
 
         public static void Click(int location)
         {
-            if (clickableChildHandle != IntPtr.Zero)
+            if (_clickableChildHandle != IntPtr.Zero)
             {
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, location);
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, location);
+                InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, location);
+                InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, location);
             }
         }
 
         public static void Click(int x, int y)
         {
-            if (clickableChildHandle != IntPtr.Zero)
+            if (_clickableChildHandle != IntPtr.Zero)
             {
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(x, y));
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(x, y));
+                InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(x, y));
+                InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(x, y));
             }   
         }
 
         public static void PressEscape()
         {
-            if (clickableChildHandle != IntPtr.Zero)
+            if (_clickableChildHandle != IntPtr.Zero)
             {
-                InputSimulator.SendMessage(clickableChildHandle, InputSimulator.WM_KEYDOWN, InputSimulator.VK_ESCAPE, 0);
+                InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_KEYDOWN, InputSimulator.VK_ESCAPE, 0);
             }
         }
 
@@ -591,7 +589,7 @@ namespace TinyClickerUI
             }
             else
             {
-                window.Log("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
+                _window.Log("LDPlayer process not found - TinyClicker function is not possible. Launch LDPlayer and restart the app.");
                 return IntPtr.Zero;
             }
         }
@@ -602,7 +600,7 @@ namespace TinyClickerUI
             {
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
 
-                ScreenshotManager sc = new ScreenshotManager();
+                ScreenshotManager sc = new();
 
                 Image img = sc.CaptureWindow(handle);
                 return img;
@@ -610,7 +608,7 @@ namespace TinyClickerUI
             else
             {
                 //Console.WriteLine("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
-                window.Log("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
+                _window.Log("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
                 return null;
             }
         }
@@ -625,12 +623,12 @@ namespace TinyClickerUI
                 }
 
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-                ScreenshotManager sc = new ScreenshotManager();
+                ScreenshotManager sc = new();
 
                 // Captures screenshot of a window and saves it to the screenshots folder
                 sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
 
-                window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
+                _window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
             }
         }
 
@@ -725,7 +723,7 @@ namespace TinyClickerUI
             catch (Exception ex)
             {
                 string msg = "Cannot import all sample images, some are missing or renamed. \nMissing image path: " + ex.Message;
-                window.Log(msg);
+                _window.Log(msg);
 
                 return dict;
             }
@@ -733,7 +731,7 @@ namespace TinyClickerUI
 
         public static Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)
         {
-            Dictionary<string, Mat> mats = new Dictionary<string, Mat>();
+            Dictionary<string, Mat> mats = new();
             foreach (var image in images)
             {
                 var imageBitmap = new Bitmap(image.Value);

@@ -6,11 +6,11 @@ namespace TinyClickerUI
 {
     public class Config
     {
-        private bool vipPackage;
-        private float elevatorSpeed;
-        private int floorsNumber;
-        private int coins;
-        private DateTime lastRebuildTime;
+        private bool _vipPackage;
+        private float _elevatorSpeed;
+        private int _floorsNumber;
+        private int _coins;
+        private DateTime _lastRebuildTime;
 
         public Config() : this(true, 10f, 3) { }
         public Config(bool vip, float elevatorSpeed, int floorsNumber)
@@ -21,16 +21,16 @@ namespace TinyClickerUI
             Coins = 0;
         }
 
-        public bool VipPackage { get => vipPackage; set => vipPackage = value; }
-        public float ElevatorSpeed { get => elevatorSpeed; set => elevatorSpeed = value; }
-        public int FloorsNumber { get => floorsNumber; set => floorsNumber = value; }
-        public int Coins { get => coins; set => coins = value; }
-        public DateTime LastRebuildTime { get => lastRebuildTime; set => lastRebuildTime = value; }
+        public bool VipPackage { get => _vipPackage; set => _vipPackage = value; }
+        public float ElevatorSpeed { get => _elevatorSpeed; set => _elevatorSpeed = value; }
+        public int FloorsNumber { get => _floorsNumber; set => _floorsNumber = value; }
+        public int Coins { get => _coins; set => _coins = value; }
+        public DateTime LastRebuildTime { get => _lastRebuildTime; set => _lastRebuildTime = value; }
     }
 
     public class ConfigManager
     {
-        static readonly string configPath = Environment.CurrentDirectory + @"\Config.txt";
+        static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
 
         public static void AddOneFloor()
         {
@@ -55,7 +55,7 @@ namespace TinyClickerUI
 
         public static Config GetConfig()
         {
-            string json = File.ReadAllText(configPath);
+            string json = File.ReadAllText(_configPath);
             var config = JsonSerializer.Deserialize<Config>(json);
             return config;
         }
@@ -64,7 +64,7 @@ namespace TinyClickerUI
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
-            File.WriteAllText(configPath, json);
+            File.WriteAllText(_configPath, json);
         }
     }
 }

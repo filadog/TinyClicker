@@ -15,9 +15,9 @@ namespace TinyClickerUI
             string text;
             try
             {
-                using (var engine = new TesseractEngine(@"./tessdata", "eng_old+eng+digits", EngineMode.LstmOnly))
+                using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly))
                 {
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789");
+                    //engine.SetVariable("tessedit_char_whitelist", "0123456789M,.");
                     using (var img = source)
                     {
                         using (var page = engine.Process(img, PageSegMode.SingleLine))
@@ -31,7 +31,7 @@ namespace TinyClickerUI
                 if (text.Length > 5 && text[1] == '.' || text[1] == ',')
                 {
                     text = Regex.Replace(text, "[^0-9]", "").Remove(4);
-                    text = text + "000";
+                    text += "000";
                     balance = Convert.ToInt32(text);
                 }
                 else
