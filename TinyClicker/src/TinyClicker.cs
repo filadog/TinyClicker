@@ -48,6 +48,8 @@ namespace TinyClickerUI
             int foundNothing = 0;
             int curHour = DateTime.Now.Hour - 1;
             int curSecond = DateTime.Now.Second - 1;
+            int sameItemCounter = 0;
+            string lastItemName = "";
 
             while (processId != -1 && !worker.CancellationPending)
             {
@@ -74,6 +76,18 @@ namespace TinyClickerUI
                     string msg = dateTimeNow + " Found " + image.Key;
                     window.Log(msg);
                     foundNothing = 0;
+                    
+                    // Check if the clicker froze
+                    if (lastItemName == image.Key) 
+                    {
+                        sameItemCounter++;
+                        if (sameItemCounter > 5)
+                        {
+                            ClickerActions.PressEscape();
+                            sameItemCounter = 0;
+                        }
+                    }
+                    lastItemName = image.Key;
                 }
 
                 // Print if nothing was found and restart the app if nothing was found for too long
