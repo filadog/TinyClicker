@@ -87,6 +87,10 @@ namespace TinyClickerUI
                             sameItemCounter = 0;
                         }
                     }
+                    else
+                    {
+                        sameItemCounter = 0;
+                    }
                     lastItemName = image.Key;
                 }
 
