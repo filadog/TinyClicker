@@ -139,7 +139,16 @@ namespace TinyClickerUI
         {
             _window.Log("Riding the elevator");
             Click(45, 535);
-            Wait(4);
+            int curFloor = TinyClicker.currentFloor;
+            if (curFloor >= 33)
+                Wait(4);
+            else if (curFloor >= 23)
+                Wait(3);
+            else if (curFloor >= 13)
+                Wait(2);
+            else 
+                Wait(1);
+
             if (IsImageFound("giftChute"))
             {
                 return;
