@@ -51,7 +51,6 @@ namespace TinyClickerUI
 
             List<IntPtr> childHandles = gcChildhandlesList.Target as List<IntPtr>;
             childHandles.Add(hWnd);
-
             return true;
         }
 

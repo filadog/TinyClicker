@@ -27,7 +27,6 @@ namespace TinyClickerUI
         public static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
         public static Dictionary<string, Image> images = ClickerActions.FindImages();
         public static Dictionary<string, Mat> templates = ClickerActions.MakeTemplates(images);
-
         public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
         #endregion
@@ -58,10 +57,7 @@ namespace TinyClickerUI
                 Image gameWindow = ClickerActions.MakeScreenshot();
 
                 // Update the static list of found images via template matching
-                if (gameWindow != null)
-                {
-                    MatchTemplates(gameWindow);
-                }
+                MatchTemplates(gameWindow);
 
                 // Cancel the execution of the next loop iteration if termination is requested
                 if (worker.CancellationPending)
@@ -138,9 +134,9 @@ namespace TinyClickerUI
 
         static void MatchTemplates(Image gameWindow)
         {
-            var windowBitmap = new Bitmap(gameWindow);
-            Mat reference = BitmapConverter.ToMat(windowBitmap);
-            windowBitmap.Dispose();
+            //var windowBitmap = new Bitmap(gameWindow);
+            Mat reference = BitmapConverter.ToMat((Bitmap)gameWindow);
+            //windowBitmap.Dispose();
 
             foreach (var template in templates)
             {

@@ -18,6 +18,7 @@ namespace TinyClickerUI
         public static int processId = GetProcess().Id;
         static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
         static readonly MainWindow _window = TinyClicker.window;
+        static ScreenshotManager _screenshotManager = new ScreenshotManager();
         
 
         #region Clicker Actions
@@ -251,6 +252,7 @@ namespace TinyClickerUI
             Click(225, 375);
             Wait(20);
         }
+
         public static void WatchBuxAds()
         {
             _window.Log("Watching the advertisement");
@@ -488,11 +490,11 @@ namespace TinyClickerUI
         static bool IsImageFound(string imageKey) // Returns true if the image is found 
         {
             Image gameWindow = MakeScreenshot();
-            var windowBitmap = new Bitmap(gameWindow);
-            gameWindow.Dispose();
+            //var windowBitmap =  (Bitmap)gameWindow;
+            //gameWindow.Dispose();
 
-            Mat reference = BitmapConverter.ToMat(windowBitmap);
-            windowBitmap.Dispose();
+            Mat reference = BitmapConverter.ToMat((Bitmap)gameWindow);
+            //windowBitmap.Dispose();
 
             var template = TinyClicker.templates[imageKey];
             using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
@@ -587,7 +589,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generates coordinates within the game screen
+        public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generate coordinates within the game screen
 
         public static IntPtr GetClickableChildHandles(string processName)
         {
@@ -603,22 +605,17 @@ namespace TinyClickerUI
             }
         }
 
-        public static Image? MakeScreenshot()
+        public static Image MakeScreenshot()
         {
             if (processId != -1)
             {
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-
-                ScreenshotManager sc = new();
-
-                Image img = sc.CaptureWindow(handle);
+                Image img = _screenshotManager.CaptureWindow(handle);
                 return img;
             }
             else
             {
-                //Console.WriteLine("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
-                _window.Log("Error. No process with LDPlayer found. Try launching LDPlayer and restart the app");
-                return null;
+                throw new Exception("No process with LDPlayer found. Try restarting the LDPlayer and then restart the Tiny Clicker");
             }
         }
 
@@ -632,11 +629,8 @@ namespace TinyClickerUI
                 }
 
                 IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-                ScreenshotManager sc = new();
-
                 // Captures screenshot of a window and saves it to the screenshots folder
-                sc.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
-
+                _screenshotManager.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
                 _window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
             }
         }
@@ -675,7 +669,7 @@ namespace TinyClickerUI
             {
                 float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 
-                // Round up the result to match the game prices
+                // Round up the result to match with the in-game prices
                 if (i % 2 != 0)
                 {
                     floorCost += 500;
