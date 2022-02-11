@@ -298,6 +298,7 @@ namespace TinyClickerUI
                     _window.Log("Built a new floor");
                 }
             }
+            MoveUp();
         }
 
         public static void RebuildTower()
@@ -490,11 +491,10 @@ namespace TinyClickerUI
         static bool IsImageFound(string imageKey) // Returns true if the image is found 
         {
             Image gameWindow = MakeScreenshot();
-            //var windowBitmap =  (Bitmap)gameWindow;
-            //gameWindow.Dispose();
-
-            Mat reference = BitmapConverter.ToMat((Bitmap)gameWindow);
-            //windowBitmap.Dispose();
+            var windowBitmap = new Bitmap(gameWindow);
+            gameWindow.Dispose();
+            Mat reference = BitmapConverter.ToMat(windowBitmap);
+            windowBitmap.Dispose();
 
             var template = TinyClicker.templates[imageKey];
             using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
@@ -550,7 +550,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static Process? GetProcess()
+        public static Process GetProcess()
         {
             Process[] processlist = Process.GetProcesses();
             foreach (Process process in processlist)
@@ -560,7 +560,7 @@ namespace TinyClickerUI
                     return process;
                 }
             }
-            return null;
+            throw new Exception("LDPlayer process not found");
         }
 
         public static void Click(int location)
@@ -639,18 +639,23 @@ namespace TinyClickerUI
         {
             DateTime dateTimeNow = DateTime.Now;
             DateTime lastRebuild = ConfigManager.GetConfig().LastRebuildTime;
-            double totalHours = 0d;
-
+            string result = "";
             if (lastRebuild != DateTime.MinValue)
             {
                 TimeSpan diff = dateTimeNow - lastRebuild;
-                totalHours = diff.TotalHours;
+                string formatted = diff.ToString(@"hh\:mm\:ss");
+                if (diff.Days >= 1)
+                {
+                    result = string.Format("{0} days ", diff.Days) + formatted;
+                }
+                else
+                {
+                    result = formatted;
+                }
             }
-
             string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
-
             ConfigManager.SaveNewRebuildTime(dateTimeNow);
-            string data = $"\n{dateTimeNow} - rebuilt the tower.\nHours since the last rebuild: {totalHours:0.00}\n";
+            string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
             File.AppendAllText(statsPath, data);
         }
         

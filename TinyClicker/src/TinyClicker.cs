@@ -134,9 +134,9 @@ namespace TinyClickerUI
 
         static void MatchTemplates(Image gameWindow)
         {
-            //var windowBitmap = new Bitmap(gameWindow);
-            Mat reference = BitmapConverter.ToMat((Bitmap)gameWindow);
-            //windowBitmap.Dispose();
+            var windowBitmap = new Bitmap(gameWindow);
+            Mat reference = BitmapConverter.ToMat(windowBitmap);
+            windowBitmap.Dispose();
 
             foreach (var template in templates)
             {
