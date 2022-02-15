@@ -1,7 +1,7 @@
 ## TinyClicker
 
-TinyClicker is a clicker for Tiny Tower mobile game developed by Nimblebit.\
-The clicker utilizes pattern matching and OCR to automate rebuilding of your Tiny Tower on desktop via LDPlayer.
+Autoclicker for the Tiny Tower game.\
+Implements pattern matching and OCR to automate building of the Tiny Tower on desktop via LDPlayer.
 
 ![TinyClicker](https://user-images.githubusercontent.com/51026900/140165371-999ee88c-6d1e-44ef-bd62-c5ede942049b.png)
 
@@ -14,7 +14,9 @@ The clicker utilizes pattern matching and OCR to automate rebuilding of your Tin
 - Tower rebuilding at desired floor and completion of the tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profit
 - Automatic participation in the hourly raffle
-- Configure once, launch and leave it
+- Configure once, launch and forget it
+
+![](https://github.com/filadog/TinyClicker/blob/master/gif.gif)
 
 ## Libraries in use
 
