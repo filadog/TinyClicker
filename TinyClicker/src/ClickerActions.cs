@@ -19,9 +19,72 @@ namespace TinyClickerUI
         static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
         static readonly MainWindow _window = TinyClicker.window;
         static ScreenshotManager _screenshotManager = new ScreenshotManager();
-        
+        static TimeOnly _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now);
+
 
         #region Clicker Actions
+
+        public static void CancelHurryConstruction()
+        {
+            _window.Log("Exiting the construction menu");
+
+            SendClick(100, 375); // Cancel action
+            Wait(1);
+        }
+
+        public static void CollectFreeBux()
+        {
+            _window.Log("Collecting free bux");
+            SendClick(TinyClicker.matchedTemplates["freeBuxCollectButton"]);
+        }
+
+        public static void ClickOnChute()
+        {
+            _window.Log("Clicking on the parachute");
+            SendClick(TinyClicker.matchedTemplates["giftChute"]);
+            Wait(1);
+            if (IsImageFound("watchAdPromptCoins"))
+            {
+                WatchCoinsAds();
+            }
+            else if (TinyClicker.acceptBuxVideoOffers)
+            {
+                if (IsImageFound("watchAdPromptBux"))
+                {
+                    WatchBuxAds();
+                }
+            }
+            else
+            {
+                SendClick(105, 380); // Decline the video offer
+            }
+        }
+
+        public static void CloseAd()
+        {
+            _window.Log("Closing the advertisement");
+
+            if (TinyClicker.matchedTemplates.ContainsKey("closeAd_7") || TinyClicker.matchedTemplates.ContainsKey("closeAd_8"))
+            {
+                SendClick(22, 22);
+                SendClick(311, 22);
+                SendClick(302, 52);
+            }
+            else
+            {
+                SendClick(311, 22);
+                SendClick(22, 22);
+                SendClick(302, 52);
+            }
+
+            CheckForLostAdsReward();
+        }
+
+        public static void CloseChuteNotification()
+        {
+            _window.Log("Closing the parachute notification");
+            SendClick(165, 375); // Close the notification
+        }
 
         public static void ExitRoofCustomizationMenu()
         {
@@ -30,47 +93,13 @@ namespace TinyClickerUI
             Wait(1);
         }
 
-        public static void CancelHurryConstruction()
-        {
-            _window.Log("Exiting the construction menu");
-
-            Click(100, 375); // Cancel action
-            Wait(1);
-        }
-
-        public static void CloseAd()
-        {
-            _window.Log("Closing the advertisement");
-
-            if(TinyClicker.matchedTemplates.ContainsKey("closeAd_7") || TinyClicker.matchedTemplates.ContainsKey("closeAd_8"))
-            {
-                Click(22, 22);
-                Click(311, 22);
-                Click(302, 52);
-            }
-            else
-            {
-                Click(311, 22);
-                Click(22, 22);
-                Click(302, 52);
-            }
-
-            CheckForLostAdsReward();
-        }
-
         public static void PressContinue()
         {
             _window.Log("Clicking continue");
 
-            Click(TinyClicker.matchedTemplates["continueButton"]);
+            SendClick(TinyClicker.matchedTemplates["continueButton"]);
             Wait(1);
             MoveUp();
-        }
-
-        public static void CloseChuteNotification()
-        {
-            _window.Log("Closing the parachute notification");
-            Click(165, 375); // Close the notification
         }
 
         public static void Restock()
@@ -78,14 +107,14 @@ namespace TinyClickerUI
             _window.Log("Restocking");
             MoveDown();
             Wait(1);
-            Click(100, 480); // Stock all
+            SendClick(100, 480); // Stock all
             Wait(1);
-            Click(225, 375);
+            SendClick(225, 375);
             Wait(1);
 
             if (IsImageFound("fullyStockedBonus"))
             {
-                Click(165, 375); // Close the bonus tooltip
+                SendClick(165, 375); // Close the bonus tooltip
                 Wait(1);
                 MoveUp();
                 Wait(1);
@@ -102,52 +131,26 @@ namespace TinyClickerUI
         public static void PressFreeBuxButton()
         {
             _window.Log("Pressing free bux icon");
-            Click(TinyClicker.matchedTemplates["freeBuxButton"]);
+            SendClick(TinyClicker.matchedTemplates["freeBuxButton"]);
             Wait(1);
-            Click(230, 375);
+            SendClick(230, 375);
             Wait(1);
         }
-
-        public static void CollectFreeBux()
-        {
-            _window.Log("Collecting free bux");
-            Click(TinyClicker.matchedTemplates["freeBuxCollectButton"]);
-        }
-
-        public static void ClickOnChute()
-        {
-            _window.Log("Clicking on the parachute");
-            Click(TinyClicker.matchedTemplates["giftChute"]);
-            Wait(1);
-            if (IsImageFound("watchAdPromptCoins"))
-            {
-                WatchCoinsAds();
-            }
-            else if (TinyClicker.acceptBuxVideoOffers)
-            {
-                if (IsImageFound("watchAdPromptBux"))
-                {
-                    WatchBuxAds();
-                }
-            }
-            else
-            {
-                Click(105, 380); // Decline the video offer
-            }
-        }
-
+        
         public static void RideElevator()
         {
             _window.Log("Riding the elevator");
-            Click(45, 535);
+            SendClick(45, 535);
             int curFloor = TinyClicker.currentFloor;
-            if (curFloor >= 33)
+            if (curFloor >= 43)
+                Wait(5);
+            else if (curFloor >= 33)
                 Wait(4);
             else if (curFloor >= 23)
                 Wait(3);
             else if (curFloor >= 13)
                 Wait(2);
-            else 
+            else
                 Wait(1);
 
             if (IsImageFound("giftChute"))
@@ -163,7 +166,7 @@ namespace TinyClickerUI
         public static void PressQuestButton()
         {
             _window.Log("Clicking on the quest button");
-            Click(TinyClicker.matchedTemplates["questButton"]);
+            SendClick(TinyClicker.matchedTemplates["questButton"]);
             Wait(1);
             if (IsImageFound("deliverBitizens"))
             {
@@ -175,30 +178,30 @@ namespace TinyClickerUI
             }
             else
             {
-                Click(90, 440); // Skip the quest
+                SendClick(90, 440); // Skip the quest
                 Wait(1);
-                Click(230, 380); // Confirm
+                SendClick(230, 380); // Confirm
             }
         }
 
         public static void FindBitizens()
         {
             _window.Log("Skipping the quest");
-            Click(95, 445); // Skip the quest
+            SendClick(95, 445); // Skip the quest
             Wait(1);
-            Click(225, 380); // Confirm skip
+            SendClick(225, 380); // Confirm skip
         }
 
         public static void DeliverBitizens()
         {
             _window.Log("Delivering bitizens");
-            Click(230, 440); // Continue
+            SendClick(230, 440); // Continue
         }
 
         public static void OpenTheGame()
         {
             Wait(1);
-            Click(TinyClicker.matchedTemplates["gameIcon"]);
+            SendClick(TinyClicker.matchedTemplates["gameIcon"]);
             Wait(10);
         }
 
@@ -206,9 +209,9 @@ namespace TinyClickerUI
         {
             _window.Log("Closing the hidden ad");
             Wait(1);
-            Click(310, 10);
+            SendClick(310, 10);
             Wait(1);
-            Click(311, 22);
+            SendClick(311, 22);
             CheckForLostAdsReward();
         }
 
@@ -217,12 +220,12 @@ namespace TinyClickerUI
             Wait(1);
             if (IsImageFound("adsLostReward"))
             {
-                Click(240, 344); // Click "Keep watching"
+                SendClick(240, 344); // Click "Keep watching"
                 Wait(15);
             }
             else
             {
-                Click(240, 344);
+                SendClick(240, 344);
             }
         }
 
@@ -235,7 +238,7 @@ namespace TinyClickerUI
         public static void CloseBuildNewFloorNotification()
         {
             _window.Log("Closing the new floor notification");
-            Click(105, 320); // Click no
+            SendClick(105, 320); // Click no
         }
 
         public static void CompleteQuest()
@@ -243,24 +246,24 @@ namespace TinyClickerUI
             _window.Log("Completing the quest");
             
             Wait(1);
-            Click(TinyClicker.matchedTemplates["completedQuestButton"]);
+            SendClick(TinyClicker.matchedTemplates["completedQuestButton"]);
         }
 
         public static void WatchCoinsAds()
         {
             _window.Log("Watching the advertisement");
-            Click(225, 375);
+            SendClick(225, 375);
             Wait(20);
         }
 
         public static void WatchBuxAds()
         {
             _window.Log("Watching the advertisement");
-            Click(225, 375);
+            SendClick(225, 375);
             Wait(20);
         }
 
-        public static void CheckBuildableFloor(int currentFloor, Image gameWindow)
+        public static void CheckForNewFloor(int currentFloor, Image gameWindow)
         {
             TinyClicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
             int balance = TextProcessor.ParseBalance(gameWindow);
@@ -270,7 +273,7 @@ namespace TinyClickerUI
                 int targetPrice = _floorPrices[currentFloor + 1];
                 if (balance > targetPrice && currentFloor < TinyClicker.floorToRebuildAt)
                 {
-                    BuyFloor();
+                    BuildNewFloor();
                 }
                 if (currentFloor >= TinyClicker.floorToRebuildAt)
                 {
@@ -280,40 +283,49 @@ namespace TinyClickerUI
             }
         }
 
-        public static void BuyFloor()
+        public static void BuildNewFloor()
         {
-            _window.Log("Building a new floor");
-            MoveUp();
-            Wait(2);
-            Click(195, 390);
-            Wait(1);
-
-            if (IsImageFound("buildNewFloorNotification"))
+            if (_timeForNewFloor < TimeOnly.FromDateTime(DateTime.Now))
             {
-                Click(230, 320);
+                _window.Log("Building a new floor");
+                MoveUp();
+                Wait(2);
+                SendClick(195, 390); // Click on a new floor
                 Wait(1);
-                if (!IsImageFound("newFloorNoCoinsNotification"))
+
+                if (IsImageFound("buildNewFloorNotification"))
                 {
-                    ConfigManager.AddOneFloor();
-                    _window.Log("Built a new floor");
+                    SendClick(230, 320); // Confirm construction
+                    Wait(1);
+                    // Add new floor if there is enough coins
+                    if (!IsImageFound("newFloorNoCoinsNotification"))
+                    {
+                        ConfigManager.AddOneFloor();
+                        _window.Log("Built a new floor");
+                    }
+                    else
+                    {
+                        // Cooldown 30s in case building fails to prevent repeated attempts
+                        _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now.AddSeconds(30));
+                    }
                 }
+                MoveUp();
             }
-            MoveUp();
         }
 
         public static void RebuildTower()
         {
             _window.Log("Rebuilding the tower");
             SaveStatRebuildTime();
-            Click(305, 570);
+            SendClick(305, 570);
             Wait(1);
-            Click(165, 435);
+            SendClick(165, 435);
             Wait(1);
-            Click(165, 440);
+            SendClick(165, 440);
             Wait(1);
-            Click(230, 380);
+            SendClick(230, 380);
             Wait(1);
-            Click(230, 380);
+            SendClick(230, 380);
             Wait(3);
             ConfigManager.ChangeCurrentFloor(1);
             TinyClicker.currentFloor = 1;
@@ -323,105 +335,105 @@ namespace TinyClickerUI
         {
             _window.Log("Passing the tutorial");
             Wait(3);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(3);
             MoveDown();
             Wait(1);
-            Click(195, 260); // Build a new floor
+            SendClick(195, 260); // Build a new floor
             Wait(1);
-            Click(230, 380); // Confirm
+            SendClick(230, 380); // Confirm
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(190, 300); // Click on new floor
+            SendClick(190, 300); // Click on new floor
             Wait(1);
-            Click(240, 150); // Build a residential floor
+            SendClick(240, 150); // Build a residential floor
             Wait(1);
-            Click(160, 375); // Continue
+            SendClick(160, 375); // Continue
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(30, 535); // Ride elevator
+            SendClick(30, 535); // Ride elevator
             Wait(5);
-            Click(230, 380); // Continue
+            SendClick(230, 380); // Continue
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(190, 200); // Build new floor
+            SendClick(190, 200); // Build new floor
             Wait(1);
-            Click(225, 380); // Confirm
+            SendClick(225, 380); // Confirm
             Wait(1);
-            Click(200, 200); // Open the new floor
+            SendClick(200, 200); // Open the new floor
             Wait(1);
-            Click(90, 340); // Build random food
+            SendClick(90, 340); // Build random food
             Wait(1);
-            Click(170, 375); // Continue
+            SendClick(170, 375); // Continue
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(200, 200); // Open food floor
+            SendClick(200, 200); // Open food floor
             Wait(1);
-            Click(75, 210); // Hire
+            SendClick(75, 210); // Hire
             Wait(1);
-            Click(80, 100); // Select our bitizen
+            SendClick(80, 100); // Select our bitizen
             Wait(1);
-            Click(230, 380); // Hire him
+            SendClick(230, 380); // Hire him
             Wait(1);
-            Click(160, 380); // Continue on dream job assignement
+            SendClick(160, 380); // Continue on dream job assignement
             Wait(1);
-            Click(300, 560); // Exit the food store
+            SendClick(300, 560); // Exit the food store
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(200, 200); // Open food store again
+            SendClick(200, 200); // Open food store again
             Wait(1);
-            Click(200, 210); // Restock first item in the store
+            SendClick(200, 210); // Restock first item in the store
             Wait(15);
-            Click(305, 190); // Restock
+            SendClick(305, 190); // Restock
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Continue
+            SendClick(170, 435); // Continue
             Wait(1);
-            Click(200, 200); // Open food store again
+            SendClick(200, 200); // Open food store again
             Wait(1);
-            Click(170, 130); // Click upgrade
+            SendClick(170, 130); // Click upgrade
             Wait(1);
-            Click(230, 375); // Confirm
+            SendClick(230, 375); // Confirm
             Wait(1);
-            Click(165, 375); // Continue
+            SendClick(165, 375); // Continue
             Wait(1);
-            Click(300, 560); // Exit the food store
+            SendClick(300, 560); // Exit the food store
             Wait(1);
-            Click(20, 60); // Complete quest
+            SendClick(20, 60); // Complete quest
             Wait(1);
-            Click(170, 435); // Collect bux
+            SendClick(170, 435); // Collect bux
             Wait(1);
-            Click(170, 435); // Colect more bux
+            SendClick(170, 435); // Colect more bux
             Wait(1);
-            Click(165, 375); // Continue
+            SendClick(165, 375); // Continue
             ConfigManager.ChangeCurrentFloor(3);
             TinyClicker.currentFloor = 3;
         }
@@ -443,19 +455,19 @@ namespace TinyClickerUI
 
         public static void MoveUp()
         {
-            Click(160, 8);
+            SendClick(160, 8);
             Wait(1);
         }
 
         public static void MoveDown()
         {
-            Click(230, 580);
+            SendClick(230, 580);
         }
 
         public static void PressExitButton()
         {
             _window.Log("Pressing the exit button");
-            Click(305, 565);
+            SendClick(305, 565);
         }
 
         public static int PlayRaffle(int currentHour)
@@ -464,11 +476,11 @@ namespace TinyClickerUI
             {
                 _window.Log("Playing the raffle");
                 Wait(1);
-                Click(300, 570);
+                SendClick(300, 570);
                 Wait(1);
-                Click(275, 440);
+                SendClick(275, 440);
                 Wait(2);
-                Click(165, 375);
+                SendClick(165, 375);
 
                 return DateTime.Now.Hour;
             }
@@ -563,7 +575,7 @@ namespace TinyClickerUI
             throw new Exception("LDPlayer process not found");
         }
 
-        public static void Click(int location)
+        public static void SendClick(int location)
         {
             if (_clickableChildHandle != IntPtr.Zero)
             {
@@ -572,7 +584,7 @@ namespace TinyClickerUI
             }
         }
 
-        public static void Click(int x, int y)
+        public static void SendClick(int x, int y)
         {
             if (_clickableChildHandle != IntPtr.Zero)
             {
@@ -581,7 +593,7 @@ namespace TinyClickerUI
             }   
         }
 
-        public static void PressEscape()
+        public static void SendEscapeButton()
         {
             if (_clickableChildHandle != IntPtr.Zero)
             {

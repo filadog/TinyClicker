@@ -15,19 +15,19 @@ namespace TinyClickerUI
     {
         #region Fields
 
-        public static bool stopped;
-        public static Config currentConfig = ConfigManager.GetConfig();
-        public static int balance = currentConfig.Coins;
-        public static int currentFloor = currentConfig.FloorsNumber;
-        public static float elevatorSpeed = currentConfig.ElevatorSpeed;
-        public static bool vipPackage = currentConfig.VipPackage;
-        public static int floorToRebuildAt = 50;
-        public static bool acceptBuxVideoOffers = false; // Should be true by default
+        internal static bool stopped;
+        internal static Config currentConfig = ConfigManager.GetConfig();
+        internal static int balance = currentConfig.Coins;
+        internal static int currentFloor = currentConfig.FloorsNumber;
+        internal static float elevatorSpeed = currentConfig.ElevatorSpeed;
+        internal static bool vipPackage = currentConfig.VipPackage;
+        internal static int floorToRebuildAt = 50;
+        internal static bool acceptBuxVideoOffers = false; // Should be true by default
 
-        public static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
-        public static Dictionary<string, Image> images = ClickerActions.FindImages();
-        public static Dictionary<string, Mat> templates = ClickerActions.MakeTemplates(images);
-        public static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
+        internal static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
+        internal static Dictionary<string, Image> images = ClickerActions.FindImages();
+        internal static Dictionary<string, Mat> templates = ClickerActions.MakeTemplates(images);
+        internal static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace TinyClickerUI
             worker.RunWorkerAsync();
         }
 
-        // Main loop of the clicker
+        // Main loop
         public static void RunClickerLoop(BackgroundWorker worker)
         {
             int processId = ClickerActions.processId;
@@ -79,7 +79,7 @@ namespace TinyClickerUI
                         sameItemCounter++;
                         if (sameItemCounter > 5)
                         {
-                            ClickerActions.PressEscape();
+                            ClickerActions.SendEscapeButton();
                             sameItemCounter = 0;
                         }
                     }
@@ -90,7 +90,7 @@ namespace TinyClickerUI
                     lastItemName = image.Key;
                 }
 
-                // Print if nothing was found and restart the app if nothing was found for too long
+                // Print if nothing was found and restart the app if necessary
                 if (matchedTemplates.Count == 0)
                 {
                     foundNothing++;
@@ -115,13 +115,13 @@ namespace TinyClickerUI
                     curHour = ClickerActions.PlayRaffle(curHour);
                 }
 
-                // Check for buildable floor every iteration
+                // Check for a new floor every iteration
                 if (gameWindow != null)
                 {
                     if (curSecond != DateTime.Now.Second && currentFloor != 1)
                     {
                         curSecond = DateTime.Now.Second;
-                        ClickerActions.CheckBuildableFloor(currentFloor, gameWindow);
+                        ClickerActions.CheckForNewFloor(currentFloor, gameWindow);
                     }
                     gameWindow.Dispose();
                 }
@@ -153,7 +153,6 @@ namespace TinyClickerUI
                     break;
                 }
             }
-
             reference.Dispose();
         }
 
