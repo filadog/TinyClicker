@@ -43,11 +43,11 @@ namespace TinyClickerUI
             _window.Log("Clicking on the parachute");
             SendClick(TinyClicker.matchedTemplates["giftChute"]);
             Wait(1);
-            if (IsImageFound("watchAdPromptCoins"))
+            if (IsImageFound("watchAdPromptCoins") && TinyClicker.currentFloor >= TinyClicker.floorToStartWatchingAds)
             {
                 WatchCoinsAds();
             }
-            else if (TinyClicker.acceptBuxVideoOffers)
+            else if (TinyClicker.acceptBuxVideoOffers && TinyClicker.currentFloor >= TinyClicker.floorToStartWatchingAds)
             {
                 if (IsImageFound("watchAdPromptBux"))
                 {

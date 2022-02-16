@@ -23,6 +23,7 @@ namespace TinyClickerUI
         internal static bool vipPackage = currentConfig.VipPackage;
         internal static int floorToRebuildAt = 50;
         internal static bool acceptBuxVideoOffers = false; // Should be true by default
+        internal static int floorToStartWatchingAds = 35;
 
         internal static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
         internal static Dictionary<string, Image> images = ClickerActions.FindImages();
