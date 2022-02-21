@@ -305,7 +305,7 @@ namespace TinyClickerUI
                     }
                     else
                     {
-                        // Cooldown 30s in case building fails to prevent repeated attempts
+                        // Cooldown 30s in case building fails (to prevent repeated attempts)
                         _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now.AddSeconds(30));
                     }
                 }
