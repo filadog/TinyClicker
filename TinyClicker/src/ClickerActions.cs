@@ -14,11 +14,17 @@ namespace TinyClickerUI
     internal static class ClickerActions
     {
         public const string processName = "dnplayer";
+
         static readonly IntPtr _clickableChildHandle = GetClickableChildHandles(processName);
+
         public static int processId = GetProcess().Id;
+
         static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
+
         static readonly MainWindow _window = TinyClicker.window;
+
         static ScreenshotManager _screenshotManager = new ScreenshotManager();
+
         static TimeOnly _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now);
 
 
@@ -285,7 +291,7 @@ namespace TinyClickerUI
 
         public static void BuildNewFloor()
         {
-            if (_timeForNewFloor < TimeOnly.FromDateTime(DateTime.Now))
+            if (_timeForNewFloor <= TimeOnly.FromDateTime(DateTime.Now))
             {
                 _window.Log("Building a new floor");
                 MoveUp();
