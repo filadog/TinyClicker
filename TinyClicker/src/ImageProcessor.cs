@@ -21,7 +21,7 @@ namespace TinyClickerUI
         public static Bitmap CropCurrentBalance(Image window)
         {
             // Crop the image
-            Rectangle crop = new Rectangle(14, 598, 72, 25);
+            Rectangle crop = new Rectangle(16, 602, 75, 20);
             var bitmap = new Bitmap(crop.Width, crop.Height);
             using (var gr = Graphics.FromImage(bitmap))
             {
