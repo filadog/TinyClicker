@@ -5,7 +5,7 @@ using System.IO;
 
 namespace TinyClickerUI
 {
-    internal class ImageProcessor
+    internal class ImageEditor
     {
         public static Bitmap FetchBalanceImageAdjusted(Image window)
         {

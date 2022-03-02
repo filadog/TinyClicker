@@ -166,6 +166,9 @@
     <None Update="samples\Tests\BalanceImageSamples\10130000.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="samples\Tests\BalanceImageSamples\109407.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="samples\Tests\BalanceImageSamples\11220000.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -173,6 +176,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="samples\Tests\BalanceImageSamples\188214.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="samples\Tests\BalanceImageSamples\445007.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="samples\Tests\BalanceImageSamples\64357.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="samples\Tests\BalanceImageSamples\96245.png">

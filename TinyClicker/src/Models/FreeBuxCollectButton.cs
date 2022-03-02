@@ -12,7 +12,7 @@ namespace TinyClicker.src.SampleImages
     internal class FreeBuxCollectButton : ISampleImage
     {
         public readonly string name = "FreeBuxCollectButton";
-        private string imagePath = Environment.CurrentDirectory + @"samples\free_bux_collect_button.png";
+        private string imagePath = @".\samples\free_bux_collect_button.png";
 
         public FreeBuxCollectButton()
         {

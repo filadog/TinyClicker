@@ -272,7 +272,7 @@ namespace TinyClickerUI
         public static void CheckForNewFloor(int currentFloor, Image gameWindow)
         {
             TinyClicker.currentFloor = ConfigManager.GetConfig().FloorsNumber;
-            int balance = TextProcessor.ParseBalance(gameWindow);
+            int balance = ImageToText.ParseBalance(gameWindow);
 
             if (balance != 0 && balance != -1 && currentFloor >= 3)
             {
