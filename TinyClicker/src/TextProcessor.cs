@@ -28,9 +28,20 @@ namespace TinyClickerUI
                 }
                 
                 // Check the balance exponent (thousands or millions)
-                if (text.Length > 5 && text[1] == '.' || text[1] == ',')
+                //if (text.Length > 5 && text[1] == '.' || text[1] == ',')
+                //{
+                //    text = Regex.Replace(text, "[^0-9]", "").Remove(4);
+                //    text += "000";
+                //    balance = Convert.ToInt32(text);
+                //}
+
+                if (text[text.Length - 1] == '1')
                 {
-                    text = Regex.Replace(text, "[^0-9]", "").Remove(4);
+                    text = Regex.Replace(text, "[^0-9]", "");
+                    if (text[text.Length - 2] == '0')
+                    {
+                        text = text.Remove(4);
+                    }
                     text += "000";
                     balance = Convert.ToInt32(text);
                 }
