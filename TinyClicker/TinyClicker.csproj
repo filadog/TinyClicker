@@ -163,6 +163,15 @@
     <None Update="samples\stock_all_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="samples\Tests\BalanceImageSamples\10130000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="samples\Tests\BalanceImageSamples\11220000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="samples\Tests\BalanceImageSamples\1253000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="samples\Tests\BalanceImageSamples\188214.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
