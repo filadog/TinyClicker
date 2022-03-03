@@ -178,6 +178,9 @@
     <None Update="samples\Tests\BalanceImageSamples\188214.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="samples\Tests\BalanceImageSamples\32M.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="samples\Tests\BalanceImageSamples\445007.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

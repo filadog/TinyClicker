@@ -34,7 +34,7 @@ namespace TinyClickerUI
         public static int ResultToBalance(string result)
         {
             int balance = 0;
-            if (result[result.Length - 1] == '1')
+            if (result[result.Length - 1] == '1' || result[result.Length - 1] == '0')
             {
                 result = Regex.Replace(result, "[^0-9]", "");
                 if (result[result.Length - 2] == '0')
