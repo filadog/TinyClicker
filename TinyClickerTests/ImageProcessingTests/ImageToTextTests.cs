@@ -56,9 +56,18 @@ namespace TinyClickerTests.ImageProcessing
         }
 
         [Fact]
-        public void ParseBalanceFromImage_7_digits()
+        public void ParseBalanceFromImage_7_digits_1()
         {
             var image = TestHelper.LoadBalanceSample("1253000");
+            int expectedLength = 7;
+            int actualLength = ImageToText.ParseBalance(image).ToString().Length;
+            Assert.Equal(expectedLength, actualLength);
+        }
+
+        [Fact]
+        public void ParseBalanceFromImage_7_digits_2()
+        {
+            var image = TestHelper.LoadBalanceSample("3463M");
             int expectedLength = 7;
             int actualLength = ImageToText.ParseBalance(image).ToString().Length;
             Assert.Equal(expectedLength, actualLength);
@@ -91,5 +100,7 @@ namespace TinyClickerTests.ImageProcessing
             int actualLength = ImageToText.ParseBalance(image).ToString().Length;
             Assert.Equal(expectedLength, actualLength);
         }
+
+        
     }
 }
