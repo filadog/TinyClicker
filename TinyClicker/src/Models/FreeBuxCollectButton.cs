@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 
-namespace TinyClicker.src.SampleImages
+namespace TinyClicker
 {
     internal class FreeBuxCollectButton : ISampleImage
     {

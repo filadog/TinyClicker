@@ -2,7 +2,7 @@
 using System;
 
 
-namespace TinyClicker.src.SampleImages
+namespace TinyClicker
 {
     internal interface ISampleImage
     {
