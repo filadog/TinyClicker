@@ -303,7 +303,7 @@ namespace TinyClickerUI
                 {
                     SendClick(230, 320); // Confirm construction
                     Wait(1);
-                    // Add new floor if there is enough coins
+                    // Add a new floor if there is enough coins
                     if (!IsImageFound("newFloorNoCoinsNotification"))
                     {
                         ConfigManager.AddOneFloor();
@@ -313,9 +313,15 @@ namespace TinyClickerUI
                     {
                         // Cooldown 30s in case building fails (to prevent repeated attempts)
                         _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now.AddSeconds(30));
+                        _window.Log("Not enough coins for a new floor");
                     }
                 }
                 MoveUp();
+            }
+            else
+            {
+                _window.Log("Too early to rebuild the floor");
+                Wait(1);
             }
         }
 
