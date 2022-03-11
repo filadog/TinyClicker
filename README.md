@@ -1,7 +1,6 @@
 ## TinyClicker
 
-Autoclicker for the Tiny Tower game.\
-Implements pattern matching and OCR to automate building of the Tiny Tower on desktop via LDPlayer.
+A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop via LDPlayer.
 
 ![TinyClicker](https://user-images.githubusercontent.com/51026900/140165371-999ee88c-6d1e-44ef-bd62-c5ede942049b.png)
 
