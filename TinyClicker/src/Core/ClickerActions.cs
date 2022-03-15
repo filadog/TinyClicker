@@ -25,7 +25,7 @@ namespace TinyClickerUI
 
         static ScreenshotManager _screenshotManager = new ScreenshotManager();
 
-        static TimeOnly _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now);
+        static DateTime _timeForNewFloor = DateTime.Now;
 
 
         #region Clicker Actions
@@ -291,7 +291,7 @@ namespace TinyClickerUI
 
         public static void BuildNewFloor()
         {
-            if (_timeForNewFloor <= TimeOnly.FromDateTime(DateTime.Now))
+            if (_timeForNewFloor <= DateTime.Now)
             {
                 _window.Log("Building a new floor");
                 MoveUp();
@@ -312,7 +312,7 @@ namespace TinyClickerUI
                     else
                     {
                         // Cooldown 30s in case building fails (to prevent repeated attempts)
-                        _timeForNewFloor = TimeOnly.FromDateTime(DateTime.Now.AddSeconds(30));
+                        _timeForNewFloor = DateTime.Now.AddSeconds(30);
                         _window.Log("Not enough coins for a new floor");
                     }
                 }
