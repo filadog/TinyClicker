@@ -1,6 +1,8 @@
 ## TinyClicker
 
-A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop via LDPlayer.
+A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop via LDPlayer. Work in progress
+
+
 
 ![TinyClicker](https://user-images.githubusercontent.com/51026900/140165371-999ee88c-6d1e-44ef-bd62-c5ede942049b.png)
 
@@ -9,11 +11,13 @@ A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern mat
 
 ## Features
 
-- 100% autonomous work
+- 100% autonomous work * 
 - Tower rebuilding at desired floor and completion of the tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profit
 - Automatic participation in the hourly raffle
 - Configure once, launch and forget it
+
+**only with VIP package version at this time*
 
 ![](https://github.com/filadog/TinyClicker/blob/master/gif.gif)
 
@@ -26,9 +30,9 @@ A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern mat
 ## Before running
 
 Make sure to run only one instance of LDPlayer. 
-LDPlayer window with the game can be covered with other windows, but do not minimize it to tray. 
-Player interactions with the game are possible but not recommended.\
-Avoid checking the tower on mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress may be lost.
+LDPlayer window with the game can be covered with other windows, but do not minimize it to the tray. 
+Player interactions with the game are possible but aren't recommended.\
+Avoid checking the tower on mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress can be lost.
 
 
 ## Setup
@@ -38,7 +42,13 @@ Avoid checking the tower on mobile device while the clicker is running, in-game 
 - In case there is no VIP package, open the file Config.txt, located inside the TinyClicker folder with notepad. Locate the "VipPackage": setting and change it to "false" without quotes. If you have the VIP package leave the setting at true. You should also provide the number of the last built floor (e.g. 14 or 27 etc.) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc.). Only use the format provided by examples in brackets.\
 The setup is done once unless some of the parameters such as elevator speed or VIP status change. In case the config was edited, close TinyClicker before and restart it after the new config was saved.
 
-- When the setup is done, LDPlayer is launched first, then the Clicker. To start the clicker press the Start button, TinyClicker will find the game if it is on the screen and will start its job. 
+- It is advisable to disable the web browser app inside the emulator since some ads will try to open it and cause the clicker to bug, as th program cannot navigate through anything but the Tiny Tower app.
+
+- In case the VIP package is present, it is recommended to swith the regular video offers gift (FREE gift that appears every 4-5 minutes) to only offer you bux, TinyClicker will collect them.
+
+- When the setup is done, LDPlayer is launched first, then TinyClicker. To start the clicker press the Start button, TinyClicker will find the game if it's on the screen and will start its job. 
+
+Disclaimer: The program is in the phase of active development and bugs may occur. Use at your own risk.
 
 ## For the iOS players
 
