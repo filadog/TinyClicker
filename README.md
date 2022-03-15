@@ -1,6 +1,6 @@
 ## TinyClicker
 
-A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop via LDPlayer. Work in progress
+A simple autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop via LDPlayer. Work in progress.
 
 
 
@@ -52,4 +52,4 @@ Disclaimer: The program is in the phase of active development and bugs may occur
 
 ## For the iOS players
 
-If you have a Windows PC it is possible to use TinyTower cloud save inside the Android version of Tiny Tower in LDPlayer, VIP package will be transformed as well. Avoid checking the tower on your mobile device while the clicker is running because in-game cloud sync may confuse the most recent version of the game and you may lose some progress. To avoid this wait at least 30 minutes before launching the game on your iOS device after TinyClicker is stopped.
+If you have a Windows PC it is possible to use Tiny Tower cloud save inside the Android version of Tiny Tower in LDPlayer, VIP package will be transformed as well. Avoid checking the tower on your mobile device while the clicker is running because in-game cloud sync may confuse the most recent version of the game and you may lose some progress. To avoid this allow for at least 30 minutes to pass before launching the game on your iOS device after TinyClicker is stopped.
