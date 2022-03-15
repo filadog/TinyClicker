@@ -34,6 +34,7 @@ LDPlayer window with the game can be covered with other windows, but do not mini
 Player interactions with the game are possible but aren't recommended.\
 Avoid checking the tower on mobile device while the clicker is running, in-game cloud sync may confuse the most recent version of the game and some progress can be lost.
 
+Disclaimer: The program is in the phase of active development and bugs may occur. Use at your own risk.
 
 ## Setup
 
@@ -46,9 +47,8 @@ The setup is done once unless some of the parameters such as elevator speed or V
 
 - In case the VIP package is present, it is recommended to swith the regular video offers gift (FREE gift that appears every 4-5 minutes) to only offer you bux, TinyClicker will collect them.
 
-- When the setup is done, LDPlayer is launched first, then TinyClicker. To start the clicker press the Start button, TinyClicker will find the game if it's on the screen and will start its job. 
+- When the setup is done, LDPlayer is launched first, then TinyClicker. To start the clicker press the Start button, TinyClicker will find the game if it's on the screen and will do its job. 
 
-Disclaimer: The program is in the phase of active development and bugs may occur. Use at your own risk.
 
 ## For the iOS players
 
