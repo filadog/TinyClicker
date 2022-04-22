@@ -40,8 +40,8 @@ Disclaimer: The program is in the phase of active development and bugs may occur
 
 - Prior to launching the clicker, set the LDPlayer resolution setting to Customize, with <code>Width = 333</code>, <code>Height = 592</code>, <code>DPI = 150</code>. It is also recommended to set the "Fixed window size" to "Enable" at the "Other settings" tab in order to prevent accidental change of the resolution. This is important and TinyClicker won't work without the correct resolution.
 
-- If here is no active VIP package, open the file Config.txt, located inside the TinyClicker folder with notepad. Locate the "VipPackage": setting and change it to "false" without quotes. If you have the VIP package leave the setting at true. You should also provide the number of the last built floor (e.g. 14 or 27 etc.) for automatic tower rebuilding and the elevator speed (e.g. 7.25 or 6 etc.). Only use the format provided by examples in brackets.\
-The setup is done once unless some of the parameters such as elevator speed or VIP status change. In case the config was edited, close TinyClicker before and restart it after the new config was saved.
+- If there is no active VIP package, open the file Config.txt, located inside the TinyClicker folder with any text editor. Locate the "VipPackage" setting and change the value after the colon to "false", without quotes. If you have the VIP package leave the setting at true. You should also provide the number of the last built floor (e.g. 14 or 27 etc.) for automatic tower rebuilding. Only use the format provided by examples in brackets. By default the tower will rebuild as soon as it reaches 50th floor. If you have more floors make sure to manually transform your bitizens elsewhere before launching the clicker.\
+The setup is done once unless some of the parameters such as VIP status change. In case the config was edited, close TinyClicker before editing and restart it after the new config was saved.
 
 - It is advisable to disable the web browser app inside the simulated device since some ads will try to open it and cause the clicker to bug, since the program cannot navigate through anything but the Tiny Tower interface.
 
