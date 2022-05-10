@@ -11,6 +11,7 @@ namespace TinyClickerUI
         public static int ParseBalance(Image window)
         {
             Bitmap source = ImageEditor.FetchBalanceImageAdjusted(window);
+            GC.Collect(0);
             string result = "";
             try
             {

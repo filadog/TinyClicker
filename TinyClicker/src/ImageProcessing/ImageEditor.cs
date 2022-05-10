@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime;
 
 namespace TinyClickerUI
 {
@@ -10,7 +11,6 @@ namespace TinyClickerUI
         public static Bitmap FetchBalanceImageAdjusted(Image window)
         {
             Bitmap result = AdjustImage(CropCurrentBalance(window));
-
             // Save the result for manual checking
             //string filename = Environment.CurrentDirectory + @"\screenshots\balance.png";
             //ScreenshotManager.SaveScreenshot(result, filename);
@@ -40,7 +40,6 @@ namespace TinyClickerUI
             }
 
             bitmap = AdjustImage(bitmap);
-            GC.Collect();
 
             return bitmap;
         }
@@ -70,7 +69,6 @@ namespace TinyClickerUI
             imageAttributes.SetGamma(gamma, ColorAdjustType.Bitmap);
             Graphics g = Graphics.FromImage(adjustedImage);
             g.DrawImage(originalImage, new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height) , 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
-            GC.Collect();
 
             return adjustedImage;
         }

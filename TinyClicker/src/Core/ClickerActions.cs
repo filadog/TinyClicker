@@ -531,7 +531,6 @@ namespace TinyClickerUI
 
                 double threshold = 0.7;
                 Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
-                //GC.Collect();
 
                 if (maxval >= threshold)
                 {

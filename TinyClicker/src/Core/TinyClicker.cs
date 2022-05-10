@@ -127,8 +127,8 @@ namespace TinyClickerUI
                     gameWindow.Dispose();
                 }
                 
-                GC.Collect();
                 matchedTemplates.Clear();
+                GC.Collect(0);
                 Task.Delay(1500).Wait();
             }
         }
