@@ -7,6 +7,17 @@
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <DebugType>none</DebugType>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

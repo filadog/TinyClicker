@@ -7,24 +7,23 @@ using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 
-namespace TinyClicker
+namespace TinyClicker;
+
+internal class FreeBuxCollectButton : ISampleImage
 {
-    internal class FreeBuxCollectButton : ISampleImage
+    public readonly string name = "FreeBuxCollectButton";
+    private string imagePath = @".\samples\free_bux_collect_button.png";
+
+    public FreeBuxCollectButton()
     {
-        public readonly string name = "FreeBuxCollectButton";
-        private string imagePath = @".\samples\free_bux_collect_button.png";
+        Mat = GenerateMat(imagePath);
+    }
 
-        public FreeBuxCollectButton()
-        {
-            Mat = GenerateMat(imagePath);
-        }
+    public Mat Mat { get => Mat; private set => Mat = value; }
 
-        public Mat Mat { get => Mat; private set => Mat = value; }
-
-        public Mat GenerateMat(string imagePath)
-        {
-            var img = Image.FromFile(imagePath);
-            return BitmapConverter.ToMat((Bitmap)img);
-        }
+    public Mat GenerateMat(string imagePath)
+    {
+        var img = Image.FromFile(imagePath);
+        return BitmapConverter.ToMat((Bitmap)img);
     }
 }

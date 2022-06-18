@@ -4,69 +4,68 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.ComponentModel;
 
-namespace TinyClickerUI
+namespace TinyClicker;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    private readonly BackgroundWorker _worker = new();
+
+    public MainWindow()
     {
-        private BackgroundWorker worker = new BackgroundWorker();
+        InitializeComponent();
+    }
 
-        public MainWindow()
+    private void MainWindowMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
         {
-            InitializeComponent();
+            DragMove();
         }
+    }
 
-        private void MainWindowMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                DragMove();
-            }
-        }
+    private void StartButton_Click(object sender, RoutedEventArgs e)
+    {
+        TinyClickerApp.stopped = false;
+        _worker.WorkerSupportsCancellation = true;
+        TinyClickerApp.StartInBackground(_worker);
+        
+        Log("Started!");
+        ShowStartedButton();
+    }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            TinyClicker.stopped = false;
-            worker.WorkerSupportsCancellation = true;
-            TinyClicker.StartInBackground(worker);
-            
-            Log("Started!");
-            ShowStartedButton();
-        }
+    private void StopButton_Click(object sender, RoutedEventArgs e)
+    {
+        _worker.CancelAsync();
+        Log("Stopped!");
+        ShowExitButton();
+    }
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            worker.CancelAsync();
-            Log("Stopped!");
-            ShowExitButton();
-        }
+    private void ExitButton_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current.Shutdown();
+    }
 
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
+    public void Log(string msg)
+    {
+        Dispatcher.Invoke(() =>
         {
-            Application.Current.Shutdown();
-        }
+            TextBoxLog.Text = msg;
+        });
+    }
 
-        public void Log(string msg)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                TextBoxLog.Text = msg;
-            });
-        }
+    private void ShowExitButton()
+    {
+        StartButton.Visibility = Visibility.Visible;
+        StartedImage.Visibility = Visibility.Hidden;
+        StopButton.Visibility = Visibility.Hidden;
+        ExitButton.Visibility = Visibility.Visible;
+    }
 
-        private void ShowExitButton()
-        {
-            StartButton.Visibility = Visibility.Visible;
-            StartedImage.Visibility = Visibility.Hidden;
-            StopButton.Visibility = Visibility.Hidden;
-            ExitButton.Visibility = Visibility.Visible;
-        }
-
-        private void ShowStartedButton()
-        {
-            StartButton.Visibility = Visibility.Hidden;
-            StartedImage.Visibility = Visibility.Visible;
-            ExitButton.Visibility = Visibility.Hidden;
-            StopButton.Visibility = Visibility.Visible;
-        }
+    private void ShowStartedButton()
+    {
+        StartButton.Visibility = Visibility.Hidden;
+        StartedImage.Visibility = Visibility.Visible;
+        ExitButton.Visibility = Visibility.Hidden;
+        StopButton.Visibility = Visibility.Visible;
     }
 }

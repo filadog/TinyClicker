@@ -1,9 +1,9 @@
-﻿<Window x:Class="TinyClickerUI.MainWindow"
+﻿<Window x:Class="TinyClicker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TinyClickerUI"
+        xmlns:local="clr-namespace:TinyClicker"
         mc:Ignorable="d"
         Title="TinyClicker" Height="242" Width="265" ResizeMode="NoResize" Visibility="Visible" ShowActivated="False" WindowStyle="None" AllowsTransparency="True" MouseDown="MainWindowMouseDown">
     <Window.Background>

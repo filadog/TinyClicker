@@ -2,12 +2,11 @@
 using System;
 
 
-namespace TinyClicker
-{
-    internal interface ISampleImage
-    {
-        Mat Mat { get; }
+namespace TinyClicker;
 
-        Mat GenerateMat(string imagePath);
-    }
+internal interface ISampleImage
+{
+    Mat Mat { get; }
+
+    Mat GenerateMat(string imagePath);
 }

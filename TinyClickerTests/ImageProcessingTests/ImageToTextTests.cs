@@ -1,4 +1,4 @@
-﻿using TinyClickerUI;
+﻿using TinyClicker;
 using Xunit;
 
 namespace TinyClickerTests.ImageProcessing
