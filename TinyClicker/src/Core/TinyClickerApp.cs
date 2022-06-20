@@ -32,7 +32,7 @@ public static class TinyClickerApp
 
     // BlueStacks suppport
 
-    internal static bool isBluestacks = true;
+    internal static bool isBluestacks = false;
     internal static bool isLDPlayer = false;
 
 
@@ -50,6 +50,7 @@ public static class TinyClickerApp
     // Main loop
     public static void RunClickerLoop(BackgroundWorker worker)
     {
+
         int processId = ClickerActionsRepo.processId;
         int foundNothing = 0;
         int curHour = DateTime.Now.Hour - 1;
@@ -140,6 +141,16 @@ public static class TinyClickerApp
             GC.Collect(0);
             Task.Delay(1500).Wait();
         }
+    }
+
+    public static bool IsEmulatorSelected()
+    {
+        if (!isLDPlayer && !isBluestacks)
+        {
+            window.Log("Select Emulator");
+            return false;
+        }
+        return true;
     }
 
     static void MatchTemplates(Image gameWindow)

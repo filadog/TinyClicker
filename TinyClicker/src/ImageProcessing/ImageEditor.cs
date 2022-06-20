@@ -12,8 +12,8 @@ internal class ImageEditor
     {
         Bitmap result = AdjustImage(CropCurrentBalance(window));
         // Save the result for manual checking
-        //string filename = Environment.CurrentDirectory + @"\screenshots\balance.png";
-        //ScreenshotManager.SaveScreenshot(result, filename);
+        string filename = Environment.CurrentDirectory + @"\screenshots\balance.png";
+        ScreenshotManager.SaveScreenshot(result, filename);
 
         return result;
     }
