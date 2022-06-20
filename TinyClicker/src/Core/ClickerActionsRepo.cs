@@ -13,24 +13,25 @@ namespace TinyClicker;
 
 internal static class ClickerActionsRepo
 {
-    const string LDPlayerProcName = "dnplayer";
-    const string BlueStacksProcName = "HD-Player";
+    const string _ldPlayerProcName = "dnplayer";
+    const string _blueStacksProcName = "HD-Player";
 
     //static IntPtr _clickableChildHandle = new IntPtr(136866);
     static Process _process = GetProcess();
 
     public static int processId = _process.Id;
 
-    static IntPtr _clickableChildHandle = GetClickableChildHandle();
+    static IntPtr _childHandle = GetChildHandle();
 
     static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
 
     static readonly MainWindow _window = TinyClickerApp.window;
 
-    static ScreenshotManager _screenshotManager = new ScreenshotManager();
+    static ScreenshotManager _screenshotManager = new ();
 
     static DateTime _timeForNewFloor = DateTime.Now;
 
+    static Rectangle _screenRect = InputSimulator.GetWindowRectangle(_childHandle);
 
     #region Clicker Actions
 
@@ -459,13 +460,11 @@ internal static class ClickerActionsRepo
         _window.Log("Restarting the app");
         IntPtr mainHandle = GetProcess().MainWindowHandle;
 
-        InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(98, 17));
-        InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(98, 17));
-
+        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(98, 17));
+        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(98, 17));
         Wait(1);
-        InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(355, 547));
-        InputSimulator.SendMessage(mainHandle, InputSimulator.WM_LBUTTONUP, 0, GenerateCoordinates(355, 547));
-
+        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(355, 547));
+        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(355, 547));
         Wait(1);
     }
 
@@ -509,6 +508,17 @@ internal static class ClickerActionsRepo
     #endregion
 
     #region Utility Methods
+
+    static int GetRelativeCoords(int x, int y)
+    {
+        int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
+        int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
+        float x1 = ((float)x * 100 / 333) / 100;
+        float y1 = ((float)y * 100 / 592) / 100;
+        int x2 = (int)(rectX * x1);
+        int y2 = (int)(rectY * y1);
+        return MakeLParam(x2, y2);
+    }
 
     static void Wait(int seconds)
     {
@@ -566,7 +576,7 @@ internal static class ClickerActionsRepo
 
                 if (maxval >= threshold)
                 {
-                    TinyClickerApp.matchedTemplates.Add(template.Key, GenerateCoordinates(maxloc.X, maxloc.Y));
+                    TinyClickerApp.matchedTemplates.Add(template.Key, MakeLParam(maxloc.X, maxloc.Y));
                     break;
                 }
                 else
@@ -582,11 +592,11 @@ internal static class ClickerActionsRepo
         string curProcName = "";
         if (TinyClickerApp.isBluestacks)
         {
-            curProcName = BlueStacksProcName;
+            curProcName = _blueStacksProcName;
         }
         else
         {
-            curProcName = LDPlayerProcName;
+            curProcName = _ldPlayerProcName;
         }
 
         Process[] processlist = Process.GetProcesses();
@@ -602,98 +612,68 @@ internal static class ClickerActionsRepo
 
     public static void SendClick(int location)
     {
-        // For bluestacks
-
-        var rect = InputSimulator.GetWindowRectangle(_clickableChildHandle);
-        int x = rect.Left + 150;
-        int y = rect.Top + 150;
-
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCHITTEST, 1, GenerateCoordinates(x, y));
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_SETCURSOR, (int)_process.MainWindowHandle, 0);
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_MOUSEMOVE, 1, location);
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 0, location);
-        if (_clickableChildHandle != IntPtr.Zero)
+        if (_childHandle != IntPtr.Zero)
         {
-            InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, location);
-            Task.Delay(1).Wait();
-            InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONUP, 0, location);
+            if (TinyClickerApp.isBluestacks)
+            {
+                // Bluestacks input 
+                InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
+                InputSimulator.PostMessageA(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 0x0001, location);
+                InputSimulator.PostMessageA(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0x0001, location);
+            }
+            else
+            {
+                // LDPlayer input 
+                InputSimulator.SendMessage(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, location);
+                Task.Delay(1).Wait();
+                InputSimulator.SendMessage(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, location);
+            }
         }
     }
     public static void SendClick(int x, int y)
     {
-        var rect = InputSimulator.GetWindowRectangle(_clickableChildHandle);
-        int i = rect.Left + 150;
-        int j = rect.Top + 150;
-
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCHITTEST, 1, GenerateCoordinates(i, j));
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_SETCURSOR, (int)_process.MainWindowHandle, 0);
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_MOUSEMOVE, 1, GenerateCoordinates(i, j));
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(i, j));
-        
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCACTIVATE, 1, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_ACTIVATE, 1, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCACTIVATE, 0, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_ACTIVATE, 0, 0);
-        InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_CAPTURECHANGED, 0, (int)_process.MainWindowHandle);
-        if (_clickableChildHandle != IntPtr.Zero)
-        {
-            //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(i, j));
-            //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONUP, 1, GenerateCoordinates(i, j));
-        }
-
-
-
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCHITTEST, 1, GenerateCoordinates(i, j));
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_SETCURSOR, (int)_process.MainWindowHandle, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_MOUSEMOVE, 1, GenerateCoordinates(i, j));
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(i, j));
-
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCACTIVATE, 1, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_ACTIVATE, 1, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_NCACTIVATE, 0, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_ACTIVATE, 0, 0);
-        //InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_CAPTURECHANGED, 0, (int)_process.MainWindowHandle);
-        //if (_clickableChildHandle != IntPtr.Zero)
-        //{
-        //    InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONDOWN, 1, GenerateCoordinates(i, j));
-        //    InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_LBUTTONUP, 1, GenerateCoordinates(i, j));
-        //}
+        SendClick(GetRelativeCoords(x, y));
     }
 
     public static void SendEscapeButton()
     {
-        if (_clickableChildHandle != IntPtr.Zero)
+        if (_childHandle != IntPtr.Zero)
         {
-            InputSimulator.SendMessage(_clickableChildHandle, InputSimulator.WM_KEYDOWN, InputSimulator.VK_ESCAPE, 0);
+            if (TinyClickerApp.isBluestacks)
+            {
+                // Bluestacks input 
+                InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
+                InputSimulator.PostMessageA(_childHandle, (int)InputSimulator.KeyCodes.WM_KEYDOWN, (int)InputSimulator.KeyCodes.VK_ESCAPE, 0);
+            }
+            else
+            {
+                // LDPlayer input 
+                InputSimulator.SendMessage(_childHandle, (int)InputSimulator.KeyCodes.WM_KEYDOWN, (int)InputSimulator.KeyCodes.VK_ESCAPE, 0);
+            }
         }
     }
 
-    public static int GenerateCoordinates(int x, int y) => (y << 16) | (x & 0xFFFF); // Generate coordinates within the game screen
+    public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF); // Generate coordinates within the game screen
 
-    public static IntPtr GetClickableChildHandle()
+    public static IntPtr GetChildHandle()
     {
-        
         string curProcName = "";
         if (TinyClickerApp.isBluestacks)
         {
-            curProcName = BlueStacksProcName;
-            //Console.WriteLine(_process.HandleCount.ToString());
-            //Console.WriteLine(_process.Handle.ToString());
-            //return _process.MainWindowHandle;
+            curProcName = _blueStacksProcName;
 
             if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
             {
                 List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(curProcName);
                 if (childProcesses != null && childProcesses.Count >= 1)
                 {
-                    //var process = childProcesses[0];
                     return childProcesses[0];
                 }
             }
         }
         else
         {
-            curProcName = LDPlayerProcName;
+            curProcName = _ldPlayerProcName;
         }
 
         if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
