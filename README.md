@@ -12,6 +12,7 @@ A simple background autoclicker for the Tiny Tower game. TinyClicker implements 
 ## Features
 
 - 100% autonomous work * 
+- Works in background and does not steal the cursor
 - Tower rebuilding at desired floor and completion of the tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profit
 - Automatic participation in the hourly raffle
