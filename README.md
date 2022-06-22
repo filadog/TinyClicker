@@ -25,15 +25,15 @@ A simple background autoclicker for the Tiny Tower game. TinyClicker implements 
 
 ## Before running
 
-Make sure to run only one instance of emulator. 
+Make sure to run only one instance of android emulator. 
 Emulator window with the game can be covered with other windows, but do not minimize it to the tray. 
-Player interactions with the game are possible but not recommended.\
+Player interactions with the game are possible but not recommended.
+
+By default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens elsewhere before launching the clicker.
+
+TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
 #### Disclaimer: The program is in the phase of active development and bugs may occur. Use at your own risk.
-
-Note: by default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens elsewhere before launching the clicker.\
-TinyClicker will generate a log entry iside Stats.txt file each time it rebuilds the tower.
-
 
 ## Setup
 
