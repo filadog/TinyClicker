@@ -8,11 +8,32 @@ namespace TinyClicker;
 
 public partial class MainWindow : Window
 {
+    SettingsWindow? _settingsWindow;
     private readonly BackgroundWorker _worker = new();
+    bool _isBluestacks = false;
+    bool _isLDPlayer = false;
+    public bool _settingsOpened = false;
 
     public MainWindow()
     {
         InitializeComponent();
+    }
+
+    void Startup()
+    {
+        if (_isLDPlayer || _isBluestacks)
+        {
+            var tinyClicker = new TinyClickerApp(_isBluestacks);
+            tinyClicker.StartInBackground(_worker);
+
+            Log("Started!");
+            ShowStartedButton();
+            HideCheckboxes();
+        }
+        else
+        {
+            Log("Error: Select the emulator");
+        }
     }
 
     private void MainWindowMouseDown(object sender, MouseButtonEventArgs e)
@@ -25,15 +46,8 @@ public partial class MainWindow : Window
 
     private void StartButton_Click(object sender, RoutedEventArgs e)
     {
-        bool isSelected = TinyClickerApp.IsEmulatorSelected();
-        if (isSelected)
-        {
-            TinyClickerApp.stopped = false;
-            _worker.WorkerSupportsCancellation = true;
-            TinyClickerApp.StartInBackground(_worker);
-            Log("Started!");
-            ShowStartedButton();
-        }
+        DisableSettingsButton();
+        Startup();
     }
 
     private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -41,11 +55,22 @@ public partial class MainWindow : Window
         _worker.CancelAsync();
         Log("Stopped!");
         ShowExitButton();
+        ShowCheckboxes();
+        EnableSettingsButton();
     }
 
     private void ExitButton_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
+    }
+
+    void DisableSettingsButton()
+    {
+        SettingsButton.IsEnabled = false;
+    }
+    void EnableSettingsButton()
+    {
+        SettingsButton.IsEnabled = true;
     }
 
     public void Log(string msg)
@@ -54,6 +79,18 @@ public partial class MainWindow : Window
         {
             TextBoxLog.Text = msg;
         });
+    }
+
+    private void HideCheckboxes()
+    {
+        BlueStacksCheckbox.IsEnabled = false;
+        LDPlayerCheckbox.IsEnabled = false;
+    }
+
+    private void ShowCheckboxes()
+    {
+        BlueStacksCheckbox.IsEnabled = true;
+        LDPlayerCheckbox.IsEnabled = true;
     }
 
     private void ShowExitButton()
@@ -79,7 +116,7 @@ public partial class MainWindow : Window
         {
             LDPlayerCheckbox.IsHitTestVisible = false;
             LDPlayerCheckbox.Focusable = false;
-            TinyClickerApp.isBluestacks = true;
+            _isBluestacks = true;
         }
     }
 
@@ -87,20 +124,35 @@ public partial class MainWindow : Window
     {
         BlueStacksCheckbox.IsHitTestVisible = false;
         BlueStacksCheckbox.Focusable = false;
-        TinyClickerApp.isLDPlayer = true;
+        _isLDPlayer = true;
     }
 
     private void BlueStacksCheckbox_Unchecked(object sender, RoutedEventArgs e)
     {
         LDPlayerCheckbox.IsHitTestVisible = true;
         LDPlayerCheckbox.Focusable = true;
-        TinyClickerApp.isBluestacks = false;
+        _isBluestacks = false;
     }
 
     private void LDPlayerCheckbox_Unchecked(object sender, RoutedEventArgs e)
     {
         BlueStacksCheckbox.IsHitTestVisible = true;
         BlueStacksCheckbox.Focusable = true;
-        TinyClickerApp.isLDPlayer = false;
+        _isLDPlayer = false;
+    }
+
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_settingsOpened)
+        {
+            _settingsOpened = true;
+            var settingsWindow = new SettingsWindow(this);
+            _settingsWindow = settingsWindow;
+        }
+        else
+        {
+            _settingsOpened = false;
+            _settingsWindow.Close();
+        }
     }
 }

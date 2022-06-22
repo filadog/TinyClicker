@@ -6,40 +6,66 @@ namespace TinyClicker;
 
 public class ConfigManager
 {
+    public Config _curConfig;
     static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
 
-    public static void AddOneFloor()
+    public ConfigManager()
     {
-        var config = TinyClickerApp.currentConfig;
-        config.FloorsNumber += 1;
-        SaveConfig(config);
+        _curConfig = GetConfig();
+        SaveConfig(_curConfig);
     }
 
-    public static void ChangeCurrentFloor(int floor)
+    public void AddOneFloor()
     {
-        var config = TinyClickerApp.currentConfig;
-        config.FloorsNumber = floor;
-        SaveConfig(config);
+        //var config = _clickerApp._currentConfig;
+        _curConfig.CurrentFloor += 1;
+        SaveConfig(_curConfig);
     }
 
-    public static void SaveNewRebuildTime(DateTime rebuildTime)
+    public void ChangeCurrentFloor(int floor)
     {
-        var config = TinyClickerApp.currentConfig;
-        config.LastRebuildTime = rebuildTime;
-        SaveConfig(config);
+        //var config = _clickerApp._currentConfig;
+        _curConfig.CurrentFloor = floor;
+        SaveConfig(_curConfig);
     }
 
-    public static Config GetConfig()
+    public void SaveNewRebuildTime(DateTime rebuildTime)
     {
-        string json = File.ReadAllText(_configPath);
-        var config = JsonSerializer.Deserialize<Config>(json);
-        return config;
+        //var config = _clickerApp._currentConfig;
+        _curConfig.LastRebuildTime = rebuildTime;
+        SaveConfig(_curConfig);
     }
 
-    static void SaveConfig(Config config)
+    public Config GetConfig()
+    {
+        try
+        {
+            string json = File.ReadAllText(_configPath);
+            var config = JsonSerializer.Deserialize<Config>(json);
+            if (config != null)
+            {
+                return config;
+            }
+            else
+            {
+                return new Config();
+            }
+        }
+        catch (FileNotFoundException)
+        {
+            return new Config();
+        }
+    }
+
+    public void SaveConfig(Config config)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
         string json = JsonSerializer.Serialize(config, options);
         File.WriteAllText(_configPath, json);
+    }
+
+    public void SaveConfig()
+    {
+        SaveConfig(_curConfig);
     }
 }

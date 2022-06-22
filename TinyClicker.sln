@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyClickerTests", "TinyClickerTests\TinyClickerTests.csproj", "{35B84D31-D57D-4DC4-A48B-6D3FA461861D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClickerTests", "TinyClickerTests\TinyClickerTests.csproj", "{35B84D31-D57D-4DC4-A48B-6D3FA461861D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

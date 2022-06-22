@@ -8,57 +8,74 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using System.Threading.Tasks;
+using ImageMagick;
+using System.Windows;
+using System.Linq;
+using System.Windows.Controls.Primitives;
 
 namespace TinyClicker;
 
-internal static class ClickerActionsRepo
+public class ClickerActionsRepo
 {
+    readonly TinyClickerApp _clickerApp;
+    readonly ScreenshotManager _screenshotManager;
+    readonly ConfigManager _configManager;
+    readonly ImageToText _imageToText;
+    readonly ImageEditor _imageEditor;
+
     const string _ldPlayerProcName = "dnplayer";
     const string _blueStacksProcName = "HD-Player";
 
     //static IntPtr _clickableChildHandle = new IntPtr(136866);
-    static Process _process = GetProcess();
+    internal Process _process;
+    public int _processId;
+    readonly IntPtr _childHandle;
+    Dictionary<int, int> _floorPrices;
+    readonly MainWindow _mainWindow;
+    DateTime _timeForNewFloor;
+    Rectangle _screenRect;
 
-    public static int processId = _process.Id;
-
-    static IntPtr _childHandle = GetChildHandle();
-
-    static readonly Dictionary<int, int> _floorPrices = CalculateFloorPrices();
-
-    static readonly MainWindow _window = TinyClickerApp.window;
-
-    static ScreenshotManager _screenshotManager = new ();
-
-    static DateTime _timeForNewFloor = DateTime.Now;
-
-    static Rectangle _screenRect = InputSimulator.GetWindowRectangle(_childHandle);
+    public ClickerActionsRepo(TinyClickerApp clickerApp, ConfigManager configManager)
+    {
+        _clickerApp = clickerApp;
+        _configManager = configManager;
+        _mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
+        _process = GetProcess();
+        _processId = _process.Id;
+        _childHandle = GetChildHandle();
+        _timeForNewFloor = DateTime.Now;
+        _screenRect = InputSimulator.GetWindowRectangle(_childHandle);
+        _screenshotManager = new ScreenshotManager();
+        _imageEditor = new ImageEditor(_screenRect);
+        _imageToText = new ImageToText(_imageEditor);
+    }
 
     #region Clicker Actions
 
-    public static void CancelHurryConstruction()
+    public void CancelHurryConstruction()
     {
-        _window.Log("Exiting the construction menu");
+        _mainWindow.Log("Exiting the construction menu");
 
         SendClick(100, 375); // Cancel action
         Wait(1);
     }
 
-    public static void CollectFreeBux()
+    public void CollectFreeBux()
     {
-        _window.Log("Collecting free bux");
-        SendClick(TinyClickerApp.matchedTemplates["freeBuxCollectButton"]);
+        _mainWindow.Log("Collecting free bux");
+        SendClick(_clickerApp._matchedTemplates["freeBuxCollectButton"]);
     }
 
-    public static void ClickOnChute()
+    public void ClickOnChute()
     {
-        _window.Log("Clicking on the parachute");
-        SendClick(TinyClickerApp.matchedTemplates["giftChute"]);
+        _mainWindow.Log("Clicking on the parachute");
+        SendClick(_clickerApp._matchedTemplates["giftChute"]);
         Wait(1);
-        if (IsImageFound("watchAdPromptCoins") && TinyClickerApp.currentFloor >= TinyClickerApp.floorToStartWatchingAds)
+        if (IsImageFound("watchAdPromptCoins") && _configManager._curConfig.CurrentFloor >= _clickerApp._floorToStartWatchingAds)
         {
             WatchCoinsAds();
         }
-        else if (TinyClickerApp.acceptBuxVideoOffers && TinyClickerApp.currentFloor >= TinyClickerApp.floorToStartWatchingAds)
+        else if (_clickerApp._acceptBuxVideoOffers && _configManager._curConfig.CurrentFloor >= _clickerApp._floorToStartWatchingAds)
         {
             if (IsImageFound("watchAdPromptBux"))
             {
@@ -71,11 +88,11 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void CloseAd()
+    public void CloseAd()
     {
-        _window.Log("Closing the advertisement");
+        _mainWindow.Log("Closing the advertisement");
 
-        if (TinyClickerApp.matchedTemplates.ContainsKey("closeAd_7") || TinyClickerApp.matchedTemplates.ContainsKey("closeAd_8"))
+        if (_clickerApp._matchedTemplates.ContainsKey("closeAd_7") || _clickerApp._matchedTemplates.ContainsKey("closeAd_8"))
         {
             SendClick(22, 22);
             SendClick(311, 22);
@@ -91,31 +108,31 @@ internal static class ClickerActionsRepo
         CheckForLostAdsReward();
     }
 
-    public static void CloseChuteNotification()
+    public void CloseChuteNotification()
     {
-        _window.Log("Closing the parachute notification");
+        _mainWindow.Log("Closing the parachute notification");
         SendClick(165, 375); // Close the notification
     }
 
-    public static void ExitRoofCustomizationMenu()
+    public void ExitRoofCustomizationMenu()
     {
-        _window.Log("Exiting the roof customization menu");
+        _mainWindow.Log("Exiting the roof customization menu");
         PressExitButton();
         Wait(1);
     }
 
-    public static void PressContinue()
+    public void PressContinue()
     {
-        _window.Log("Clicking continue");
+        _mainWindow.Log("Clicking continue");
 
-        SendClick(TinyClickerApp.matchedTemplates["continueButton"]);
+        SendClick(_clickerApp._matchedTemplates["continueButton"]);
         Wait(1);
         MoveUp();
     }
 
-    public static void Restock()
+    public void Restock()
     {
-        _window.Log("Restocking");
+        _mainWindow.Log("Restocking");
         MoveDown();
         Wait(1);
         SendClick(100, 480); // Stock all
@@ -139,20 +156,20 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void PressFreeBuxButton()
+    public void PressFreeBuxButton()
     {
-        _window.Log("Pressing free bux icon");
+        _mainWindow.Log("Pressing free bux icon");
         SendClick(25, 130);
         Wait(1);
         SendClick(230, 375);
         Wait(1);
     }
     
-    public static void RideElevator()
+    public void RideElevator()
     {
-        _window.Log("Riding the elevator");
+        _mainWindow.Log("Riding the elevator");
         SendClick(45, 535);
-        int curFloor = TinyClickerApp.currentFloor;
+        int curFloor = _configManager._curConfig.CurrentFloor;
         if (curFloor >= 43)
             Wait(5);
         else if (curFloor >= 33)
@@ -174,10 +191,10 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void PressQuestButton()
+    public void PressQuestButton()
     {
-        _window.Log("Clicking on the quest button");
-        SendClick(TinyClickerApp.matchedTemplates["questButton"]);
+        _mainWindow.Log("Clicking on the quest button");
+        SendClick(_clickerApp._matchedTemplates["questButton"]);
         Wait(1);
         if (IsImageFound("deliverBitizens"))
         {
@@ -195,30 +212,30 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void FindBitizens()
+    public void FindBitizens()
     {
-        _window.Log("Skipping the quest");
+        _mainWindow.Log("Skipping the quest");
         SendClick(95, 445); // Skip the quest
         Wait(1);
         SendClick(225, 380); // Confirm skip
     }
 
-    public static void DeliverBitizens()
+    public void DeliverBitizens()
     {
-        _window.Log("Delivering bitizens");
+        _mainWindow.Log("Delivering bitizens");
         SendClick(230, 440); // Continue
     }
 
-    public static void OpenTheGame()
+    public void OpenTheGame()
     {
         Wait(1);
-        SendClick(TinyClickerApp.matchedTemplates["gameIcon"]);
+        SendClick(_clickerApp._matchedTemplates["gameIcon"]);
         Wait(10);
     }
 
-    public static void CloseHiddenAd()
+    public void CloseHiddenAd()
     {
-        _window.Log("Closing the hidden ad");
+        _mainWindow.Log("Closing the hidden ad");
         Wait(1);
         SendClick(310, 10);
         Wait(1);
@@ -226,7 +243,7 @@ internal static class ClickerActionsRepo
         CheckForLostAdsReward();
     }
 
-    public static void CheckForLostAdsReward()
+    public void CheckForLostAdsReward()
     {
         Wait(1);
         if (IsImageFound("adsLostReward"))
@@ -240,53 +257,54 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void CloseNewFloorMenu()
+    public void CloseNewFloorMenu()
     {
-        _window.Log("Exiting");
+        _mainWindow.Log("Exiting");
         PressExitButton();
     }
 
-    public static void CloseBuildNewFloorNotification()
+    public void CloseBuildNewFloorNotification()
     {
-        _window.Log("Closing the new floor notification");
+        _mainWindow.Log("Closing the new floor notification");
         SendClick(105, 320); // Click no
     }
 
-    public static void CompleteQuest()
+    public void CompleteQuest()
     {
-        _window.Log("Completing the quest");
+        _mainWindow.Log("Completing the quest");
         
         Wait(1);
-        SendClick(TinyClickerApp.matchedTemplates["completedQuestButton"]);
+        SendClick(_clickerApp._matchedTemplates["completedQuestButton"]);
     }
 
-    public static void WatchCoinsAds()
+    public void WatchCoinsAds()
     {
-        _window.Log("Watching the advertisement");
+        _mainWindow.Log("Watching the advertisement");
         SendClick(225, 375);
         Wait(20);
     }
 
-    public static void WatchBuxAds()
+    public void WatchBuxAds()
     {
-        _window.Log("Watching the advertisement");
+        _mainWindow.Log("Watching the advertisement");
         SendClick(225, 375);
         Wait(20);
     }
 
-    public static void CheckForNewFloor(int currentFloor, Image gameWindow)
+    public void CheckForNewFloor(int currentFloor, Image gameWindow)
     {
-        TinyClickerApp.currentFloor = ConfigManager.GetConfig().FloorsNumber;
-        int balance = ImageToText.ParseBalance(gameWindow);
+        //_clickerApp._currentFloor = ConfigManager.GetConfig().CurrentFloor;
+        _floorPrices = CalculateFloorPrices();
+        int balance = _imageToText.ParseBalance(gameWindow);
 
         if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
             int targetPrice = _floorPrices[currentFloor + 1];
-            if (balance > targetPrice && currentFloor < TinyClickerApp.floorToRebuildAt)
+            if (balance > targetPrice && currentFloor < _clickerApp._floorToRebuildAt)
             {
                 BuildNewFloor();
             }
-            if (currentFloor >= TinyClickerApp.floorToRebuildAt)
+            if (currentFloor >= _clickerApp._floorToRebuildAt)
             {
                 Wait(1);
                 RebuildTower();
@@ -294,11 +312,11 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void BuildNewFloor()
+    public void BuildNewFloor()
     {
         if (_timeForNewFloor <= DateTime.Now)
         {
-            _window.Log("Building a new floor");
+            _mainWindow.Log("Building a new floor");
             MoveUp();
             Wait(2);
             SendClick(195, 390); // Click on a new floor
@@ -311,28 +329,28 @@ internal static class ClickerActionsRepo
                 // Add a new floor if there is enough coins
                 if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
-                    ConfigManager.AddOneFloor();
-                    _window.Log("Built a new floor");
+                    _configManager.AddOneFloor();
+                    _mainWindow.Log("Built a new floor");
                 }
                 else
                 {
                     // Cooldown 30s in case building fails (to prevent repeated attempts)
                     _timeForNewFloor = DateTime.Now.AddSeconds(30);
-                    _window.Log("Not enough coins for a new floor");
+                    _mainWindow.Log("Not enough coins for a new floor");
                 }
             }
             MoveUp();
         }
         else
         {
-            _window.Log("Too early to rebuild the floor");
+            _mainWindow.Log("Too early to rebuild the floor");
             Wait(1);
         }
     }
 
-    public static void RebuildTower()
+    public void RebuildTower()
     {
-        _window.Log("Rebuilding the tower");
+        _mainWindow.Log("Rebuilding the tower");
         SaveStatRebuildTime();
         SendClick(305, 570);
         Wait(1);
@@ -344,13 +362,12 @@ internal static class ClickerActionsRepo
         Wait(1);
         SendClick(230, 380);
         Wait(3);
-        ConfigManager.ChangeCurrentFloor(1);
-        TinyClickerApp.currentFloor = 1;
+        _configManager.ChangeCurrentFloor(1);
     }
 
-    public static void PassTheTutorial()
+    public void PassTheTutorial()
     {
-        _window.Log("Passing the tutorial");
+        _mainWindow.Log("Passing the tutorial");
         Wait(3);
         SendClick(170, 435); // Continue
         Wait(3);
@@ -451,45 +468,47 @@ internal static class ClickerActionsRepo
         SendClick(170, 435); // Colect more bux
         Wait(1);
         SendClick(165, 375); // Continue
-        ConfigManager.ChangeCurrentFloor(3);
-        TinyClickerApp.currentFloor = 3;
+        _configManager.ChangeCurrentFloor(3);
     }
 
-    public static void RestartGame()
+    public void RestartGame()
     {
-        _window.Log("Restarting the app");
-        IntPtr mainHandle = GetProcess().MainWindowHandle;
+        _mainWindow.Log("Restarting the app");
+        //IntPtr mainHandle = GetProcess().MainWindowHandle;
+        SendEscapeButton();
+        Wait(1);
+        SendClick(230, 380);
 
-        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(98, 17));
-        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(98, 17));
-        Wait(1);
-        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(355, 547));
-        InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(355, 547));
-        Wait(1);
+        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(98, 17));
+        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(98, 17));
+        //Wait(1);
+        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(355, 547));
+        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(355, 547));
+        //Wait(1);
     }
 
-    public static void MoveUp()
+    public void MoveUp()
     {
         SendClick(160, 8);
         Wait(1);
     }
 
-    public static void MoveDown()
+    public void MoveDown()
     {
         SendClick(230, 580);
     }
 
-    public static void PressExitButton()
+    public void PressExitButton()
     {
-        _window.Log("Pressing the exit button");
+        _mainWindow.Log("Pressing the exit button");
         SendClick(305, 565);
     }
 
-    public static int PlayRaffle(int currentHour)
+    public int PlayRaffle(int currentHour)
     {
         if (currentHour != DateTime.Now.Hour)
         {
-            _window.Log("Playing the raffle");
+            _mainWindow.Log("Playing the raffle");
             Wait(1);
             SendClick(300, 570);
             Wait(1);
@@ -509,24 +528,37 @@ internal static class ClickerActionsRepo
 
     #region Utility Methods
 
-    static int GetRelativeCoords(int x, int y)
+    (Percentage x, Percentage y) GetScreenDiffPercentage()
+    {
+        var _screenRect = InputSimulator.GetWindowRectangle(_childHandle);
+        int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
+        int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
+        float x1 = ((float)rectX * 100 / 333);
+        float y1 = ((float)rectY * 100 / 592);
+        var _screenHeightPercentage = new Percentage(y1);
+        var _screenWidthPercentage = new Percentage(x1);
+        return (_screenHeightPercentage, _screenWidthPercentage);
+    }
+
+    int GetRelativeCoords(int x, int y)
     {
         int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
         int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
         float x1 = ((float)x * 100 / 333) / 100;
         float y1 = ((float)y * 100 / 592) / 100;
+        
         int x2 = (int)(rectX * x1);
         int y2 = (int)(rectY * y1);
         return MakeLParam(x2, y2);
     }
 
-    static void Wait(int seconds)
+    void Wait(int seconds)
     {
         int milliseconds = seconds * 1000;
         Task.Delay(milliseconds).Wait();
     }
 
-    static bool IsImageFound(string imageKey) // Returns true if the image is found 
+    bool IsImageFound(string imageKey) // Returns true if the image is found 
     {
         Image gameWindow = MakeScreenshot();
         var windowBitmap = new Bitmap(gameWindow);
@@ -534,7 +566,7 @@ internal static class ClickerActionsRepo
         Mat reference = BitmapConverter.ToMat(windowBitmap);
         windowBitmap.Dispose();
 
-        var template = TinyClickerApp.templates[imageKey];
+        var template = _clickerApp._templates[imageKey];
         using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
         {
             Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -557,7 +589,7 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void MatchSingleTemplate(KeyValuePair<string, Mat> template, Mat reference)
+    public void MatchSingleTemplate(KeyValuePair<string, Mat> template, Mat reference)
     {
         using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
         {
@@ -576,7 +608,7 @@ internal static class ClickerActionsRepo
 
                 if (maxval >= threshold)
                 {
-                    TinyClickerApp.matchedTemplates.Add(template.Key, MakeLParam(maxloc.X, maxloc.Y));
+                    _clickerApp._matchedTemplates.Add(template.Key, MakeLParam(maxloc.X, maxloc.Y));
                     break;
                 }
                 else
@@ -587,14 +619,14 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static Process GetProcess()
+    public Process GetProcess()
     {
         string curProcName = "";
-        if (TinyClickerApp.isBluestacks)
+        if (_clickerApp._isBluestacks)
         {
             curProcName = _blueStacksProcName;
         }
-        else
+        if (_clickerApp._isLDPlayer)
         {
             curProcName = _ldPlayerProcName;
         }
@@ -607,14 +639,15 @@ internal static class ClickerActionsRepo
                 return process;
             }
         }
-        throw new Exception("Process not found");
+        _mainWindow.Log("Emulator process not found");
+        throw new Exception("Emulator process not found");
     }
 
-    public static void SendClick(int location)
+    public void SendClick(int location)
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (TinyClickerApp.isBluestacks)
+            if (_clickerApp._isBluestacks)
             {
                 // Bluestacks input 
                 InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
@@ -630,16 +663,16 @@ internal static class ClickerActionsRepo
             }
         }
     }
-    public static void SendClick(int x, int y)
+    public void SendClick(int x, int y)
     {
         SendClick(GetRelativeCoords(x, y));
     }
 
-    public static void SendEscapeButton()
+    public void SendEscapeButton()
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (TinyClickerApp.isBluestacks)
+            if (_clickerApp._isBluestacks)
             {
                 // Bluestacks input 
                 InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
@@ -653,12 +686,12 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF); // Generate coordinates within the game screen
+    public int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF); // Generate coordinates within the game screen
 
-    public static IntPtr GetChildHandle()
+    public IntPtr GetChildHandle()
     {
         string curProcName = "";
-        if (TinyClickerApp.isBluestacks)
+        if (_clickerApp._isBluestacks)
         {
             curProcName = _blueStacksProcName;
 
@@ -684,15 +717,15 @@ internal static class ClickerActionsRepo
                 return childProcesses[0];
             }
         }
-        _window.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
+        _mainWindow.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
         throw new Exception("Emulator child handle not found");
     }
 
-    public static Image MakeScreenshot()
+    public Image MakeScreenshot()
     {
-        if (processId != -1)
+        if (_processId != -1)
         {
-            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
+            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
             Image img = _screenshotManager.CaptureWindow(handle);
             return img;
         }
@@ -702,26 +735,26 @@ internal static class ClickerActionsRepo
         }
     }
 
-    public static void SaveScreenshot()
+    public void SaveScreenshot()
     {
-        if (processId != -1)
+        if (_processId != -1)
         {
             if (!Directory.Exists(Environment.CurrentDirectory + @"\screenshots"))
             {
                 Directory.CreateDirectory(Environment.CurrentDirectory + @"\screenshots");
             }
 
-            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
+            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
             // Captures screenshot of a window and saves it to the screenshots folder
             _screenshotManager.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
-            _window.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
+            _mainWindow.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
         }
     }
 
-    public static void SaveStatRebuildTime()
+    public void SaveStatRebuildTime()
     {
         DateTime dateTimeNow = DateTime.Now;
-        DateTime lastRebuild = ConfigManager.GetConfig().LastRebuildTime;
+        DateTime lastRebuild = _configManager._curConfig.LastRebuildTime;
         string result = "";
         if (lastRebuild != DateTime.MinValue)
         {
@@ -737,12 +770,12 @@ internal static class ClickerActionsRepo
             }
         }
         string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
-        ConfigManager.SaveNewRebuildTime(dateTimeNow);
+        _configManager.SaveNewRebuildTime(dateTimeNow);
         string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
         File.AppendAllText(statsPath, data);
     }
     
-    public static Dictionary<int, int> CalculateFloorPrices()
+    public Dictionary<int, int> CalculateFloorPrices()
     {
         var dict = new Dictionary<int, int>();
 
@@ -753,7 +786,7 @@ internal static class ClickerActionsRepo
         }
 
         // Calculate the prices for floors 10 through 50+
-        for (int i = 10; i <= TinyClickerApp.floorToRebuildAt + 1; i++)
+        for (int i = 10; i <= _clickerApp._floorToRebuildAt + 1; i++)
         {
             float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 
@@ -768,7 +801,7 @@ internal static class ClickerActionsRepo
         return dict;
     }
 
-    public static Dictionary<string, Image> FindImages()
+    public Dictionary<string, Image> FindImages()
     {
         var dict = new Dictionary<string, Image>();
         string path = Path.Combine(Environment.CurrentDirectory, @"samples\");
@@ -814,24 +847,50 @@ internal static class ClickerActionsRepo
         catch (Exception ex)
         {
             string msg = "Cannot import all sample images, some are missing or renamed. \nMissing image path: " + ex.Message;
-            _window.Log(msg);
+            _mainWindow.Log(msg);
 
             return dict;
         }
     }
 
-    public static Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)
+    public Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)
     {
+        var percentages = GetScreenDiffPercentage();
+
+        
+
         Dictionary<string, Mat> mats = new();
         foreach (var image in images)
         {
-            var imageBitmap = new Bitmap(image.Value);
-            Mat template = BitmapConverter.ToMat(imageBitmap);
-            imageBitmap.Dispose();
-            mats.Add(image.Key, template);
+            // Resize images before making templates
+            using (var imageOld = new MagickImage(ImageToBytes(image.Value), MagickFormat.Png))
+            {
+                imageOld.Resize(percentages.y);
+                var imageBitmap = new Bitmap(BytesToImage(imageOld.ToByteArray()));
+                Mat template = BitmapConverter.ToMat(imageBitmap);
+                imageBitmap.Dispose();
+                mats.Add(image.Key, template);
+            }
         }
         images.Clear();
         return mats;
+    }
+
+    byte[] ImageToBytes(Image image)
+    {
+        using (var ms = new MemoryStream())
+        {
+            image.Save(ms, image.RawFormat);
+            return ms.ToArray();
+        }
+    }
+
+    Image BytesToImage(byte[] bytes)
+    {
+        using (var ms = new MemoryStream(bytes))
+        {
+            return Image.FromStream(ms);
+        }
     }
 
     #endregion

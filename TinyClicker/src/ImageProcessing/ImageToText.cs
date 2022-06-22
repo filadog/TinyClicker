@@ -8,23 +8,27 @@ namespace TinyClicker;
 
 internal class ImageToText
 {
-    public static int ParseBalance(Image window)
+    TesseractEngine _tesseract;
+    ImageEditor _imageEditor;
+
+    public ImageToText(ImageEditor editor)
     {
-        Bitmap source = ImageEditor.FetchBalanceImageAdjusted(window);
-        GC.Collect(0);
+        _tesseract = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly);
+        _imageEditor = editor;
+    }
+
+    public int ParseBalance(Image window)
+    {
+        Bitmap source = _imageEditor.GetBalanceImageAdjusted(window);
         string result = "";
         try
         {
-            using (var engine = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly))
+            //engine.SetVariable("tessedit_char_whitelist", "0123456789M,.");
+            using (var page = _tesseract.Process(source, PageSegMode.SingleLine))
             {
-                //engine.SetVariable("tessedit_char_whitelist", "0123456789M,.");
-                using (var page = engine.Process(source, PageSegMode.SingleLine))
-                {
-                    result = page.GetText().Trim();
-                    return ResultToBalance(result);
-                }
+                result = page.GetText().Trim();
+                return ResultToBalance(result);
             }
-            
         }
         catch (Exception)
         {
@@ -32,7 +36,7 @@ internal class ImageToText
         }
     }
 
-    public static int ResultToBalance(string result)
+    public int ResultToBalance(string result)
     {
         int balance = 0;
         if (result[result.Length - 1] == '1' || result[result.Length - 1] == '0')

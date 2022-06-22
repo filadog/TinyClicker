@@ -2,12 +2,21 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
+    <UseWPF>True</UseWPF>
     <StartupObject></StartupObject>
     <DebugType>none</DebugType>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <Description>Background clicker for the Tiny Tower game</Description>
+    <Copyright>filadog @ 2022</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Authors>filadog</Authors>
+    <ApplicationIcon>UI\tynyclicker_icon.ico</ApplicationIcon>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <ErrorReport>prompt</ErrorReport>
+    <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,6 +31,11 @@
 
   <ItemGroup>
     <None Remove="UI\exit_button.png" />
+    <None Remove="UI\images\empty_window.png" />
+    <None Remove="UI\images\save_button.png" />
+    <None Remove="UI\images\settings_button.png" />
+    <None Remove="UI\images\settings_button_hover.png" />
+    <None Remove="UI\images\settings_window.png" />
     <None Remove="UI\main_window.png" />
     <None Remove="UI\started_button.png" />
     <None Remove="UI\start_button.png" />
@@ -29,10 +43,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="UI\tynyclicker_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="11.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.1.22076.8" />
     <PackageReference Include="OpenCvSharp4.Extensions" Version="4.5.5.20211231" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.5.20211231" />
@@ -45,10 +64,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="UI\images\empty_window.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="UI\images\exit_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="UI\images\main_window.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UI\images\save_button.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UI\images\settings_button.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UI\images\settings_button_hover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="UI\images\settings_window.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="UI\images\started_button.png">
@@ -63,12 +97,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Config.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Readme!.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ApplicationDefinition Update="App.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="README.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -231,15 +266,13 @@
     <None Update="tessdata\pdf.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="UI\start_button.psd">
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="SettingsWindow.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Update="UI\stop_button.psd">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Update="UI\tiny_clicker.psd">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    </Page>
   </ItemGroup>
 
 </Project>

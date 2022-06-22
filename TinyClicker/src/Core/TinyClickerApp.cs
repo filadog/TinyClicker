@@ -11,35 +11,52 @@ using OpenCvSharp.Extensions;
 
 namespace TinyClicker;
 
-public static class TinyClickerApp
+public class TinyClickerApp
 {
-    #region Fields
+    internal int _floorToRebuildAt;
+    internal bool _acceptBuxVideoOffers;
+    internal int _floorToStartWatchingAds;
 
-    internal static bool stopped;
-    internal static Config currentConfig = ConfigManager.GetConfig();
-    internal static int balance = currentConfig.Coins;
-    internal static int currentFloor = currentConfig.FloorsNumber;
-    internal static float elevatorSpeed = currentConfig.ElevatorSpeed;
-    internal static bool vipPackage = currentConfig.VipPackage;
-    internal static int floorToRebuildAt = 50;
-    internal static bool acceptBuxVideoOffers = false; // Should be true by default
-    internal static int floorToStartWatchingAds = 35;
+    internal Dictionary<string, int> _matchedTemplates;
+    internal Dictionary<string, Image> _images;
+    internal Dictionary<string, Mat> _templates;
+    internal MainWindow _window;
 
-    internal static Dictionary<string, int> matchedTemplates = new Dictionary<string, int>();
-    internal static Dictionary<string, Image> images = ClickerActionsRepo.FindImages();
-    internal static Dictionary<string, Mat> templates = ClickerActionsRepo.MakeTemplates(images);
-    internal static MainWindow window = Application.Current.Windows.OfType<MainWindow>().First();
+    readonly ClickerActionsRepo _clickerActionsRepo;
+    readonly ConfigManager _configManager;
 
-    // BlueStacks suppport
+    internal bool _isBluestacks;
+    internal bool _isLDPlayer;
 
-    internal static bool isBluestacks = false;
-    internal static bool isLDPlayer = false;
-
-
-    #endregion
-
-    public static void StartInBackground(BackgroundWorker worker)
+    public TinyClickerApp(bool isBluestacks)
     {
+        if (isBluestacks)
+        {
+            _isBluestacks = true;
+            _isLDPlayer = false;
+        }
+        else
+        {
+            _isBluestacks = false;
+            _isLDPlayer = true;
+        }
+
+        _configManager = new ConfigManager();
+        _clickerActionsRepo = new ClickerActionsRepo(this, _configManager);
+
+        _matchedTemplates = new Dictionary<string, int>();
+        _images = _clickerActionsRepo.FindImages();
+        _templates = _clickerActionsRepo.MakeTemplates(_images);
+        _window = Application.Current.Windows.OfType<MainWindow>().First();
+
+        _floorToRebuildAt = _configManager._curConfig.RebuildAtFloor;
+        _acceptBuxVideoOffers = _configManager._curConfig.WatchBuxAds;
+        _floorToStartWatchingAds = _configManager._curConfig.WatchAdsFromFloor;
+    }
+
+    public void StartInBackground(BackgroundWorker worker)
+    {
+        worker.WorkerSupportsCancellation = true;
         worker.DoWork += (s, e) =>
         {
             RunClickerLoop(worker);
@@ -48,10 +65,9 @@ public static class TinyClickerApp
     }
 
     // Main loop
-    public static void RunClickerLoop(BackgroundWorker worker)
+    public void RunClickerLoop(BackgroundWorker worker)
     {
-
-        int processId = ClickerActionsRepo.processId;
+        int processId = _clickerActionsRepo._processId;
         int foundNothing = 0;
         int curHour = DateTime.Now.Hour - 1;
         int curSecond = DateTime.Now.Second - 1;
@@ -61,11 +77,10 @@ public static class TinyClickerApp
         // TODO: Clean this up
         while (processId != -1 && !worker.CancellationPending)
         {
-            currentFloor = ConfigManager.GetConfig().FloorsNumber;
-            string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
+            var _currentFloor = _configManager._curConfig.CurrentFloor;
+            var dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
 
-            // TODO: Add using statement 
-            Image gameWindow = ClickerActionsRepo.MakeScreenshot();
+            Image gameWindow = _clickerActionsRepo.MakeScreenshot();
 
             // Update the static list of found images via template matching
             MatchTemplates(gameWindow);
@@ -73,15 +88,15 @@ public static class TinyClickerApp
             // Cancel the execution of the next loop iteration if termination is requested
             if (worker.CancellationPending)
             {
-                window.Log("Stopped!");
+                _window.Log("Stopped!");
                 break;
             }
 
             // Print the name of the found object
-            foreach (var image in matchedTemplates)
+            foreach (var image in _matchedTemplates)
             {
                 string msg = dateTimeNow + " Found " + image.Key;
-                window.Log(msg);
+                _window.Log(msg);
                 foundNothing = 0;
                 
                 // Check if the clicker froze
@@ -90,7 +105,7 @@ public static class TinyClickerApp
                     sameItemCounter++;
                     if (sameItemCounter > 5)
                     {
-                        ClickerActionsRepo.SendEscapeButton();
+                        _clickerActionsRepo.SendEscapeButton();
                         sameItemCounter = 0;
                     }
                 }
@@ -102,71 +117,60 @@ public static class TinyClickerApp
             }
 
             // Print if nothing was found and restart the app if necessary
-            if (matchedTemplates.Count == 0)
+            if (_matchedTemplates.Count == 0)
             {
                 foundNothing++;
                 string msg = dateTimeNow + " Found nothing x" + foundNothing;
-                window.Log(msg);
+                _window.Log(msg);
 
                 // Try to close ads with improper close button location after 20 attempts
                 if (foundNothing >= 20)
-                    ClickerActionsRepo.CloseHiddenAd(); 
-                if (foundNothing >= 23) 
-                    ClickerActionsRepo.RestartGame();
+                    _clickerActionsRepo.CloseHiddenAd(); 
+                if (foundNothing >= 23)
+                    _clickerActionsRepo.RestartGame();
             }
 
             // Commence the turorial at the first floor
-            if (currentFloor == 1)
-                ClickerActionsRepo.PassTheTutorial();
+            if (_currentFloor == 1)
+                _clickerActionsRepo.PassTheTutorial();
 
             // Play the hourly raffle at the beginning of every hour and perform all actions
-            if (currentFloor != floorToRebuildAt)
+            if (_currentFloor != _floorToRebuildAt)
             {
                 PerformActions();
-                curHour = ClickerActionsRepo.PlayRaffle(curHour);
+                curHour = _clickerActionsRepo.PlayRaffle(curHour);
             }
 
             // Check for a new floor every iteration
             if (gameWindow != null)
             {
-                if (curSecond != DateTime.Now.Second && currentFloor != 1)
+                if (curSecond != DateTime.Now.Second && _currentFloor != 1)
                 {
                     curSecond = DateTime.Now.Second;
-                    ClickerActionsRepo.CheckForNewFloor(currentFloor, gameWindow);
+                    _clickerActionsRepo.CheckForNewFloor(_currentFloor, gameWindow);
                 }
                 gameWindow.Dispose();
             }
             
-            matchedTemplates.Clear();
-            GC.Collect(0);
+            _matchedTemplates.Clear();
             Task.Delay(1500).Wait();
         }
     }
 
-    public static bool IsEmulatorSelected()
-    {
-        if (!isLDPlayer && !isBluestacks)
-        {
-            window.Log("Select Emulator");
-            return false;
-        }
-        return true;
-    }
-
-    static void MatchTemplates(Image gameWindow)
+    void MatchTemplates(Image gameWindow)
     {
         var windowBitmap = new Bitmap(gameWindow);
         Mat reference = BitmapConverter.ToMat(windowBitmap);
         windowBitmap.Dispose();
 
-        foreach (var template in templates)
+        foreach (var template in _templates)
         {
-            if (matchedTemplates.Count == 0)
+            if (_matchedTemplates.Count == 0)
             {
-                if (!matchedTemplates.ContainsKey(template.Key))
+                if (!_matchedTemplates.ContainsKey(template.Key))
                 {
-                    ClickerActionsRepo.MatchSingleTemplate(template, reference);
-                    Task.Delay(15).Wait(); // Smooth the CPU peak load
+                    _clickerActionsRepo.MatchSingleTemplate(template, reference);
+                    Task.Delay(10).Wait(); // Smooth the CPU peak load
                 }
             }
             else
@@ -177,17 +181,17 @@ public static class TinyClickerApp
         reference.Dispose();
     }
 
-    static void PerformActions()
+    void PerformActions()
     {
         string key;
-        if (matchedTemplates.Keys.Count > 0)
+        if (_matchedTemplates.Keys.Count > 0)
         {
-            key = matchedTemplates.Keys.First();
+            key = _matchedTemplates.Keys.First();
             switch (key)
             {
-                case "freeBuxCollectButton": ClickerActionsRepo.CollectFreeBux(); break;
-                case "roofCustomizationWindow": ClickerActionsRepo.ExitRoofCustomizationMenu(); break;
-                case "hurryConstructionPrompt": ClickerActionsRepo.CancelHurryConstruction(); break;
+                case "freeBuxCollectButton": _clickerActionsRepo.CollectFreeBux(); break;
+                case "roofCustomizationWindow": _clickerActionsRepo.ExitRoofCustomizationMenu(); break;
+                case "hurryConstructionPrompt": _clickerActionsRepo.CancelHurryConstruction(); break;
                 case "closeAd":
                 case "closeAd_2":
                 case "closeAd_3":
@@ -196,24 +200,24 @@ public static class TinyClickerApp
                 case "closeAd_6":
                 case "closeAd_7":
                 case "closeAd_8":
-                case "closeAd_9": ClickerActionsRepo.CloseAd(); break;
-                case "continueButton": ClickerActionsRepo.PressContinue(); break;
-                case "foundCoinsChuteNotification": ClickerActionsRepo.CloseChuteNotification(); break;
-                case "restockButton": ClickerActionsRepo.Restock(); break;
-                case "freeBuxButton": ClickerActionsRepo.PressFreeBuxButton(); break;
-                case "giftChute": ClickerActionsRepo.ClickOnChute(); break;
-                case "backButton": ClickerActionsRepo.PressExitButton(); break;
-                case "elevatorButton": ClickerActionsRepo.RideElevator(); break;
-                case "questButton": ClickerActionsRepo.PressQuestButton(); break;
-                case "completedQuestButton": ClickerActionsRepo.CompleteQuest(); break;
-                case "watchAdPromptCoins": ClickerActionsRepo.WatchCoinsAds(); break;
-                case "watchAdPromptBux": ClickerActionsRepo.WatchBuxAds(); break;
-                case "findBitizens": ClickerActionsRepo.FindBitizens(); break;
-                case "deliverBitizens": ClickerActionsRepo.DeliverBitizens(); break;
-                case "newFloorMenu": ClickerActionsRepo.CloseNewFloorMenu(); break;
-                case "buildNewFloorNotification": ClickerActionsRepo.CloseBuildNewFloorNotification(); break;
-                case "gameIcon": ClickerActionsRepo.OpenTheGame(); break;
-                case "adsLostReward": ClickerActionsRepo.CheckForLostAdsReward(); break;
+                case "closeAd_9": _clickerActionsRepo.CloseAd(); break;
+                case "continueButton": _clickerActionsRepo.PressContinue(); break;
+                case "foundCoinsChuteNotification": _clickerActionsRepo.CloseChuteNotification(); break;
+                case "restockButton": _clickerActionsRepo.Restock(); break;
+                case "freeBuxButton": _clickerActionsRepo.PressFreeBuxButton(); break;
+                case "giftChute": _clickerActionsRepo.ClickOnChute(); break;
+                case "backButton": _clickerActionsRepo.PressExitButton(); break;
+                case "elevatorButton": _clickerActionsRepo.RideElevator(); break;
+                case "questButton": _clickerActionsRepo.PressQuestButton(); break;
+                case "completedQuestButton": _clickerActionsRepo.CompleteQuest(); break;
+                case "watchAdPromptCoins": _clickerActionsRepo.WatchCoinsAds(); break;
+                case "watchAdPromptBux": _clickerActionsRepo.WatchBuxAds(); break;
+                case "findBitizens": _clickerActionsRepo.FindBitizens(); break;
+                case "deliverBitizens": _clickerActionsRepo.DeliverBitizens(); break;
+                case "newFloorMenu": _clickerActionsRepo.CloseNewFloorMenu(); break;
+                case "buildNewFloorNotification": _clickerActionsRepo.CloseBuildNewFloorNotification(); break;
+                case "gameIcon": _clickerActionsRepo.OpenTheGame(); break;
+                case "adsLostReward": _clickerActionsRepo.CheckForLostAdsReward(); break;
                 default: break;
             }
         }

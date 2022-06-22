@@ -1,7 +1,0 @@
-{
-  "VipPackage": true,
-  "ElevatorSpeed": 10,
-  "FloorsNumber": 10,
-  "Coins": 0,
-  "LastRebuildTime": "2021-11-01T22:46:00.25407+03:00"
-}
