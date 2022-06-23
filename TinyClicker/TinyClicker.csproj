@@ -30,20 +30,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="UI\exit_button.png" />
-    <None Remove="UI\images\empty_window.png" />
-    <None Remove="UI\images\save_button.png" />
-    <None Remove="UI\images\settings_button.png" />
-    <None Remove="UI\images\settings_button_hover.png" />
-    <None Remove="UI\images\settings_window.png" />
-    <None Remove="UI\main_window.png" />
-    <None Remove="UI\started_button.png" />
-    <None Remove="UI\start_button.png" />
-    <None Remove="UI\stop_button.png" />
+    <None Remove="ui\exit_button.png" />
+    <None Remove="ui\images\empty_window.png" />
+    <None Remove="ui\images\save_button.png" />
+    <None Remove="ui\images\settings_button.png" />
+    <None Remove="ui\images\settings_button_hover.png" />
+    <None Remove="ui\images\settings_window.png" />
+    <None Remove="ui\main_window.png" />
+    <None Remove="ui\started_button.png" />
+    <None Remove="ui\start_button.png" />
+    <None Remove="ui\stop_button.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="UI\tynyclicker_icon.ico" />
+    <Content Include="ui\tynyclicker_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,34 +64,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="UI\images\empty_window.png">
+    <Resource Include="ui\images\empty_window.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\exit_button.png">
+    <Resource Include="ui\images\exit_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\main_window.png">
+    <Resource Include="ui\images\main_window.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\save_button.png">
+    <Resource Include="ui\images\save_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\settings_button.png">
+    <Resource Include="ui\images\settings_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\settings_button_hover.png">
+    <Resource Include="ui\images\settings_button_hover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\settings_window.png">
+    <Resource Include="ui\images\settings_window.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\started_button.png">
+    <Resource Include="ui\images\started_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\start_button.png">
+    <Resource Include="ui\images\start_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\images\stop_button.png">
+    <Resource Include="ui\images\stop_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -104,9 +104,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="README.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="samples\ads_lost_reward.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
