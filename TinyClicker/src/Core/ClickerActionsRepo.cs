@@ -17,7 +17,7 @@ namespace TinyClicker;
 
 public class ClickerActionsRepo
 {
-    readonly TinyClickerApp _clickerApp;
+    readonly ScreenScanner _screenScanner;
     readonly ScreenshotManager _screenshotManager;
     readonly ConfigManager _configManager;
     readonly ImageToText _imageToText;
@@ -26,7 +26,6 @@ public class ClickerActionsRepo
     const string _ldPlayerProcName = "dnplayer";
     const string _blueStacksProcName = "HD-Player";
 
-    //static IntPtr _clickableChildHandle = new IntPtr(136866);
     internal Process _process;
     public int _processId;
     readonly IntPtr _childHandle;
@@ -35,10 +34,10 @@ public class ClickerActionsRepo
     DateTime _timeForNewFloor;
     Rectangle _screenRect;
 
-    public ClickerActionsRepo(TinyClickerApp clickerApp, ConfigManager configManager)
+    public ClickerActionsRepo(ScreenScanner imageToAction)
     {
-        _clickerApp = clickerApp;
-        _configManager = configManager;
+        _screenScanner = imageToAction;
+        _configManager = new ConfigManager();
         _mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
         _process = GetProcess();
         _processId = _process.Id;
@@ -48,6 +47,7 @@ public class ClickerActionsRepo
         _screenshotManager = new ScreenshotManager();
         _imageEditor = new ImageEditor(_screenRect);
         _imageToText = new ImageToText(_imageEditor);
+        _floorPrices = new Dictionary<int, int>();
     }
 
     #region Clicker Actions
@@ -63,19 +63,19 @@ public class ClickerActionsRepo
     public void CollectFreeBux()
     {
         _mainWindow.Log("Collecting free bux");
-        SendClick(_clickerApp._matchedTemplates["freeBuxCollectButton"]);
+        SendClick(_screenScanner._matchedTemplates["freeBuxCollectButton"]);
     }
 
     public void ClickOnChute()
     {
         _mainWindow.Log("Clicking on the parachute");
-        SendClick(_clickerApp._matchedTemplates["giftChute"]);
+        SendClick(_screenScanner._matchedTemplates["giftChute"]);
         Wait(1);
-        if (IsImageFound("watchAdPromptCoins") && _configManager._curConfig.CurrentFloor >= _clickerApp._floorToStartWatchingAds)
+        if (IsImageFound("watchAdPromptCoins") && _configManager._curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
             WatchCoinsAds();
         }
-        else if (_clickerApp._acceptBuxVideoOffers && _configManager._curConfig.CurrentFloor >= _clickerApp._floorToStartWatchingAds)
+        else if (_screenScanner._acceptBuxVideoOffers && _configManager._curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
             if (IsImageFound("watchAdPromptBux"))
             {
@@ -92,7 +92,7 @@ public class ClickerActionsRepo
     {
         _mainWindow.Log("Closing the advertisement");
 
-        if (_clickerApp._matchedTemplates.ContainsKey("closeAd_7") || _clickerApp._matchedTemplates.ContainsKey("closeAd_8"))
+        if (_screenScanner._matchedTemplates.ContainsKey("closeAd_7") || _screenScanner._matchedTemplates.ContainsKey("closeAd_8"))
         {
             SendClick(22, 22);
             SendClick(311, 22);
@@ -125,7 +125,7 @@ public class ClickerActionsRepo
     {
         _mainWindow.Log("Clicking continue");
 
-        SendClick(_clickerApp._matchedTemplates["continueButton"]);
+        SendClick(_screenScanner._matchedTemplates["continueButton"]);
         Wait(1);
         MoveUp();
     }
@@ -194,7 +194,7 @@ public class ClickerActionsRepo
     public void PressQuestButton()
     {
         _mainWindow.Log("Clicking on the quest button");
-        SendClick(_clickerApp._matchedTemplates["questButton"]);
+        SendClick(_screenScanner._matchedTemplates["questButton"]);
         Wait(1);
         if (IsImageFound("deliverBitizens"))
         {
@@ -229,13 +229,13 @@ public class ClickerActionsRepo
     public void OpenTheGame()
     {
         Wait(1);
-        SendClick(_clickerApp._matchedTemplates["gameIcon"]);
+        SendClick(_screenScanner._matchedTemplates["gameIcon"]);
         Wait(10);
     }
 
     public void CloseHiddenAd()
     {
-        _mainWindow.Log("Closing the hidden ad");
+        _mainWindow.Log("Closing hidden ads");
         Wait(1);
         SendClick(310, 10);
         Wait(1);
@@ -274,7 +274,7 @@ public class ClickerActionsRepo
         _mainWindow.Log("Completing the quest");
         
         Wait(1);
-        SendClick(_clickerApp._matchedTemplates["completedQuestButton"]);
+        SendClick(_screenScanner._matchedTemplates["completedQuestButton"]);
     }
 
     public void WatchCoinsAds()
@@ -300,11 +300,11 @@ public class ClickerActionsRepo
         if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
             int targetPrice = _floorPrices[currentFloor + 1];
-            if (balance > targetPrice && currentFloor < _clickerApp._floorToRebuildAt)
+            if (balance > targetPrice && currentFloor < _screenScanner._floorToRebuildAt)
             {
                 BuildNewFloor();
             }
-            if (currentFloor >= _clickerApp._floorToRebuildAt)
+            if (currentFloor >= _screenScanner._floorToRebuildAt)
             {
                 Wait(1);
                 RebuildTower();
@@ -316,7 +316,7 @@ public class ClickerActionsRepo
     {
         if (_timeForNewFloor <= DateTime.Now)
         {
-            _mainWindow.Log("Building a new floor");
+            _mainWindow.Log("Building new floor");
             MoveUp();
             Wait(2);
             SendClick(195, 390); // Click on a new floor
@@ -474,17 +474,9 @@ public class ClickerActionsRepo
     public void RestartGame()
     {
         _mainWindow.Log("Restarting the app");
-        //IntPtr mainHandle = GetProcess().MainWindowHandle;
         SendEscapeButton();
         Wait(1);
         SendClick(230, 380);
-
-        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(98, 17));
-        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(98, 17));
-        //Wait(1);
-        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, MakeLParam(355, 547));
-        //InputSimulator.SendMessage(mainHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, MakeLParam(355, 547));
-        //Wait(1);
     }
 
     public void MoveUp()
@@ -515,7 +507,6 @@ public class ClickerActionsRepo
             SendClick(275, 440);
             Wait(2);
             SendClick(165, 375);
-
             return DateTime.Now.Hour;
         }
         else
@@ -566,7 +557,7 @@ public class ClickerActionsRepo
         Mat reference = BitmapConverter.ToMat(windowBitmap);
         windowBitmap.Dispose();
 
-        var template = _clickerApp._templates[imageKey];
+        var template = _screenScanner._templates[imageKey];
         using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
         {
             Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -589,44 +580,14 @@ public class ClickerActionsRepo
         }
     }
 
-    public void MatchSingleTemplate(KeyValuePair<string, Mat> template, Mat reference)
-    {
-        using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
-        {
-            Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
-            Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
-            Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
-            Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
-            gref.Dispose();
-            gtpl.Dispose();
-
-            while (true)
-            {
-                double threshold = 0.78;
-                Cv2.MinMaxLoc(res, out _, out double maxval, out _, out Point maxloc);
-                res.Dispose();
-
-                if (maxval >= threshold)
-                {
-                    _clickerApp._matchedTemplates.Add(template.Key, MakeLParam(maxloc.X, maxloc.Y));
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
-
     public Process GetProcess()
     {
         string curProcName = "";
-        if (_clickerApp._isBluestacks)
+        if (_screenScanner._isBluestacks)
         {
             curProcName = _blueStacksProcName;
         }
-        if (_clickerApp._isLDPlayer)
+        if (_screenScanner._isLDPlayer)
         {
             curProcName = _ldPlayerProcName;
         }
@@ -647,7 +608,7 @@ public class ClickerActionsRepo
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_clickerApp._isBluestacks)
+            if (_screenScanner._isBluestacks)
             {
                 // Bluestacks input 
                 InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
@@ -672,7 +633,7 @@ public class ClickerActionsRepo
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_clickerApp._isBluestacks)
+            if (_screenScanner._isBluestacks)
             {
                 // Bluestacks input 
                 InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
@@ -691,18 +652,9 @@ public class ClickerActionsRepo
     public IntPtr GetChildHandle()
     {
         string curProcName = "";
-        if (_clickerApp._isBluestacks)
+        if (_screenScanner._isBluestacks)
         {
             curProcName = _blueStacksProcName;
-
-            if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
-            {
-                List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(curProcName);
-                if (childProcesses != null && childProcesses.Count >= 1)
-                {
-                    return childProcesses[0];
-                }
-            }
         }
         else
         {
@@ -731,7 +683,7 @@ public class ClickerActionsRepo
         }
         else
         {
-            throw new Exception("No process with LDPlayer found. Try restarting the LDPlayer and then restart the Tiny Clicker");
+            throw new Exception("No emulator process found");
         }
     }
 
@@ -739,15 +691,15 @@ public class ClickerActionsRepo
     {
         if (_processId != -1)
         {
-            if (!Directory.Exists(Environment.CurrentDirectory + @"\screenshots"))
+            if (!Directory.Exists($"./screenshots"))
             {
-                Directory.CreateDirectory(Environment.CurrentDirectory + @"\screenshots");
+                Directory.CreateDirectory($"./screenshots");
             }
 
             IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
             // Captures screenshot of a window and saves it to the screenshots folder
-            _screenshotManager.CaptureWindowToFile(handle, Environment.CurrentDirectory + @"\screenshots\window.png", ImageFormat.Png);
-            _mainWindow.Log(@"Made a screenshot. Screenshots can be found inside TinyClicker\screenshots folder");
+            _screenshotManager.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
+            _mainWindow.Log($"Made a screenshot. Screenshots can be found inside TinyClicker/screenshots folder");
         }
     }
 
@@ -769,13 +721,13 @@ public class ClickerActionsRepo
                 result = formatted;
             }
         }
-        string statsPath = Environment.CurrentDirectory + @"\Stats.txt";
+        string statsPath = $"./Stats.txt";
         _configManager.SaveNewRebuildTime(dateTimeNow);
         string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
         File.AppendAllText(statsPath, data);
     }
-    
-    public Dictionary<int, int> CalculateFloorPrices()
+
+    private Dictionary<int, int> CalculateFloorPrices()
     {
         var dict = new Dictionary<int, int>();
 
@@ -786,7 +738,7 @@ public class ClickerActionsRepo
         }
 
         // Calculate the prices for floors 10 through 50+
-        for (int i = 10; i <= _clickerApp._floorToRebuildAt + 1; i++)
+        for (int i = 10; i <= _screenScanner._floorToRebuildAt + 1; i++)
         {
             float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 
@@ -801,64 +753,59 @@ public class ClickerActionsRepo
         return dict;
     }
 
-    public Dictionary<string, Image> FindImages()
+    private byte[][] LoadData()
+    {
+        string path = $"./samples/samples.dat";
+        var array = new byte[0][];
+        using (var file = new FileStream(path, FileMode.Open, FileAccess.Read))
+        {
+            int countRead;
+            int countItems;
+            int sizeInt = sizeof(int);
+            var sizeRow = new byte[sizeInt];
+            while (true)
+            {
+                countRead = file.Read(sizeRow, 0, sizeInt);
+                if (countRead != sizeInt)
+                {
+                    break;
+                }
+                countItems = BitConverter.ToInt32(sizeRow, 0);
+                var data = new byte[countItems];
+                countRead = file.Read(data, 0, countItems);
+                if (countRead != countItems)
+                {
+                    break;
+                }
+                Array.Resize(ref array, array.Length + 1);
+                array[array.Length - 1] = data;
+            }
+            file.Close();
+        }
+        return array;
+    }
+
+    public Dictionary<string, Image> GetSamples()
     {
         var dict = new Dictionary<string, Image>();
-        string path = Path.Combine(Environment.CurrentDirectory, @"samples\");
+        string[] buttonNames = File.ReadAllLines($"./samples/button_names.txt");
+        byte[][] buttonData = LoadData();
 
-        try
+        for (int i = 0; i < buttonNames.Length; i++)
         {
-            // Order is important
-            dict.Add("freeBuxCollectButton", Image.FromFile(path + "free_bux_collect_button.png"));
-            dict.Add("watchAdPromptBux", Image.FromFile(path + "watch_ad_prompt_bux.png"));
-            dict.Add("watchAdPromptCoins", Image.FromFile(path + "watch_ad_prompt_coins.png"));
-            dict.Add("continueButton", Image.FromFile(path + "continue_button.png"));
-            dict.Add("newFloorNoCoinsNotification", Image.FromFile(path + "new_floor_no_coins_notification.png"));
-            dict.Add("backButton", Image.FromFile(path + "back_button.png"));
-            dict.Add("findBitizens", Image.FromFile(path + "find_bitizens.png"));
-            dict.Add("newFloorMenu", Image.FromFile(path + "new_floor_menu.png"));
-            dict.Add("buildNewFloorNotification", Image.FromFile(path + "build_new_floor_notification.png"));
-            dict.Add("deliverBitizens", Image.FromFile(path + "deliver_bitizens.png"));
-            dict.Add("freeBuxButton", Image.FromFile(path + "free_bux_button.png"));
-            //dict.Add("freeBuxVidoffersButton", Image.FromFile(path + "free_bux_vidoffers_button.png"));
-            dict.Add("questButton", Image.FromFile(path + "quest_button.png"));
-            dict.Add("completedQuestButton", Image.FromFile(path + "completed_quest_button.png"));
-            dict.Add("gameIcon", Image.FromFile(path + "game_icon.png"));
-            dict.Add("restockButton", Image.FromFile(path + "restock_button.png"));
-            //dict.Add("foundCoinsChuteNotification", Image.FromFile(path + "found_coins_chute_notification.png"));
-            dict.Add("closeAd", Image.FromFile(path + "close_ad_button.png"));
-            dict.Add("closeAd_2", Image.FromFile(path + "close_ad_button_2.png"));
-            dict.Add("closeAd_3", Image.FromFile(path + "close_ad_button_3.png"));
-            dict.Add("closeAd_4", Image.FromFile(path + "close_ad_button_4.png"));
-            dict.Add("closeAd_5", Image.FromFile(path + "close_ad_button_5.png"));
-            dict.Add("closeAd_6", Image.FromFile(path + "close_ad_button_6.png"));
-            dict.Add("closeAd_7", Image.FromFile(path + "close_ad_button_7.png"));
-            dict.Add("closeAd_8", Image.FromFile(path + "close_ad_button_8.png"));
-            dict.Add("closeAd_9", Image.FromFile(path + "close_ad_button_9.png"));
-            dict.Add("fullyStockedBonus", Image.FromFile(path + "fully_stocked_bonus.png"));
-            dict.Add("hurryConstructionPrompt", Image.FromFile(path + "hurry_construction_prompt.png"));
-            dict.Add("roofCustomizationWindow", Image.FromFile(path + "roof_customization_window.png"));
-            dict.Add("giftChute", Image.FromFile(path + "gift_chute.png"));
-            dict.Add("elevatorButton", Image.FromFile(path + "elevator_button.png"));
-            dict.Add("adsLostReward", Image.FromFile(path + "ads_lost_reward.png"));
-
-            return dict;
+            byte[] sample = buttonData[i];
+            using (var ms = new MemoryStream(sample))
+            {
+                Image.FromStream(ms);
+                dict.Add(buttonNames[i], Image.FromStream(ms));
+            }
         }
-        catch (Exception ex)
-        {
-            string msg = "Cannot import all sample images, some are missing or renamed. \nMissing image path: " + ex.Message;
-            _mainWindow.Log(msg);
-
-            return dict;
-        }
+        return dict;
     }
 
     public Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)
     {
         var percentages = GetScreenDiffPercentage();
-
-        
-
         Dictionary<string, Mat> mats = new();
         foreach (var image in images)
         {
@@ -872,11 +819,11 @@ public class ClickerActionsRepo
                 mats.Add(image.Key, template);
             }
         }
-        images.Clear();
+        images = null;
         return mats;
     }
 
-    byte[] ImageToBytes(Image image)
+    private byte[] ImageToBytes(Image image)
     {
         using (var ms = new MemoryStream())
         {
@@ -885,7 +832,7 @@ public class ClickerActionsRepo
         }
     }
 
-    Image BytesToImage(byte[] bytes)
+    private Image BytesToImage(byte[] bytes)
     {
         using (var ms = new MemoryStream(bytes))
         {

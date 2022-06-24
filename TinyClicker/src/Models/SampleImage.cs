@@ -25,7 +25,7 @@ internal class SampleImage : ISampleImage
         Mat = GenerateMat();
     }
 
-    public Mat GenerateMat()
+    Mat GenerateMat()
     {
         // Resize mat here
         var img = Image.FromFile(ImageName);
