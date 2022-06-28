@@ -72,10 +72,10 @@ public class ScreenScanner
         // Get an image of game screen
         Image gameWindow = _clickerActionsRepo.MakeScreenshot();
 
-        // Update the list of found images via template matching
+        // Update the list of found images on the screen
         TryFindAllOnScreen(gameWindow);
 
-        // Print the name of the found object, af any
+        // Print the name of the found object, if any
         foreach (var image in _matchedTemplates)
         {
             string msg = _dateTimeNow + " Found " + image.Key;
@@ -106,7 +106,7 @@ public class ScreenScanner
             string msg = _dateTimeNow + " Found nothing x" + _foundNothing;
             _window.Log(msg);
 
-            // Try to close ads with improper close button location after 20 attempts
+            // Try to close ads with improper close button location after 10 attempts
             if (_foundNothing >= 10)
             {
                 _clickerActionsRepo.CloseHiddenAd();

@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows;
+using System.Linq;
+using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
-using System.Threading.Tasks;
 using ImageMagick;
-using System.Windows;
-using System.Linq;
 using System.Windows.Controls.Primitives;
 
 namespace TinyClicker;
@@ -343,7 +343,7 @@ public class ClickerActionsRepo
         }
         else
         {
-            _mainWindow.Log("Too early to rebuild the floor");
+            _mainWindow.Log("Too early to build a floor");
             Wait(1);
         }
     }
@@ -377,45 +377,45 @@ public class ClickerActionsRepo
         Wait(1);
         SendClick(230, 380); // Confirm
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
         SendClick(170, 435); // Continue
         Wait(1);
-        SendClick(190, 300); // Click on new floor
+        SendClick(190, 300); // Click on a new floor
         Wait(1);
         SendClick(240, 150); // Build a residential floor
         Wait(1);
         SendClick(160, 375); // Continue
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
         SendClick(170, 435); // Continue
         Wait(1);
-        SendClick(30, 535); // Ride elevator
+        SendClick(30, 535);  // Ride elevator
         Wait(5);
         SendClick(230, 380); // Continue
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
         SendClick(170, 435); // Continue
         Wait(1);
-        SendClick(190, 200); // Build new floor
+        SendClick(190, 200); // Build a new floor
         Wait(1);
         SendClick(225, 380); // Confirm
         Wait(1);
         SendClick(200, 200); // Open the new floor
         Wait(1);
-        SendClick(90, 340); // Build random food
+        SendClick(90, 340);  // Build random food floor
         Wait(1);
         SendClick(170, 375); // Continue
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete the quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
@@ -423,9 +423,9 @@ public class ClickerActionsRepo
         Wait(1);
         SendClick(200, 200); // Open food floor
         Wait(1);
-        SendClick(75, 210); // Hire
+        SendClick(75, 210);  // Open the hire menu
         Wait(1);
-        SendClick(80, 100); // Select our bitizen
+        SendClick(80, 100);  // Select our bitizen
         Wait(1);
         SendClick(230, 380); // Hire him
         Wait(1);
@@ -433,19 +433,19 @@ public class ClickerActionsRepo
         Wait(1);
         SendClick(300, 560); // Exit the food store
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete the quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
         SendClick(170, 435); // Continue
         Wait(1);
-        SendClick(200, 200); // Open food store again
+        SendClick(200, 200); // Open the food store again
         Wait(1);
-        SendClick(200, 210); // Restock first item in the store
+        SendClick(200, 210); // Request restock of the first item in the store
         Wait(15);
-        SendClick(305, 190); // Restock
+        SendClick(305, 190); // Press restock button
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete the quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
@@ -461,7 +461,7 @@ public class ClickerActionsRepo
         Wait(1);
         SendClick(300, 560); // Exit the food store
         Wait(1);
-        SendClick(20, 60); // Complete quest
+        SendClick(20, 60);   // Complete the quest
         Wait(1);
         SendClick(170, 435); // Collect bux
         Wait(1);
@@ -610,20 +610,21 @@ public class ClickerActionsRepo
         {
             if (_screenScanner._isBluestacks)
             {
-                // Bluestacks input 
+                // Bluestacks input simulation
                 InputSimulator.SendMessage(_process.MainWindowHandle, (int)InputSimulator.KeyCodes.WM_SETFOCUS, 0, 0);
                 InputSimulator.PostMessageA(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 0x0001, location);
                 InputSimulator.PostMessageA(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0x0001, location);
             }
             else
             {
-                // LDPlayer input 
+                // LDPlayer input simulation
                 InputSimulator.SendMessage(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONDOWN, 1, location);
                 Task.Delay(1).Wait();
                 InputSimulator.SendMessage(_childHandle, (int)InputSimulator.KeyCodes.WM_LBUTTONUP, 0, location);
             }
         }
     }
+
     public void SendClick(int x, int y)
     {
         SendClick(GetRelativeCoords(x, y));
@@ -753,7 +754,7 @@ public class ClickerActionsRepo
         return dict;
     }
 
-    private byte[][] LoadData()
+    private byte[][] LoadButtonData()
     {
         string path = $"./samples/samples.dat";
         var array = new byte[0][];
@@ -789,7 +790,7 @@ public class ClickerActionsRepo
     {
         var dict = new Dictionary<string, Image>();
         string[] buttonNames = File.ReadAllLines($"./samples/button_names.txt");
-        byte[][] buttonData = LoadData();
+        byte[][] buttonData = LoadButtonData();
 
         for (int i = 0; i < buttonNames.Length; i++)
         {
