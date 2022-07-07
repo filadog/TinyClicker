@@ -16,7 +16,7 @@ A simple background autoclicker for the Tiny Tower game. TinyClicker implements 
 - Tower rebuilding at desired floor and completion of the tutorial
 - TinyClicker will watch all advertisements to maximize coins and bux profit
 - Automatic participation in the hourly raffle
-- Configure once, launch and forget it
+- Easy configuration 
 - Rebuilding statistics
 
 **only with VIP package version at this time*
@@ -34,7 +34,7 @@ By default the tower will rebuild as soon as it hits 50th floor. If you have mor
 
 TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
-#### Disclaimer: The program is in the phase of active development and some bugs may occur.
+#### Disclaimer: The program is in the phase of development and some bugs may occur.
 
 ## Setup
 
@@ -47,11 +47,11 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 #### General setup
 - Launch TinyClicker, navigate to the Settings window (a cog button) and set the <code>Current floor</code> number to the last built floor of your tower. <code>Rebuild at</code> sets the floor at which the clicker will rebuild the tower. <code>Watch Ads From</code> sets the floor number after which ads will be watched, as they become more time-efficient. Set the value higher the more gold bux you already have. Rule of thumb is 100 gold bux = 25th floor, 200 = 35th floor and so on until 50. If you have more than 500 gold bux ads will only waste time. Unchecked <code>Watch Bux Ads</code> will reject all ads with bux reward, as they are inefficient. 
 
-- It is strongly advisable to disable the web browser app inside the simulated device since some ads will try to open it and cause the clicker to bug as the program cannot navigate through anything but the Tiny Tower interface.
+- It is strongly advisable to disable the web browser and play market apps inside the simulated device since some ads will try to open them and cause the Clicker to stall.
 
 - It is necessary to swith the regular video offers gift (FREE gift that appears every 4-5 minutes) to only offer you bux, TinyClicker will collect them.
 
-- When the setup is done, press Save and Exit buttons in settings, select your emulator in the main window, launch the game and start the TinyClicker. Your settings will be saved and current floor will be automatically tracked. Next time, just select the emulator and Start the clicker.
+- When the setup is done, press Save and Exit buttons in settings, select your emulator in the main window, launch the game and start the TinyClicker. Your settings will be saved and current floor will be automatically tracked. Next time, just select the emulator and start the Clicker.
 
 
 ## For the iOS players
