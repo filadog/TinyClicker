@@ -32,6 +32,7 @@ public class ClickerActionsRepo
     readonly MainWindow _mainWindow;
     DateTime _timeForNewFloor;
     Rectangle _screenRect;
+    bool _floorPricesCalculated = false;
 
     public ClickerActionsRepo(ScreenScanner screenScanner)
     {
@@ -292,10 +293,16 @@ public class ClickerActionsRepo
 
     public void CheckForNewFloor(int currentFloor, Image gameWindow)
     {
-        //_clickerApp._currentFloor = ConfigManager.GetConfig().CurrentFloor;
-        _floorPrices = CalculateFloorPrices();
-        int balance = _imageToText.ParseBalance(gameWindow);
+        if (!_floorPricesCalculated)
+        {
+            _floorPrices = CalculateFloorPrices();
+        }
 
+        int balance = _imageToText.ParseBalance(gameWindow);
+        if (balance.ToString().Length > 8)
+        {
+            return;
+        }
         if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
             int targetPrice = _floorPrices[currentFloor + 1];
