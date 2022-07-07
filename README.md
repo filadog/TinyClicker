@@ -34,7 +34,7 @@ By default the tower will rebuild as soon as it hits 50th floor. If you have mor
 
 TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
-#### Disclaimer: The program is in the phase of development and some bugs may occur.
+#### The program is in the phase of development and some bugs may occur.
 
 ## Setup
 
@@ -56,7 +56,7 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 
 ## For the iOS players
 
-If you have a Windows PC it is possible to use Tiny Tower cloud save inside the Android version of Tiny Tower inside android emulator, VIP package will be transformed as well. Avoid checking the tower on your mobile device while the clicker is running because in-game cloud sync may confuse the most recent version of the game and you may lose some progress. To avoid this allow for at least 30 minutes to pass before launching the game on your mobile device after TinyClicker has stopped.
+If you have a Windows PC it is possible to use Tiny Tower cloud save inside the Android version of Tiny Tower inside android emulator, VIP package will be transformed as well.
 
 
 ## Libraries in use
