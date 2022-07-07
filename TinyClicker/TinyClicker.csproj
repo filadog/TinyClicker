@@ -9,8 +9,8 @@
     <DebugType>none</DebugType>
     <Description>Background clicker for the Tiny Tower game</Description>
     <Copyright>filadog @ 2022</Copyright>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
     <Authors>filadog</Authors>
     <ApplicationIcon>UI\tynyclicker_icon.ico</ApplicationIcon>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -108,7 +108,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="samples\samples.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="tessdata\digits.traineddata">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

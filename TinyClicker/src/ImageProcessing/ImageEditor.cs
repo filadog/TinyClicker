@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -10,18 +11,25 @@ internal class ImageEditor
 {
     Rectangle _screenRect;
     Rectangle _balanceRect;
+    readonly ClickerActionsRepo _actionsRepo;
+    bool _isBalanceLocationFound;
 
-    public ImageEditor(Rectangle screenRect)
+    public ImageEditor(Rectangle screenRect, ClickerActionsRepo actionsRepo)
     {
         _screenRect = screenRect;
-        _balanceRect = GetBalanceRect(_screenRect);
+        _actionsRepo = actionsRepo;
+        _isBalanceLocationFound = false;
     }
-    
+
     public Bitmap GetBalanceImageAdjusted(Image window)
     {
+        if (!_isBalanceLocationFound)
+        {
+            _balanceRect = GetBalanceRect(_screenRect);
+        }
         Bitmap result = AdjustImage(CropCurrentBalance(window));
         // Save the result for manual checking
-        //string filename = Environment.CurrentDirectory + @"\screenshots\balance.png";
+        //string filename = Environment.CurrentDirectory + @"/screenshots/balance.png";
         //ScreenshotManager.SaveScreenshot(result, filename);
 
         return result;
@@ -84,11 +92,26 @@ internal class ImageEditor
 
     Rectangle GetBalanceRect(Rectangle screenRect)
     {
+        int posX = 0;
+        int posY = 0;
+
+        // Check for balance coordinates on the screen
+        if (!_isBalanceLocationFound)
+        {
+            bool found = _actionsRepo.IsImageFound("balanceCoin", out OpenCvSharp.Point location);
+            posX = location.X + 14;
+            posY = location.Y - 2;
+            if (found)
+            {
+                _isBalanceLocationFound = true;
+            }
+        }
+
         // Adjust coordinates to the actual window size
         int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
         int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
-        float x1 = ((float)14 * 100 / 333) / 100;
-        float y1 = ((float)598 * 100 / 592) / 100;
+        float x1 = ((float)posX * 100 / 333) / 100;
+        float y1 = ((float)posY * 100 / 592) / 100;
         int x2 = (int)(rectX * x1);
         int y2 = (int)(rectY * y1);
 

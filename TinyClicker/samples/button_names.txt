@@ -28,3 +28,4 @@ roofCustomizationWindow
 giftChute
 elevatorButton
 adsLostReward
+balanceCoin

@@ -89,6 +89,7 @@ public class ScreenScanner
                 if (_sameItemCounter > 5)
                 {
                     _clickerActionsRepo.SendEscapeButton();
+                    _clickerActionsRepo.SendEscapeButton();
                     _sameItemCounter = 0;
                 }
             }
@@ -152,6 +153,10 @@ public class ScreenScanner
         {
             if (_matchedTemplates.Count == 0)
             {
+                if (template.Key == "gameIcon" || template.Key == "balanceCoin" || template.Key == "restockButton")
+                {
+                    continue;
+                }
                 if (!_matchedTemplates.ContainsKey(template.Key))
                 {
                     TryFindSingle(template, reference);

@@ -11,7 +11,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using ImageMagick;
-using System.Windows.Controls.Primitives;
 
 namespace TinyClicker;
 
@@ -34,9 +33,9 @@ public class ClickerActionsRepo
     DateTime _timeForNewFloor;
     Rectangle _screenRect;
 
-    public ClickerActionsRepo(ScreenScanner imageToAction)
+    public ClickerActionsRepo(ScreenScanner screenScanner)
     {
-        _screenScanner = imageToAction;
+        _screenScanner = screenScanner;
         _configManager = new ConfigManager();
         _mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
         _process = GetProcess();
@@ -45,7 +44,7 @@ public class ClickerActionsRepo
         _timeForNewFloor = DateTime.Now;
         _screenRect = InputSimulator.GetWindowRectangle(_childHandle);
         _screenshotManager = new ScreenshotManager();
-        _imageEditor = new ImageEditor(_screenRect);
+        _imageEditor = new ImageEditor(_screenRect, this);
         _imageToText = new ImageToText(_imageEditor);
         _floorPrices = new Dictionary<int, int>();
     }
@@ -575,6 +574,39 @@ public class ClickerActionsRepo
             }
             else
             {
+                return false;
+            }
+        }
+    }
+
+    public bool IsImageFound(string imageKey, out Point location)
+    {
+        Image gameWindow = MakeScreenshot();
+        var windowBitmap = new Bitmap(gameWindow);
+        gameWindow.Dispose();
+        Mat reference = BitmapConverter.ToMat(windowBitmap);
+        windowBitmap.Dispose();
+
+        var template = _screenScanner._templates[imageKey];
+        using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
+        {
+            Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
+            Mat gtpl = template.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+            Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+            Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+
+            double threshold = 0.7;
+            Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
+
+            if (maxval >= threshold)
+            {
+                location = maxloc;
+                return true;
+            }
+            else
+            {
+                location = maxloc;
                 return false;
             }
         }
