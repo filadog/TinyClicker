@@ -11,7 +11,7 @@ public class TinyClickerApp
     public TinyClickerApp(bool isBluestacks)
     {
         _screenScanner = new ScreenScanner(isBluestacks);
-        _clickerActionsRepo = _screenScanner._clickerActionsRepo;
+        _clickerActionsRepo = _screenScanner.clickerActions;
     }
 
     public void StartInBackground(BackgroundWorker worker)
@@ -26,7 +26,7 @@ public class TinyClickerApp
 
     public void RunLoop(BackgroundWorker worker)
     {
-        int processId = _clickerActionsRepo._processId;
+        int processId = _clickerActionsRepo.inputSim.processId;
         while (processId != -1 && !worker.CancellationPending)
         {
             _screenScanner.StartIteration();

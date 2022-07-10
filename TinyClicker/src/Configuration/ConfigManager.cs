@@ -6,34 +6,31 @@ namespace TinyClicker;
 
 public class ConfigManager
 {
-    public Config _curConfig;
+    public Config curConfig;
     static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
 
     public ConfigManager()
     {
-        _curConfig = GetConfig();
-        SaveConfig(_curConfig);
+        curConfig = GetConfig();
+        SaveConfig(curConfig);
     }
 
     public void AddOneFloor()
     {
-        //var config = _clickerApp._currentConfig;
-        _curConfig.CurrentFloor += 1;
-        SaveConfig(_curConfig);
+        curConfig.CurrentFloor += 1;
+        SaveConfig(curConfig);
     }
 
-    public void ChangeCurrentFloor(int floor)
+    public void SetCurrentFloor(int floor)
     {
-        //var config = _clickerApp._currentConfig;
-        _curConfig.CurrentFloor = floor;
-        SaveConfig(_curConfig);
+        curConfig.CurrentFloor = floor;
+        SaveConfig(curConfig);
     }
 
     public void SaveNewRebuildTime(DateTime rebuildTime)
     {
-        //var config = _clickerApp._currentConfig;
-        _curConfig.LastRebuildTime = rebuildTime;
-        SaveConfig(_curConfig);
+        curConfig.LastRebuildTime = rebuildTime;
+        SaveConfig(curConfig);
     }
 
     public Config GetConfig()
@@ -66,6 +63,30 @@ public class ConfigManager
 
     public void SaveConfig()
     {
-        SaveConfig(_curConfig);
+        SaveConfig(curConfig);
+    }
+
+    public void SaveStatRebuildTime()
+    {
+        DateTime dateTimeNow = DateTime.Now;
+        DateTime lastRebuild = curConfig.LastRebuildTime;
+        string result = "";
+        if (lastRebuild != DateTime.MinValue)
+        {
+            TimeSpan diff = dateTimeNow - lastRebuild;
+            string formatted = diff.ToString(@"hh\:mm\:ss");
+            if (diff.Days >= 1)
+            {
+                result = string.Format("{0} days ", diff.Days) + formatted;
+            }
+            else
+            {
+                result = formatted;
+            }
+        }
+        string statsPath = $"./Stats.txt";
+        SaveNewRebuildTime(dateTimeNow);
+        string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
+        File.AppendAllText(statsPath, data);
     }
 }

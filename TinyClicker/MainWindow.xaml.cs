@@ -75,7 +75,7 @@ public partial class MainWindow : Window
 
     public void Log(string msg)
     {
-        Dispatcher.BeginInvoke(() =>
+        Dispatcher.Invoke(() =>
         {
             TextBoxLog.Text = msg;
         });

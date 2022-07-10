@@ -6,7 +6,7 @@ using System.IO;
 
 namespace TinyClicker;
 
-public class ScreenshotManager
+public class WindowToImage
 {
     public Image CaptureScreen()
     {

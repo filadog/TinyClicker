@@ -20,8 +20,8 @@ public class ScreenScanner
     internal Dictionary<string, Mat> _templates;
     internal MainWindow _window;
 
-    public readonly ClickerActionsRepo _clickerActionsRepo;
-    readonly ConfigManager _configManager;
+    public readonly ClickerActionsRepo clickerActions;
+    public readonly ConfigManager configManager;
 
     internal bool _isBluestacks;
     internal bool _isLDPlayer;
@@ -47,30 +47,30 @@ public class ScreenScanner
             _isLDPlayer = true;
         }
 
-        _configManager = new ConfigManager();
-        _clickerActionsRepo = new ClickerActionsRepo(this);
+        configManager = new ConfigManager();
+        clickerActions = new ClickerActionsRepo(this);
         _matchedTemplates = new Dictionary<string, int>();
-        _samples = _clickerActionsRepo.GetSamples();
-        _templates = _clickerActionsRepo.MakeTemplates(_samples);
+        _samples = clickerActions.GetSamples();
+        _templates = clickerActions.MakeTemplates(_samples);
         _window = Application.Current.Windows.OfType<MainWindow>().First();
 
-        _floorToRebuildAt = _configManager._curConfig.RebuildAtFloor;
-        _acceptBuxVideoOffers = _configManager._curConfig.WatchBuxAds;
-        _floorToStartWatchingAds = _configManager._curConfig.WatchAdsFromFloor;
+        _floorToRebuildAt = configManager.curConfig.RebuildAtFloor;
+        _acceptBuxVideoOffers = configManager.curConfig.WatchBuxAds;
+        _floorToStartWatchingAds = configManager.curConfig.WatchAdsFromFloor;
 
         _foundNothing = 0;
         _curHour = DateTime.Now.Hour - 1;
         _curSecond = DateTime.Now.Second - 1;
         _sameItemCounter = 0;
         _lastItemName = "";
-        _currentFloor = _configManager._curConfig.CurrentFloor;
         _dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
     }
 
     public void StartIteration()
     {
-        // Get an image of game screen
-        Image gameWindow = _clickerActionsRepo.MakeScreenshot();
+        // Get an image of the game screen
+        Image gameWindow = clickerActions.inputSim.MakeScreenshot();
+        _currentFloor = configManager.curConfig.CurrentFloor;
 
         // Update the list of found images on the screen
         TryFindAllOnScreen(gameWindow);
@@ -88,8 +88,8 @@ public class ScreenScanner
                 _sameItemCounter++;
                 if (_sameItemCounter > 5)
                 {
-                    _clickerActionsRepo.SendEscapeButton();
-                    _clickerActionsRepo.SendEscapeButton();
+                    clickerActions.inputSim.SendEscapeButton();
+                    clickerActions.inputSim.SendEscapeButton();
                     _sameItemCounter = 0;
                 }
             }
@@ -110,7 +110,7 @@ public class ScreenScanner
             // Try to close ads with improper close button location after 10 attempts
             if (_foundNothing >= 10)
             {
-                _clickerActionsRepo.CloseHiddenAd();
+                clickerActions.CloseHiddenAd();
             }
             // TODO: Fix the game restart
             //if (foundNothing >= 23)
@@ -120,14 +120,14 @@ public class ScreenScanner
         // Commence the turorial at the first floor
         if (_currentFloor == 1)
         {
-            _clickerActionsRepo.PassTheTutorial();
+            clickerActions.PassTheTutorial();
         }
 
         // Play the hourly raffle at the beginning of every hour and perform all actions
         if (_currentFloor != _floorToRebuildAt)
         {
             PerformActions();
-            _curHour = _clickerActionsRepo.PlayRaffle(_curHour);
+            _curHour = clickerActions.PlayRaffle(_curHour);
         }
 
         // Check for a new floor every iteration
@@ -136,7 +136,7 @@ public class ScreenScanner
             if (_curSecond != DateTime.Now.Second && _currentFloor != 1)
             {
                 _curSecond = DateTime.Now.Second;
-                _clickerActionsRepo.CheckForNewFloor(_currentFloor, gameWindow);
+                clickerActions.CheckForNewFloor(_currentFloor, gameWindow);
             }
             gameWindow.Dispose();
         }
@@ -190,7 +190,7 @@ public class ScreenScanner
 
                 if (maxval >= threshold)
                 {
-                    _matchedTemplates.Add(template.Key, _clickerActionsRepo.MakeLParam(maxloc.X, maxloc.Y));
+                    _matchedTemplates.Add(template.Key, clickerActions.inputSim.MakeLParam(maxloc.X, maxloc.Y));
                     break;
                 }
                 else
@@ -209,9 +209,9 @@ public class ScreenScanner
             key = _matchedTemplates.Keys.First();
             switch (key)
             {
-                case "freeBuxCollectButton": _clickerActionsRepo.CollectFreeBux(); break;
-                case "roofCustomizationWindow": _clickerActionsRepo.ExitRoofCustomizationMenu(); break;
-                case "hurryConstructionPrompt": _clickerActionsRepo.CancelHurryConstruction(); break;
+                case "freeBuxCollectButton": clickerActions.CollectFreeBux(); break;
+                case "roofCustomizationWindow": clickerActions.ExitRoofCustomizationMenu(); break;
+                case "hurryConstructionPrompt": clickerActions.CancelHurryConstruction(); break;
                 case "closeAd":
                 case "closeAd_2":
                 case "closeAd_3":
@@ -220,24 +220,24 @@ public class ScreenScanner
                 case "closeAd_6":
                 case "closeAd_7":
                 case "closeAd_8":
-                case "closeAd_9": _clickerActionsRepo.CloseAd(); break;
-                case "continueButton": _clickerActionsRepo.PressContinue(); break;
-                case "foundCoinsChuteNotification": _clickerActionsRepo.CloseChuteNotification(); break;
-                case "restockButton": _clickerActionsRepo.Restock(); break;
-                case "freeBuxButton": _clickerActionsRepo.PressFreeBuxButton(); break;
-                case "giftChute": _clickerActionsRepo.ClickOnChute(); break;
-                case "backButton": _clickerActionsRepo.PressExitButton(); break;
-                case "elevatorButton": _clickerActionsRepo.RideElevator(); break;
-                case "questButton": _clickerActionsRepo.PressQuestButton(); break;
-                case "completedQuestButton": _clickerActionsRepo.CompleteQuest(); break;
-                case "watchAdPromptCoins": _clickerActionsRepo.WatchCoinsAds(); break;
-                case "watchAdPromptBux": _clickerActionsRepo.WatchBuxAds(); break;
-                case "findBitizens": _clickerActionsRepo.FindBitizens(); break;
-                case "deliverBitizens": _clickerActionsRepo.DeliverBitizens(); break;
-                case "newFloorMenu": _clickerActionsRepo.CloseNewFloorMenu(); break;
-                case "buildNewFloorNotification": _clickerActionsRepo.CloseBuildNewFloorNotification(); break;
-                case "gameIcon": _clickerActionsRepo.OpenTheGame(); break;
-                case "adsLostReward": _clickerActionsRepo.CheckForLostAdsReward(); break;
+                case "closeAd_9": clickerActions.CloseAd(); break;
+                case "continueButton": clickerActions.PressContinue(); break;
+                case "foundCoinsChuteNotification": clickerActions.CloseChuteNotification(); break;
+                case "restockButton": clickerActions.Restock(); break;
+                case "freeBuxButton": clickerActions.PressFreeBuxButton(); break;
+                case "giftChute": clickerActions.ClickOnChute(); break;
+                case "backButton": clickerActions.PressExitButton(); break;
+                case "elevatorButton": clickerActions.RideElevator(); break;
+                case "questButton": clickerActions.PressQuestButton(); break;
+                case "completedQuestButton": clickerActions.CompleteQuest(); break;
+                case "watchAdPromptCoins": clickerActions.WatchCoinsAds(); break;
+                case "watchAdPromptBux": clickerActions.WatchBuxAds(); break;
+                case "findBitizens": clickerActions.FindBitizens(); break;
+                case "deliverBitizens": clickerActions.DeliverBitizens(); break;
+                case "newFloorMenu": clickerActions.CloseNewFloorMenu(); break;
+                case "buildNewFloorNotification": clickerActions.CloseBuildNewFloorNotification(); break;
+                case "gameIcon": clickerActions.OpenTheGame(); break;
+                case "adsLostReward": clickerActions.CheckForLostAdsReward(); break;
                 default: break;
             }
         }

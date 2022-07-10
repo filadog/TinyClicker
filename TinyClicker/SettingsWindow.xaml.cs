@@ -33,17 +33,17 @@ public partial class SettingsWindow : Window
         InitializeComponent();
         _mainWindow = mainWindow;
         _configManager = new ConfigManager();
-        TextBoxCurrentFloor.Text = _configManager._curConfig.CurrentFloor.ToString();
-        TextBoxFloorToRebuildAt.Text = _configManager._curConfig.RebuildAtFloor.ToString();
-        TextBoxWatchAdsFrom.Text = _configManager._curConfig.WatchAdsFromFloor.ToString();
-        CheckboxWatchBuxAds.IsChecked = _configManager._curConfig.WatchBuxAds ? true : false;
-        CheckboxVipPackage.IsChecked = _configManager._curConfig.VipPackage ? true : false;
+        TextBoxCurrentFloor.Text = _configManager.curConfig.CurrentFloor.ToString();
+        TextBoxFloorToRebuildAt.Text = _configManager.curConfig.RebuildAtFloor.ToString();
+        TextBoxWatchAdsFrom.Text = _configManager.curConfig.WatchAdsFromFloor.ToString();
+        CheckboxWatchBuxAds.IsChecked = _configManager.curConfig.WatchBuxAds ? true : false;
+        CheckboxVipPackage.IsChecked = _configManager.curConfig.VipPackage ? true : false;
 
-        _currentFloor = _configManager._curConfig.CurrentFloor;
-        _rebuildAtFloor = _configManager._curConfig.RebuildAtFloor;
-        _watchAdsFromFloor = _configManager._curConfig.WatchAdsFromFloor;
-        _watchBuxAds = _configManager._curConfig.WatchBuxAds;
-        _lastRebuildTime = _configManager._curConfig.LastRebuildTime;
+        _currentFloor = _configManager.curConfig.CurrentFloor;
+        _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
+        _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
+        _watchBuxAds = _configManager.curConfig.WatchBuxAds;
+        _lastRebuildTime = _configManager.curConfig.LastRebuildTime;
         VersionText.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
     }
 
@@ -71,7 +71,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 _mainWindow.Log("Invalid input value");
-                _rebuildAtFloor = _configManager._curConfig.RebuildAtFloor;
+                _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
             }
         }
     }
@@ -92,7 +92,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 _mainWindow.Log("Invalid input value");
-                _watchAdsFromFloor = _configManager._curConfig.WatchAdsFromFloor;
+                _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
             }
         }
     }
@@ -113,7 +113,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 _mainWindow.Log("Invalid input value");
-                _currentFloor = _configManager._curConfig.CurrentFloor;
+                _currentFloor = _configManager.curConfig.CurrentFloor;
             }
         }
     }
