@@ -7,13 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class ScreenScanner
 {
-    internal int floorToRebuildAt;
-    internal bool acceptBuxVideoOffers;
-    internal int floorToStartWatchingAds;
+    internal int _floorToRebuildAt;
+    internal bool _acceptBuxVideoOffers;
+    internal int _floorToStartWatchingAds;
 
     internal Dictionary<string, int> _matchedTemplates;
     internal Dictionary<string, Image> _samples;
@@ -54,9 +54,9 @@ public class ScreenScanner
         _templates = clickerActions.MakeTemplates(_samples);
         _window = Application.Current.Windows.OfType<MainWindow>().First();
 
-        floorToRebuildAt = configManager.curConfig.RebuildAtFloor;
-        acceptBuxVideoOffers = configManager.curConfig.WatchBuxAds;
-        floorToStartWatchingAds = configManager.curConfig.WatchAdsFromFloor;
+        _floorToRebuildAt = configManager.curConfig.RebuildAtFloor;
+        _acceptBuxVideoOffers = configManager.curConfig.WatchBuxAds;
+        _floorToStartWatchingAds = configManager.curConfig.WatchAdsFromFloor;
 
         _foundNothing = 0;
         _curHour = DateTime.Now.Hour - 1;
@@ -124,7 +124,7 @@ public class ScreenScanner
         }
 
         // Play the hourly raffle at the beginning of every hour and perform all actions
-        if (_currentFloor != floorToRebuildAt)
+        if (_currentFloor != _floorToRebuildAt)
         {
             PerformActions();
             _curHour = clickerActions.PlayRaffle(_curHour);

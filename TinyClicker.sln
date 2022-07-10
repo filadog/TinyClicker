@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClickerTests", "TinyClickerTests\TinyClickerTests.csproj", "{35B84D31-D57D-4DC4-A48B-6D3FA461861D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyClickerLib", "TinyClickerLib\TinyClickerLib.csproj", "{AEF53C0A-F06B-4E86-988A-FCC345F4918C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

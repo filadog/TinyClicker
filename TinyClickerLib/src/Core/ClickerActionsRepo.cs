@@ -10,7 +10,7 @@ using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using ImageMagick;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class ClickerActionsRepo
 {
@@ -60,11 +60,11 @@ public class ClickerActionsRepo
         mainWindow.Log("Clicking on the parachute");
         inputSim.SendClick(_screenScanner._matchedTemplates["giftChute"]);
         Wait(1);
-        if (IsImageFound("watchAdPromptCoins") && _configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        if (IsImageFound("watchAdPromptCoins") && _configManager.curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
             WatchCoinsAds();
         }
-        else if (_screenScanner.acceptBuxVideoOffers && _configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        else if (_screenScanner._acceptBuxVideoOffers && _configManager.curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
             if (IsImageFound("watchAdPromptBux"))
             {
@@ -86,14 +86,12 @@ public class ClickerActionsRepo
             inputSim.SendClick(22, 22);
             inputSim.SendClick(311, 22);
             inputSim.SendClick(302, 52);
-            inputSim.SendClick(310, 41);
         }
         else
         {
             inputSim.SendClick(311, 22);
             inputSim.SendClick(22, 22);
             inputSim.SendClick(302, 52);
-            inputSim.SendClick(310, 41);
         }
         CheckForLostAdsReward();
     }
@@ -228,7 +226,6 @@ public class ClickerActionsRepo
         mainWindow.Log("Closing hidden ads");
         Wait(1);
         inputSim.SendClick(310, 10);
-        inputSim.SendClick(310, 41);
         Wait(1);
         inputSim.SendClick(311, 22);
         CheckForLostAdsReward();
@@ -292,14 +289,14 @@ public class ClickerActionsRepo
         int balance = _imageToText.ParseBalance(gameWindow);
         if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
-            if (currentFloor >= _screenScanner.floorToRebuildAt)
+            if (currentFloor >= _screenScanner._floorToRebuildAt)
             {
                 Wait(1);
                 RebuildTower();
                 return;
             }
             int targetPrice = _floorPrices[currentFloor + 1];
-            if (balance > targetPrice && currentFloor < _screenScanner.floorToRebuildAt)
+            if (balance > targetPrice && currentFloor < _screenScanner._floorToRebuildAt)
             {
                 if (balance.ToString().Length < 9)
                 {
@@ -609,7 +606,7 @@ public class ClickerActionsRepo
         }
 
         // Calculate the prices for floors 10 through 50+
-        for (int i = 10; i <= _screenScanner.floorToRebuildAt + 1; i++)
+        for (int i = 10; i <= _screenScanner._floorToRebuildAt + 1; i++)
         {
             float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 

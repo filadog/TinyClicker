@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class InputSimulator
 {
@@ -83,7 +83,15 @@ public class InputSimulator
 
     public Process GetProcess()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = "";
+        if (_screenScanner._isBluestacks)
+        {
+            curProcName = _blueStacksProcName;
+        }
+        if (_screenScanner._isLDPlayer)
+        {
+            curProcName = _ldPlayerProcName;
+        }
 
         Process[] processlist = Process.GetProcesses();
         foreach (Process process in processlist)
@@ -93,6 +101,7 @@ public class InputSimulator
                 return process;
             }
         }
+        //_mainWindow.Log("Emulator process not found");
         throw new Exception("Emulator process not found");
     }
 
@@ -147,7 +156,15 @@ public class InputSimulator
 
     public IntPtr GetChildHandle()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = "";
+        if (_screenScanner._isBluestacks)
+        {
+            curProcName = _blueStacksProcName;
+        }
+        else
+        {
+            curProcName = _ldPlayerProcName;
+        }
 
         if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
         {
