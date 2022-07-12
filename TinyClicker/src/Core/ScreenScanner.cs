@@ -27,7 +27,7 @@ public class ScreenScanner
     internal bool _isLDPlayer;
 
     int _foundNothing;
-    int _curHour;
+    int _lastRaffleTime;
     int _curSecond;
     int _sameItemCounter;
     string _lastItemName;
@@ -59,7 +59,7 @@ public class ScreenScanner
         floorToStartWatchingAds = configManager.curConfig.WatchAdsFromFloor;
 
         _foundNothing = 0;
-        _curHour = DateTime.Now.Hour - 1;
+        _lastRaffleTime = DateTime.Now.Hour - 1;
         _curSecond = DateTime.Now.Second - 1;
         _sameItemCounter = 0;
         _lastItemName = "";
@@ -83,21 +83,21 @@ public class ScreenScanner
             _foundNothing = 0;
 
             // Check if the clicker froze
-            if (_lastItemName == image.Key)
-            {
-                _sameItemCounter++;
-                if (_sameItemCounter > 5)
-                {
-                    clickerActions.inputSim.SendEscapeButton();
-                    clickerActions.inputSim.SendEscapeButton();
-                    _sameItemCounter = 0;
-                }
-            }
-            else
-            {
-                _sameItemCounter = 0;
-            }
-            _lastItemName = image.Key;
+            //if (_lastItemName == image.Key)
+            //{
+            //    _sameItemCounter++;
+            //    if (_sameItemCounter > 5)
+            //    {
+            //        clickerActions.inputSim.SendEscapeButton();
+            //        clickerActions.inputSim.SendEscapeButton();
+            //        _sameItemCounter = 0;
+            //    }
+            //}
+            //else
+            //{
+            //    _sameItemCounter = 0;
+            //}
+            //_lastItemName = image.Key;
         }
 
         // Print if nothing was found and restart the app if necessary
@@ -127,7 +127,7 @@ public class ScreenScanner
         if (_currentFloor != floorToRebuildAt)
         {
             PerformActions();
-            _curHour = clickerActions.PlayRaffle(_curHour);
+            _lastRaffleTime = clickerActions.PlayRaffle(_lastRaffleTime);
         }
 
         // Check for a new floor every iteration
@@ -230,8 +230,8 @@ public class ScreenScanner
                 case "elevatorButton": clickerActions.RideElevator(); break;
                 case "questButton": clickerActions.PressQuestButton(); break;
                 case "completedQuestButton": clickerActions.CompleteQuest(); break;
-                case "watchAdPromptCoins": clickerActions.WatchCoinsAds(); break;
-                case "watchAdPromptBux": clickerActions.WatchBuxAds(); break;
+                case "watchAdPromptCoins":
+                case "watchAdPromptBux": clickerActions.TryWatchAds(); break;
                 case "findBitizens": clickerActions.FindBitizens(); break;
                 case "deliverBitizens": clickerActions.DeliverBitizens(); break;
                 case "newFloorMenu": clickerActions.CloseNewFloorMenu(); break;

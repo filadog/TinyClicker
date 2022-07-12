@@ -15,9 +15,9 @@ namespace TinyClicker;
 public class ClickerActionsRepo
 {
     public readonly ScreenScanner _screenScanner;
-    readonly ConfigManager _configManager;
-    readonly ImageToText _imageToText;
-    readonly ImageEditor _imageEditor;
+    readonly ConfigManager configManager;
+    readonly ImageToText imageToText;
+    readonly ImageEditor imageEditor;
     public readonly InputSimulator inputSim;
 
     Dictionary<int, int> _floorPrices;
@@ -29,13 +29,13 @@ public class ClickerActionsRepo
     public ClickerActionsRepo(ScreenScanner screenScanner)
     {
         _screenScanner = screenScanner;
-        _configManager = _screenScanner.configManager;
+        configManager = _screenScanner.configManager;
         mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
         inputSim = new InputSimulator(this);
         _timeForNewFloor = DateTime.Now;
         _screenRect = inputSim.GetWindowRectangle();
-        _imageEditor = new ImageEditor(_screenRect, this);
-        _imageToText = new ImageToText(_imageEditor);
+        imageEditor = new ImageEditor(_screenRect, this);
+        imageToText = new ImageToText(imageEditor);
         _floorPrices = new Dictionary<int, int>();
     }
 
@@ -60,15 +60,15 @@ public class ClickerActionsRepo
         mainWindow.Log("Clicking on the parachute");
         inputSim.SendClick(_screenScanner._matchedTemplates["giftChute"]);
         Wait(1);
-        if (IsImageFound("watchAdPromptCoins") && _configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        if (IsImageFound("watchAdPromptCoins") && configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
         {
-            WatchCoinsAds();
+            TryWatchAds();
         }
-        else if (_screenScanner.acceptBuxVideoOffers && _configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        else if (_screenScanner.acceptBuxVideoOffers && configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
         {
             if (IsImageFound("watchAdPromptBux"))
             {
-                WatchBuxAds();
+                TryWatchAds();
             }
         }
         else
@@ -159,7 +159,7 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Riding the elevator");
         inputSim.SendClick(45, 535);
-        int curFloor = _configManager.curConfig.CurrentFloor;
+        int curFloor = configManager.curConfig.CurrentFloor;
         if (curFloor >= 43)
             Wait(5);
         else if (curFloor >= 33)
@@ -268,18 +268,19 @@ public class ClickerActionsRepo
         inputSim.SendClick(_screenScanner._matchedTemplates["completedQuestButton"]);
     }
 
-    public void WatchCoinsAds()
+    public void TryWatchAds()
     {
-        mainWindow.Log("Watching the advertisement");
-        inputSim.SendClick(225, 375);
-        Wait(20);
-    }
-
-    public void WatchBuxAds()
-    {
-        mainWindow.Log("Watching the advertisement");
-        inputSim.SendClick(225, 375);
-        Wait(20);
+        if (configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        {
+            mainWindow.Log("Watching the advertisement");
+            inputSim.SendClick(225, 375);
+            Wait(20);
+        }
+        else
+        {
+            inputSim.SendClick(105, 380); // Decline the video offer
+        }
+        
     }
 
     public void CheckForNewFloor(int currentFloor, Image gameWindow)
@@ -289,7 +290,7 @@ public class ClickerActionsRepo
             _floorPrices = CalculateFloorPrices();
             _floorPricesCalculated = true;
         }
-        int balance = _imageToText.ParseBalance(gameWindow);
+        int balance = imageToText.ParseBalance(gameWindow);
         if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
             if (currentFloor >= _screenScanner.floorToRebuildAt)
@@ -326,7 +327,7 @@ public class ClickerActionsRepo
                 // Add a new floor if there is enough coins
                 if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
-                    _configManager.AddOneFloor();
+                    configManager.AddOneFloor();
                     mainWindow.Log("Built a new floor");
                 }
                 else
@@ -348,7 +349,7 @@ public class ClickerActionsRepo
     public void RebuildTower()
     {
         mainWindow.Log("Rebuilding the tower");
-        _configManager.SaveStatRebuildTime();
+        configManager.SaveStatRebuildTime();
         inputSim.SendClick(305, 570);
         Wait(1);
         inputSim.SendClick(165, 435);
@@ -359,7 +360,8 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(230, 380);
         Wait(3);
-        _configManager.SetCurrentFloor(1);
+        inputSim.SendClick(170, 444); // Claim independence day bonus
+        configManager.SetCurrentFloor(1);
     }
 
     public void PassTheTutorial()
@@ -465,7 +467,7 @@ public class ClickerActionsRepo
         inputSim.SendClick(170, 435); // Collect more bux
         Wait(1);
         inputSim.SendClick(165, 375); // Continue
-        _configManager.SetCurrentFloor(3);
+        configManager.SetCurrentFloor(3);
     }
 
     public void RestartGame()
@@ -493,9 +495,9 @@ public class ClickerActionsRepo
         inputSim.SendClick(305, 565);
     }
 
-    public int PlayRaffle(int currentHour)
+    public int PlayRaffle(int lastRaffleTime)
     {
-        if (currentHour != DateTime.Now.Hour)
+        if (lastRaffleTime != DateTime.Now.Hour)
         {
             mainWindow.Log("Playing the raffle");
             Wait(1);
@@ -508,7 +510,7 @@ public class ClickerActionsRepo
         }
         else
         {
-            return currentHour;
+            return lastRaffleTime;
         }
     }
 

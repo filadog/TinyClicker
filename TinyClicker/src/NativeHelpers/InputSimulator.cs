@@ -14,7 +14,7 @@ public class InputSimulator
     const string _ldPlayerProcName = "dnplayer";
     const string _blueStacksProcName = "HD-Player";
 
-    readonly ScreenScanner _screenScanner;
+    readonly ScreenScanner screenScanner;
     readonly ClickerActionsRepo _clickerActionsRepo;
     readonly MainWindow _mainWindow;
     readonly WindowToImage _windowToImage;
@@ -27,7 +27,7 @@ public class InputSimulator
     public InputSimulator(ClickerActionsRepo clickerActionsRepo)
     {
         _clickerActionsRepo = clickerActionsRepo;
-        _screenScanner = _clickerActionsRepo._screenScanner;
+        screenScanner = _clickerActionsRepo._screenScanner;
         _process = GetProcess();
         processId = _process.Id;
         _childHandle = GetChildHandle();
@@ -83,7 +83,7 @@ public class InputSimulator
 
     public Process GetProcess()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
 
         Process[] processlist = Process.GetProcesses();
         foreach (Process process in processlist)
@@ -105,7 +105,7 @@ public class InputSimulator
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_screenScanner._isBluestacks)
+            if (screenScanner._isBluestacks)
             {
                 // Bluestacks input simulation
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -131,7 +131,7 @@ public class InputSimulator
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_screenScanner._isBluestacks)
+            if (screenScanner._isBluestacks)
             {
                 // Bluestacks input 
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -147,7 +147,7 @@ public class InputSimulator
 
     public IntPtr GetChildHandle()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
 
         if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
         {
