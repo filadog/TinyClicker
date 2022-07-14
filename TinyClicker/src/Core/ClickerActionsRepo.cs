@@ -158,7 +158,7 @@ public class ClickerActionsRepo
     public void RideElevator()
     {
         mainWindow.Log("Riding the elevator");
-        inputSim.SendClick(45, 535);
+        inputSim.SendClick(21, 510);
         int curFloor = configManager.curConfig.CurrentFloor;
         if (curFloor >= 43)
             Wait(5);
@@ -360,7 +360,7 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(230, 380);
         Wait(3);
-        inputSim.SendClick(170, 444); // Claim independence day bonus
+        //inputSim.SendClick(170, 444); // Claim independence day bonus
         configManager.SetCurrentFloor(1);
     }
 
@@ -394,7 +394,7 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(170, 435); // Continue
         Wait(1);
-        inputSim.SendClick(30, 535);  // Ride elevator
+        inputSim.SendClick(21, 510);  // Ride elevator
         Wait(5);
         inputSim.SendClick(230, 380); // Continue
         Wait(1);
@@ -691,7 +691,7 @@ public class ClickerActionsRepo
                 mats.Add(image.Key, template);
             }
         }
-        images = null;
+        images.Clear();
         return mats;
     }
 

@@ -389,7 +389,7 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(170, 435); // Continue
         Wait(1);
-        inputSim.SendClick(30, 535);  // Ride elevator
+        inputSim.SendClick(45, 535);  // Ride elevator
         Wait(5);
         inputSim.SendClick(230, 380); // Continue
         Wait(1);

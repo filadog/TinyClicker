@@ -30,7 +30,7 @@ internal class ImageEditor
         Bitmap result = AdjustImage(CropCurrentBalance(window));
         // Save the result for manual checking
         //string filename = Environment.CurrentDirectory + @"/screenshots/balance.png";
-        //ScreenshotManager.SaveScreenshot(result, filename);
+        //WindowToImage.SaveScreenshot(result, filename);
 
         return result;
     }
@@ -99,8 +99,8 @@ internal class ImageEditor
         if (!_isBalanceLocationFound)
         {
             bool found = _actionsRepo.IsImageFound("balanceCoin", out OpenCvSharp.Point location);
-            posX = location.X + 14;
-            posY = location.Y - 2;
+            posX = location.X + 15;
+            posY = location.Y - 5;
             if (found)
             {
                 _isBalanceLocationFound = true;

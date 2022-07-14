@@ -17,7 +17,7 @@ public class InputSimulator
     readonly ScreenScanner screenScanner;
     readonly ClickerActionsRepo _clickerActionsRepo;
     readonly MainWindow _mainWindow;
-    readonly WindowToImage _windowToImage;
+    readonly WindowToImage windowToImage;
 
     internal Process _process;
     public int processId;
@@ -33,7 +33,7 @@ public class InputSimulator
         _childHandle = GetChildHandle();
         _screenRect = GetWindowRectangle();
         _mainWindow = _clickerActionsRepo.mainWindow;
-        _windowToImage = new WindowToImage();
+        windowToImage = new WindowToImage();
     }
 
     public enum KeyCodes
@@ -178,7 +178,7 @@ public class InputSimulator
         if (processId != -1)
         {
             IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-            Image img = _windowToImage.CaptureWindow(handle);
+            Image img = windowToImage.CaptureWindow(handle);
             return img;
         }
         else
@@ -198,7 +198,7 @@ public class InputSimulator
 
             IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
             // Captures screenshot of a window and saves it to the screenshots folder
-            _windowToImage.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
+            windowToImage.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
             _mainWindow.Log($"Made a screenshot. Screenshots can be found inside TinyClicker/screenshots folder");
         }
     }

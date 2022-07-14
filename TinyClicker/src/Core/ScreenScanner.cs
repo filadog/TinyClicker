@@ -63,19 +63,22 @@ public class ScreenScanner
         _curSecond = DateTime.Now.Second - 1;
         _sameItemCounter = 0;
         _lastItemName = "";
-        _dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
+        _dateTimeNow = "";
     }
 
     public void StartIteration()
     {
         // Get an image of the game screen
         Image gameWindow = clickerActions.inputSim.MakeScreenshot();
-        _currentFloor = configManager.curConfig.CurrentFloor;
 
-        // Update the list of found images on the screen
+        // Initialize necessary fields
+        _currentFloor = configManager.curConfig.CurrentFloor;
+        _dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
+
+        // Update the list of found UI elements
         TryFindAllOnScreen(gameWindow);
 
-        // Print the name of the found object, if any
+        // Print the name of the found element, if any
         foreach (var image in _matchedTemplates)
         {
             string msg = _dateTimeNow + " Found " + image.Key;
@@ -108,7 +111,7 @@ public class ScreenScanner
             _window.Log(msg);
 
             // Try to close ads with improper close button location after 10 attempts
-            if (_foundNothing >= 10)
+            if (_foundNothing >= 20)
             {
                 clickerActions.CloseHiddenAd();
             }
