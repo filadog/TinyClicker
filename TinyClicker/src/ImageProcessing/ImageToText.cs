@@ -2,31 +2,30 @@
 using Tesseract;
 using System.Drawing;
 using System.Text.RegularExpressions;
-using System.IO;
 
 namespace TinyClicker;
 
 internal class ImageToText
 {
-    TesseractEngine _tesseract;
-    ImageEditor _imageEditor;
+    readonly TesseractEngine _tesseract;
+    readonly ImageEditor _imageEditor;
 
     public ImageToText(ImageEditor editor)
     {
-        _tesseract = new TesseractEngine(@"./tessdata", "digits_comma", EngineMode.LstmOnly);
+        _tesseract = new TesseractEngine(@"./tessdata", "pixel", EngineMode.LstmOnly);
         _imageEditor = editor;
     }
 
     public int ParseBalance(Image window)
     {
-        Bitmap source = _imageEditor.GetBalanceImageAdjusted(window);
-        string result = "";
+        Bitmap source = _imageEditor.GetAdjustedBalanceImage(window);
+        string result;
         try
         {
-            //engine.SetVariable("tessedit_char_whitelist", "0123456789M,.");
             using (var page = _tesseract.Process(source, PageSegMode.SingleLine))
             {
                 result = page.GetText().Trim();
+                source.Dispose();
                 return ResultToBalance(result);
             }
         }
@@ -36,23 +35,31 @@ internal class ImageToText
         }
     }
 
-    public int ResultToBalance(string result)
+    int ResultToBalance(string result)
     {
-        int balance = 0;
-        if (result[result.Length - 1] == '1' || result[result.Length - 1] == '0')
+        if (result.Contains('M'))
         {
-            result = Regex.Replace(result, "[^0-9]", "");
-            if (result[result.Length - 2] == '0')
-            {
-                result = result.Remove(4);
-            }
+            int endIndex = result.IndexOf('M');
+            result = result[..endIndex];
+            result = TrimWithRegex(result);
             result += "000";
-            balance = Convert.ToInt32(result);
+            return Convert.ToInt32(result);
+        }
+        else if (result.Contains(' '))
+        {
+            int endIndex = result.IndexOf(' ');
+            result = result[..endIndex];
+            return Convert.ToInt32(TrimWithRegex(result));
         }
         else
         {
-            balance = Convert.ToInt32(Regex.Replace(result, "[^0-9]", "").Trim());
+            return Convert.ToInt32(TrimWithRegex(result));
         }
-        return balance;
+    }
+
+    string TrimWithRegex(string str)
+    {
+        str = Regex.Replace(str, "[^0-9]", "").Trim();
+        return str;
     }
 }

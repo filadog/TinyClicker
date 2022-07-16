@@ -10,14 +10,14 @@ using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using ImageMagick;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class ClickerActionsRepo
 {
     public readonly ScreenScanner _screenScanner;
-    readonly ConfigManager configManager;
-    readonly ImageToText imageToText;
-    readonly ImageEditor imageEditor;
+    readonly ConfigManager _configManager;
+    readonly ImageToText _imageToText;
+    readonly ImageEditor _imageEditor;
     public readonly InputSimulator inputSim;
 
     Dictionary<int, int> _floorPrices;
@@ -29,13 +29,13 @@ public class ClickerActionsRepo
     public ClickerActionsRepo(ScreenScanner screenScanner)
     {
         _screenScanner = screenScanner;
-        configManager = _screenScanner.configManager;
+        _configManager = _screenScanner.configManager;
         mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
         inputSim = new InputSimulator(this);
         _timeForNewFloor = DateTime.Now;
         _screenRect = inputSim.GetWindowRectangle();
-        imageEditor = new ImageEditor(_screenRect, this);
-        imageToText = new ImageToText(imageEditor);
+        _imageEditor = new ImageEditor(_screenRect, this);
+        _imageToText = new ImageToText(_imageEditor);
         _floorPrices = new Dictionary<int, int>();
     }
 
@@ -60,15 +60,15 @@ public class ClickerActionsRepo
         mainWindow.Log("Clicking on the parachute");
         inputSim.SendClick(_screenScanner._matchedTemplates["giftChute"]);
         Wait(1);
-        if (IsImageFound("watchAdPromptCoins") && configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        if (IsImageFound("watchAdPromptCoins") && _configManager.curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
-            TryWatchAds();
+            WatchCoinsAds();
         }
-        else if (_screenScanner.acceptBuxVideoOffers && configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        else if (_screenScanner._acceptBuxVideoOffers && _configManager.curConfig.CurrentFloor >= _screenScanner._floorToStartWatchingAds)
         {
             if (IsImageFound("watchAdPromptBux"))
             {
-                TryWatchAds();
+                WatchBuxAds();
             }
         }
         else
@@ -86,14 +86,12 @@ public class ClickerActionsRepo
             inputSim.SendClick(22, 22);
             inputSim.SendClick(311, 22);
             inputSim.SendClick(302, 52);
-            inputSim.SendClick(310, 41);
         }
         else
         {
             inputSim.SendClick(311, 22);
             inputSim.SendClick(22, 22);
             inputSim.SendClick(302, 52);
-            inputSim.SendClick(310, 41);
         }
         CheckForLostAdsReward();
     }
@@ -158,8 +156,8 @@ public class ClickerActionsRepo
     public void RideElevator()
     {
         mainWindow.Log("Riding the elevator");
-        inputSim.SendClick(21, 510);
-        int curFloor = configManager.curConfig.CurrentFloor;
+        inputSim.SendClick(45, 535);
+        int curFloor = _configManager.curConfig.CurrentFloor;
         if (curFloor >= 43)
             Wait(5);
         else if (curFloor >= 33)
@@ -228,7 +226,6 @@ public class ClickerActionsRepo
         mainWindow.Log("Closing hidden ads");
         Wait(1);
         inputSim.SendClick(310, 10);
-        inputSim.SendClick(310, 41);
         Wait(1);
         inputSim.SendClick(311, 22);
         CheckForLostAdsReward();
@@ -268,19 +265,18 @@ public class ClickerActionsRepo
         inputSim.SendClick(_screenScanner._matchedTemplates["completedQuestButton"]);
     }
 
-    public void TryWatchAds()
+    public void WatchCoinsAds()
     {
-        if (configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
-        {
-            mainWindow.Log("Watching the advertisement");
-            inputSim.SendClick(225, 375);
-            Wait(20);
-        }
-        else
-        {
-            inputSim.SendClick(105, 380); // Decline the video offer
-        }
-        
+        mainWindow.Log("Watching the advertisement");
+        inputSim.SendClick(225, 375);
+        Wait(20);
+    }
+
+    public void WatchBuxAds()
+    {
+        mainWindow.Log("Watching the advertisement");
+        inputSim.SendClick(225, 375);
+        Wait(20);
     }
 
     public void CheckForNewFloor(int currentFloor, Image gameWindow)
@@ -290,19 +286,22 @@ public class ClickerActionsRepo
             _floorPrices = CalculateFloorPrices();
             _floorPricesCalculated = true;
         }
-        int balance = imageToText.ParseBalance(gameWindow);
-        if (balance != -1 && currentFloor >= 3)
+        int balance = _imageToText.ParseBalance(gameWindow);
+        if (balance != 0 && balance != -1 && currentFloor >= 3)
         {
-            if (currentFloor >= _screenScanner.floorToRebuildAt)
+            if (currentFloor >= _screenScanner._floorToRebuildAt)
             {
                 Wait(1);
                 RebuildTower();
                 return;
             }
             int targetPrice = _floorPrices[currentFloor + 1];
-            if (balance > targetPrice && currentFloor < _screenScanner.floorToRebuildAt)
+            if (balance > targetPrice && currentFloor < _screenScanner._floorToRebuildAt)
             {
-                BuildNewFloor();
+                if (balance.ToString().Length < 9)
+                {
+                    BuildNewFloor();
+                }
             }
         }
     }
@@ -324,7 +323,7 @@ public class ClickerActionsRepo
                 // Add a new floor if there is enough coins
                 if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
-                    configManager.AddOneFloor();
+                    _configManager.AddOneFloor();
                     mainWindow.Log("Built a new floor");
                 }
                 else
@@ -346,7 +345,7 @@ public class ClickerActionsRepo
     public void RebuildTower()
     {
         mainWindow.Log("Rebuilding the tower");
-        configManager.SaveStatRebuildTime();
+        _configManager.SaveStatRebuildTime();
         inputSim.SendClick(305, 570);
         Wait(1);
         inputSim.SendClick(165, 435);
@@ -357,8 +356,7 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(230, 380);
         Wait(3);
-        //inputSim.SendClick(170, 444); // Claim independence day bonus
-        configManager.SetCurrentFloor(1);
+        _configManager.SetCurrentFloor(1);
     }
 
     public void PassTheTutorial()
@@ -391,7 +389,7 @@ public class ClickerActionsRepo
         Wait(1);
         inputSim.SendClick(170, 435); // Continue
         Wait(1);
-        inputSim.SendClick(21, 510);  // Ride elevator
+        inputSim.SendClick(45, 535);  // Ride elevator
         Wait(5);
         inputSim.SendClick(230, 380); // Continue
         Wait(1);
@@ -464,7 +462,7 @@ public class ClickerActionsRepo
         inputSim.SendClick(170, 435); // Collect more bux
         Wait(1);
         inputSim.SendClick(165, 375); // Continue
-        configManager.SetCurrentFloor(3);
+        _configManager.SetCurrentFloor(3);
     }
 
     public void RestartGame()
@@ -492,9 +490,9 @@ public class ClickerActionsRepo
         inputSim.SendClick(305, 565);
     }
 
-    public int PlayRaffle(int lastRaffleTime)
+    public int PlayRaffle(int currentHour)
     {
-        if (lastRaffleTime != DateTime.Now.Hour)
+        if (currentHour != DateTime.Now.Hour)
         {
             mainWindow.Log("Playing the raffle");
             Wait(1);
@@ -507,7 +505,7 @@ public class ClickerActionsRepo
         }
         else
         {
-            return lastRaffleTime;
+            return currentHour;
         }
     }
 
@@ -608,7 +606,7 @@ public class ClickerActionsRepo
         }
 
         // Calculate the prices for floors 10 through 50+
-        for (int i = 10; i <= _screenScanner.floorToRebuildAt + 1; i++)
+        for (int i = 10; i <= _screenScanner._floorToRebuildAt + 1; i++)
         {
             float floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 
@@ -688,7 +686,7 @@ public class ClickerActionsRepo
                 mats.Add(image.Key, template);
             }
         }
-        images.Clear();
+        images = null;
         return mats;
     }
 

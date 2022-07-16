@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class Config
 {

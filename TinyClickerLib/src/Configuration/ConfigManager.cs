@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.IO;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class ConfigManager
 {

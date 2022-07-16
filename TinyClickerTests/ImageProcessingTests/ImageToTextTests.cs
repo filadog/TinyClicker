@@ -16,7 +16,7 @@ namespace TinyClickerTests.ImageProcessing
         public ImageToTextTests()
         {
             _rect = new Rectangle();
-            _imageEditor = new ImageEditor(_rect);
+            _imageEditor = new ImageEditor(_rect, new ClickerActionsRepo(new ScreenScanner(true)));
             _imageToText = new ImageToText(_imageEditor);
         }
 

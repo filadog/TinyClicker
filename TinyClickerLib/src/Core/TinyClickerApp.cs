@@ -1,15 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace TinyClicker;
+namespace TinyClickerLib;
 
 public class TinyClickerApp
 {
-    readonly ScreenScanner screenScanner;
+    readonly ScreenScanner _screenScanner;
+    readonly ClickerActionsRepo _clickerActionsRepo;
 
     public TinyClickerApp(bool isBluestacks)
     {
-        screenScanner = new ScreenScanner(isBluestacks);
+        _screenScanner = new ScreenScanner(isBluestacks);
+        _clickerActionsRepo = _screenScanner.clickerActions;
     }
 
     public void StartInBackground(BackgroundWorker worker)
@@ -24,9 +26,10 @@ public class TinyClickerApp
 
     public void RunLoop(BackgroundWorker worker)
     {
-        while (!worker.CancellationPending)
+        int processId = _clickerActionsRepo.inputSim.processId;
+        while (processId != -1 && !worker.CancellationPending)
         {
-            screenScanner.StartIteration();
+            _screenScanner.StartIteration();
             Task.Delay(1500).Wait();
         }
     }

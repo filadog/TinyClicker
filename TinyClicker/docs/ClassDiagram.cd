@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TinyClicker.ConfigManager">
+    <Position X="12" Y="4" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAoAAAAgAAAAIIAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>src\Configuration\ConfigManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="curConfig" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TinyClicker.Config">
+    <Position X="12" Y="2" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAgABAAAAAAAQAAAgAAAAABAAAAgAAAA=</HashCode>
+      <FileName>src\Configuration\Config.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TinyClicker.ClickerActionsRepo">
+    <Position X="15.25" Y="4" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="imageToText" Type="TinyClicker.ImageToText" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.25" Y="4.438" />
+        <Point X="17.867" Y="4.438" />
+        <Point X="17.867" Y="2.431" />
+        <Point X="18.5" Y="2.431" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>I0XEAIhAABAgZIAgRjQIAokEBgQCEAhAQCAJCAAAhQg=</HashCode>
+      <FileName>src\Core\ClickerActionsRepo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="configManager" />
+      <Field Name="imageToText" />
+      <Field Name="imageEditor" />
+      <Field Name="inputSim" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TinyClicker.ImageEditor">
+    <Position X="18.5" Y="4" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAEIAAAAAAAAAAAAAIAAAAAAEAAEAAAAAABQA=</HashCode>
+      <FileName>src\ImageProcessing\ImageEditor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TinyClicker.InputSimulator">
+    <Position X="15.25" Y="7" Width="2" />
+    <Members>
+      <Field Name="_blueStacksProcName" Hidden="true" />
+      <Field Name="_childHandle" Hidden="true" />
+      <Field Name="_clickerActionsRepo" Hidden="true" />
+      <Field Name="_ldPlayerProcName" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="TinyClicker.InputSimulator.KeyCodes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\NativeHelpers\InputSimulator.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IIAgAAIBAEIAAEAAATQBAMAUAIAAAAAACAAAQAAKBAA=</HashCode>
+      <FileName>src\NativeHelpers\InputSimulator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="screenScanner" />
+      <Field Name="windowToImage" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TinyClicker.ScreenScanner">
+    <Position X="8.75" Y="4" Width="2" />
+    <Members>
+      <Field Name="_currentFloor" Hidden="true" />
+      <Field Name="_curSecond" Hidden="true" />
+      <Field Name="_dateTimeNow" Hidden="true" />
+      <Field Name="_foundNothing" Hidden="true" />
+      <Field Name="_isBluestacks" Hidden="true" />
+      <Field Name="_isLDPlayer" Hidden="true" />
+      <Field Name="_lastItemName" Hidden="true" />
+      <Field Name="_lastRaffleTime" Hidden="true" />
+      <Field Name="_matchedTemplates" Hidden="true" />
+      <Field Name="_sameItemCounter" Hidden="true" />
+      <Field Name="_samples" Hidden="true" />
+      <Field Name="_templates" Hidden="true" />
+      <Field Name="_window" Hidden="true" />
+      <Field Name="acceptBuxVideoOffers" Hidden="true" />
+      <Field Name="floorToRebuildAt" Hidden="true" />
+      <Field Name="floorToStartWatchingAds" Hidden="true" />
+      <Method Name="ScreenScanner" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAKAAAAgAAoIAJAAQAAAgCFAAAAAAAggIQAAEAQIQ=</HashCode>
+      <FileName>src\Core\ScreenScanner.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="clickerActions" />
+      <Field Name="configManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TinyClicker.TinyClickerApp">
+    <Position X="5.75" Y="4" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAABAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>src\Core\TinyClickerApp.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="screenScanner" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TinyClicker.WindowToImage">
+    <Position X="15.25" Y="9.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="TinyClicker.WindowToImage.GDI32" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\NativeHelpers\WindowToImage.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="TinyClicker.WindowToImage.User32" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\NativeHelpers\WindowToImage.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBAA=</HashCode>
+      <FileName>src\NativeHelpers\WindowToImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TinyClicker.ImageToText">
+    <Position X="18.5" Y="1.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AABgAAAAAAAAAAAAAIAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\ImageProcessing\ImageToText.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_imageEditor" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
