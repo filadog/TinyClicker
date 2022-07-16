@@ -1,4 +1,5 @@
 ﻿using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -21,15 +22,16 @@ internal class ImageEditor
         _isBalanceLocationFound = false;
     }
 
-    public Bitmap GetBalanceImageAdjusted(Image window)
+    public Bitmap GetAdjustedBalanceImage(Image window)
     {
         if (!_isBalanceLocationFound)
         {
             _balanceRect = GetBalanceRect(_screenRect);
         }
-        Bitmap result = AdjustImage(CropCurrentBalance(window));
-        // Save the result for manual checking
-        //string filename = Environment.CurrentDirectory + @"/screenshots/balance.png";
+        var result = CropCurrentBalance(window);
+
+        // Uncomment to save the balance image for manual checking
+        //string filename = @"./screenshots/balance.png";
         //WindowToImage.SaveScreenshot(result, filename);
 
         return result;
@@ -55,39 +57,7 @@ internal class ImageEditor
                 bitmap.SetPixel(x, y, inv);
             }
         }
-
-        bitmap = AdjustImage(bitmap);
-
         return bitmap;
-    }
-
-    Bitmap AdjustImage(Bitmap bitmap)
-    {
-        // Adjust the brightness of the image to be more readable for Tesseract
-        Bitmap adjustedImage = new Bitmap(bitmap);
-        Bitmap originalImage = bitmap;
-
-        float brightness = 1.0f;
-        float contrast = 4.0f;
-        float gamma = 1.0f;
-        float adjustedBrightness = brightness - 1.0f;
-
-        // Create a matrix that will brighten and change the contrast of the image
-        float[][] ptsArray = {
-        new float[] {contrast, 0, 0, 0, 0}, // Red
-        new float[] {0, contrast, 0, 0, 0}, // Green
-        new float[] {0, 0, contrast, 0, 0}, // Blue
-        new float[] {0, 0, 0, 1.0f, 0},     // Alpha
-        new float[] {adjustedBrightness, adjustedBrightness, adjustedBrightness, 0, 1}};
-
-        ImageAttributes imageAttributes = new ImageAttributes();
-        imageAttributes.ClearColorMatrix();
-        imageAttributes.SetColorMatrix(new ColorMatrix(ptsArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-        imageAttributes.SetGamma(gamma, ColorAdjustType.Bitmap);
-        Graphics g = Graphics.FromImage(adjustedImage);
-        g.DrawImage(originalImage, new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height) , 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
-
-        return adjustedImage;
     }
 
     Rectangle GetBalanceRect(Rectangle screenRect)

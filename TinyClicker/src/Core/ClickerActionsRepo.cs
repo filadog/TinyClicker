@@ -291,7 +291,7 @@ public class ClickerActionsRepo
             _floorPricesCalculated = true;
         }
         int balance = imageToText.ParseBalance(gameWindow);
-        if (balance != 0 && balance != -1 && currentFloor >= 3)
+        if (balance != -1 && currentFloor >= 3)
         {
             if (currentFloor >= _screenScanner.floorToRebuildAt)
             {
@@ -302,10 +302,7 @@ public class ClickerActionsRepo
             int targetPrice = _floorPrices[currentFloor + 1];
             if (balance > targetPrice && currentFloor < _screenScanner.floorToRebuildAt)
             {
-                if (balance.ToString().Length < 9)
-                {
-                    BuildNewFloor();
-                }
+                BuildNewFloor();
             }
         }
     }
