@@ -46,7 +46,7 @@ public class ClickerActionsRepo
         mainWindow.Log("Exiting the construction menu");
 
         inputSim.SendClick(100, 375); // Cancel action
-        Wait(1);
+        WaitSec(1);
     }
 
     public void CollectFreeBux()
@@ -59,7 +59,7 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Clicking on the parachute");
         inputSim.SendClick(_screenScanner._matchedTemplates["giftChute"]);
-        Wait(1);
+        WaitMs(500);
         if (IsImageFound("watchAdPromptCoins") && configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
         {
             TryWatchAds();
@@ -108,7 +108,7 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Exiting the roof customization menu");
         PressExitButton();
-        Wait(1);
+        WaitMs(500);
     }
 
     public void PressContinue()
@@ -116,32 +116,33 @@ public class ClickerActionsRepo
         mainWindow.Log("Clicking continue");
 
         inputSim.SendClick(_screenScanner._matchedTemplates["continueButton"]);
-        Wait(1);
+        WaitMs(500);
         MoveUp();
+        WaitSec(1);
     }
 
     public void Restock()
     {
         mainWindow.Log("Restocking");
         MoveDown();
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(100, 480); // Stock all
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(225, 375);
-        Wait(1);
+        WaitMs(500);
 
         if (IsImageFound("fullyStockedBonus"))
         {
             inputSim.SendClick(165, 375); // Close the bonus tooltip
-            Wait(1);
+            WaitSec(1);
             MoveUp();
-            Wait(1);
+            WaitSec(1);
             return;
         }
         else
         {
             MoveUp();
-            Wait(1);
+            WaitSec(1);
             return;
         }
     }
@@ -150,34 +151,37 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Pressing free bux icon");
         inputSim.SendClick(25, 130);
-        Wait(1);
+        WaitSec(1);
         inputSim.SendClick(230, 375);
-        Wait(1);
+        WaitSec(1);
     }
     
     public void RideElevator()
     {
         mainWindow.Log("Riding the elevator");
         inputSim.SendClick(21, 510);
-        int curFloor = configManager.curConfig.CurrentFloor;
-        if (curFloor >= 43)
-            Wait(5);
-        else if (curFloor >= 33)
-            Wait(4);
-        else if (curFloor >= 23)
-            Wait(3);
-        else if (curFloor >= 13)
-            Wait(2);
-        else
-            Wait(1);
-
-        if (IsImageFound("giftChute"))
+        WaitSec(1);
+        
+        if (IsImageFound("backButton"))
         {
-            return;
+            PressExitButton();
         }
-        else
+        else if (IsImageFound("continueButton", out Point location))
         {
-            MoveUp();
+            inputSim.SendClick(location.X, location.Y); // Click continue in case a new bitizen moved in
+        }
+        else 
+        {
+            int curFloor = configManager.curConfig.CurrentFloor;
+            WaitMs(curFloor * 100); // Wait for the ride to finish
+            if (IsImageFound("giftChute"))
+            {
+                return;
+            }
+            else
+            {
+                MoveUp();
+            }
         }
     }
 
@@ -185,7 +189,7 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Clicking on the quest button");
         inputSim.SendClick(_screenScanner._matchedTemplates["questButton"]);
-        Wait(1);
+        WaitMs(500);
         if (IsImageFound("deliverBitizens"))
         {
             DeliverBitizens();
@@ -197,7 +201,7 @@ public class ClickerActionsRepo
         else
         {
             inputSim.SendClick(90, 440); // Skip the quest
-            Wait(1);
+            WaitMs(500);
             inputSim.SendClick(230, 380); // Confirm
         }
     }
@@ -206,7 +210,7 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Skipping the quest");
         inputSim.SendClick(95, 445); // Skip the quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(225, 380); // Confirm skip
     }
 
@@ -218,29 +222,29 @@ public class ClickerActionsRepo
 
     public void OpenTheGame()
     {
-        Wait(1);
+        WaitSec(1);
         inputSim.SendClick(_screenScanner._matchedTemplates["gameIcon"]);
-        Wait(10);
+        WaitSec(7);
     }
 
     public void CloseHiddenAd()
     {
         mainWindow.Log("Closing hidden ads");
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(310, 10);
         inputSim.SendClick(310, 41);
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(311, 22);
         CheckForLostAdsReward();
     }
 
     public void CheckForLostAdsReward()
     {
-        Wait(1);
+        WaitMs(500);
         if (IsImageFound("adsLostReward"))
         {
             inputSim.SendClick(240, 344); // Click "Keep watching"
-            Wait(15);
+            WaitSec(15);
         }
         else
         {
@@ -248,9 +252,17 @@ public class ClickerActionsRepo
         }
     }
 
+    public void CheckForExitButton()
+    {
+        if (IsImageFound("backButton"))
+        {
+            PressExitButton();
+        }
+    }
+
     public void CloseNewFloorMenu()
     {
-        mainWindow.Log("Exiting");
+        mainWindow.Log("Exiting from new floor menu");
         PressExitButton();
     }
 
@@ -263,26 +275,23 @@ public class ClickerActionsRepo
     public void CompleteQuest()
     {
         mainWindow.Log("Completing the quest");
-        
-        Wait(1);
+
+        WaitMs(500);
         inputSim.SendClick(_screenScanner._matchedTemplates["completedQuestButton"]);
     }
 
-    public void TryWatchAds()
+    public void CollectNewScience()
     {
-        if (configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
-        {
-            mainWindow.Log("Watching the advertisement");
-            inputSim.SendClick(225, 375);
-            Wait(20);
-        }
-        else
-        {
-            inputSim.SendClick(105, 380); // Decline the video offer
-        }
-        
+        mainWindow.Log("Collecting new science");
+        inputSim.SendClick(_screenScanner._matchedTemplates["newScienceButton"]);
+        WaitMs(500);
+        inputSim.SendClick(150, 110);
+        WaitMs(300);
+        PressExitButton();
+        WaitMs(300);
+        PressExitButton();
     }
-
+    
     public void CheckForNewFloor(int currentFloor, Image gameWindow)
     {
         if (!_floorPricesCalculated)
@@ -295,7 +304,7 @@ public class ClickerActionsRepo
         {
             if (currentFloor >= _screenScanner.floorToRebuildAt)
             {
-                Wait(1);
+                WaitSec(1);
                 RebuildTower();
                 return;
             }
@@ -313,14 +322,22 @@ public class ClickerActionsRepo
         {
             mainWindow.Log("Building new floor");
             MoveUp();
-            Wait(2);
+            WaitSec(1);
             inputSim.SendClick(195, 390); // Click on a new floor
-            Wait(1);
+            WaitMs(500);
 
-            if (IsImageFound("buildNewFloorNotification"))
+            if (IsImageFound("backButton"))
+            {
+                PressExitButton();
+            }
+            else if (IsImageFound("continueButton"))
+            {
+                inputSim.SendClick(105, 380); // Click "No thanks" on chute notification
+            }
+            else if (IsImageFound("buildNewFloorNotification"))
             {
                 inputSim.SendClick(230, 320); // Confirm construction
-                Wait(1);
+                WaitMs(500);
                 // Add a new floor if there is enough coins
                 if (!IsImageFound("newFloorNoCoinsNotification"))
                 {
@@ -333,13 +350,13 @@ public class ClickerActionsRepo
                     _timeForNewFloor = DateTime.Now.AddSeconds(30);
                     mainWindow.Log("Not enough coins for a new floor");
                 }
+                MoveUp();
             }
-            MoveUp();
         }
         else
         {
             mainWindow.Log("Too early to build a floor");
-            Wait(1);
+            WaitSec(1);
         }
     }
 
@@ -348,15 +365,15 @@ public class ClickerActionsRepo
         mainWindow.Log("Rebuilding the tower");
         configManager.SaveStatRebuildTime();
         inputSim.SendClick(305, 570);
-        Wait(1);
+        WaitSec(1);
         inputSim.SendClick(165, 435);
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(165, 440);
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(230, 380);
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(230, 380);
-        Wait(3);
+        WaitSec(1);
         //inputSim.SendClick(170, 444); // Claim independence day bonus
         configManager.SetCurrentFloor(1);
     }
@@ -364,105 +381,113 @@ public class ClickerActionsRepo
     public void PassTheTutorial()
     {
         mainWindow.Log("Passing the tutorial");
-        Wait(3);
+        WaitMs(1500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(3);
+        WaitMs(500);
         MoveDown();
-        Wait(1);
+        WaitMs(1500);
         inputSim.SendClick(195, 260); // Build a new floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(230, 380); // Confirm
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(190, 300); // Click on a new floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(240, 150); // Build a residential floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(160, 375); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
-        inputSim.SendClick(21, 510);  // Ride elevator
-        Wait(5);
+        WaitMs(500);
+        inputSim.SendClick(21, 510);  // Click on elevator button
+        WaitSec(4);
+        // It's possible that the daily rent reward will interfere with the current tutorial completion, hence the check
+        if (IsImageFound("freeBuxCollectButton", out Point location))
+        {
+            inputSim.SendClick(location.X, location.Y); // Collect daily rent
+            WaitMs(500);
+            inputSim.SendClick(21, 510);  // Click on elevator button again
+            WaitSec(4);
+        }
         inputSim.SendClick(230, 380); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(190, 200); // Build a new floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(225, 380); // Confirm
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(200, 200); // Open the new floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(90, 340);  // Build random food floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 375); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete the quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(200, 200); // Open food floor
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(75, 210);  // Open the hire menu
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(80, 100);  // Select our bitizen
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(230, 380); // Hire him
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(160, 380); // Continue on dream job assignement
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(300, 560); // Exit the food store
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete the quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(200, 200); // Open the food store again
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(200, 210); // Request restock of the first item in the store
-        Wait(15);
+        WaitSec(15);
         inputSim.SendClick(305, 190); // Press restock button
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete the quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(200, 200); // Open food store again
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 130); // Click upgrade
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(230, 375); // Confirm
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(165, 375); // Continue
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(300, 560); // Exit the food store
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete the quest
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(170, 435); // Collect more bux
-        Wait(1);
+        WaitMs(500);
         inputSim.SendClick(165, 375); // Continue
         configManager.SetCurrentFloor(3);
     }
@@ -471,14 +496,28 @@ public class ClickerActionsRepo
     {
         mainWindow.Log("Restarting the app");
         inputSim.SendEscapeButton();
-        Wait(1);
+        WaitSec(1);
         inputSim.SendClick(230, 380);
+    }
+
+    public void TryWatchAds()
+    {
+        if (configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
+        {
+            mainWindow.Log("Watching the advertisement");
+            inputSim.SendClick(225, 375);
+            WaitSec(20);
+        }
+        else
+        {
+            inputSim.SendClick(105, 380); // Decline the video offer
+        }
     }
 
     public void MoveUp()
     {
         inputSim.SendClick(160, 8);
-        Wait(1);
+        WaitSec(1);
     }
 
     public void MoveDown()
@@ -497,11 +536,11 @@ public class ClickerActionsRepo
         if (lastRaffleTime != DateTime.Now.Hour)
         {
             mainWindow.Log("Playing the raffle");
-            Wait(1);
+            WaitMs(500);
             inputSim.SendClick(300, 570);
-            Wait(1);
+            WaitMs(500);
             inputSim.SendClick(275, 440);
-            Wait(2);
+            WaitSec(2);
             inputSim.SendClick(165, 375);
             return DateTime.Now.Hour;
         }
@@ -527,12 +566,22 @@ public class ClickerActionsRepo
         return (_screenHeightPercentage, _screenWidthPercentage);
     }
 
-    void Wait(int seconds)
+    void WaitSec(int seconds)
     {
         int ms = seconds * 1000;
         Task.Delay(ms).Wait();
     }
 
+    void WaitMs(int milliseconds)
+    {
+        Task.Delay(milliseconds).Wait();
+    }
+
+    /// <summary>
+    /// Checks if the image is on the game screen.
+    /// </summary>
+    /// <param name="imageKey">Image name from the button_names.txt</param>
+    /// <returns>true if the image is found within the screen</returns>  
     bool IsImageFound(string imageKey)
     {
         Image gameWindow = inputSim.MakeScreenshot();
@@ -564,6 +613,12 @@ public class ClickerActionsRepo
         }
     }
 
+    /// <summary>
+    /// Checks if the image is on the game screen.
+    /// </summary>
+    /// <param name="imageKey">Image name from the button_names.txt</param>
+    /// <param name="location">OpenCvSharp.Point stuct with coordinates of the specified image, in case the image is found</param>
+    /// <returns>true if the image is found within the screen</returns>
     public bool IsImageFound(string imageKey, out Point location)
     {
         Image gameWindow = inputSim.MakeScreenshot();
@@ -597,6 +652,10 @@ public class ClickerActionsRepo
         }
     }
 
+    /// <summary>
+    /// Calculates the floor prices 1 through the desired floor to rebuild at +1
+    /// </summary>
+    /// <returns>Private Dictionary<int, int> where key is the floor number and value is the floor price</returns>
     private Dictionary<int, int> CalculateFloorPrices()
     {
         var dict = new Dictionary<int, int>();
