@@ -32,7 +32,6 @@ public class ScreenScanner
     int _sameItemCounter;
     string _lastItemName;
     int _currentFloor;
-    string _dateTimeNow;
 
     public ScreenScanner(bool isBluestacks)
     {
@@ -63,7 +62,6 @@ public class ScreenScanner
         _curSecond = DateTime.Now.Second - 1;
         _sameItemCounter = 0;
         _lastItemName = "";
-        _dateTimeNow = "";
     }
 
     public void StartIteration()
@@ -73,7 +71,6 @@ public class ScreenScanner
 
         // Initialize necessary fields
         _currentFloor = configManager.curConfig.CurrentFloor;
-        _dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
 
         // Update the list of found UI elements
         TryFindAllOnScreen(gameWindow);
@@ -81,7 +78,7 @@ public class ScreenScanner
         // Print the name of the found element, if any
         foreach (var image in _matchedTemplates)
         {
-            string msg = _dateTimeNow + " Found " + image.Key;
+            string msg = "Found " + image.Key;
             _window.Log(msg);
             _foundNothing = 0;
 
@@ -107,7 +104,7 @@ public class ScreenScanner
         if (_matchedTemplates.Count == 0)
         {
             _foundNothing++;
-            string msg = _dateTimeNow + " Found nothing x" + _foundNothing;
+            string msg = "Found nothing x" + _foundNothing;
             _window.Log(msg);
 
             // Try to close ads with improper close button location after 10 attempts
@@ -212,9 +209,6 @@ public class ScreenScanner
             key = _matchedTemplates.Keys.First();
             switch (key)
             {
-                case "freeBuxCollectButton": clickerActions.CollectFreeBux(); break;
-                case "roofCustomizationWindow": clickerActions.ExitRoofCustomizationMenu(); break;
-                case "hurryConstructionPrompt": clickerActions.CancelHurryConstruction(); break;
                 case "closeAd":
                 case "closeAd_2":
                 case "closeAd_3":
@@ -224,6 +218,9 @@ public class ScreenScanner
                 case "closeAd_7":
                 case "closeAd_8":
                 case "closeAd_9": clickerActions.CloseAd(); break;
+                case "freeBuxCollectButton": clickerActions.CollectFreeBux(); break;
+                case "roofCustomizationWindow": clickerActions.ExitRoofCustomizationMenu(); break;
+                case "hurryConstructionPrompt": clickerActions.CancelHurryConstruction(); break;
                 case "continueButton": clickerActions.PressContinue(); break;
                 case "foundCoinsChuteNotification": clickerActions.CloseChuteNotification(); break;
                 case "restockButton": clickerActions.Restock(); break;
@@ -241,6 +238,7 @@ public class ScreenScanner
                 case "buildNewFloorNotification": clickerActions.CloseBuildNewFloorNotification(); break;
                 case "gameIcon": clickerActions.OpenTheGame(); break;
                 case "adsLostReward": clickerActions.CheckForLostAdsReward(); break;
+                case "newScienceButton": clickerActions.CollectNewScience(); break;
                 default: break;
             }
         }

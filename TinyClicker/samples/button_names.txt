@@ -29,3 +29,4 @@ giftChute
 elevatorButton
 adsLostReward
 balanceCoin
+newScienceButton

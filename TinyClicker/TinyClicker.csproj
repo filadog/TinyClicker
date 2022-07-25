@@ -9,10 +9,10 @@
     <DebugType>none</DebugType>
     <Description>Background clicker for the Tiny Tower game</Description>
     <Copyright>filadog @ 2022</Copyright>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
     <Authors>filadog</Authors>
-    <ApplicationIcon>UI\tynyclicker_icon.ico</ApplicationIcon>
+    <ApplicationIcon>UI\tinyclicker_icon.ico</ApplicationIcon>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <ErrorReport>prompt</ErrorReport>
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ui\tynyclicker_icon.ico" />
+    <Content Include="ui\tinyclicker_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -135,6 +135,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="MainWindow.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
     <Page Update="SettingsWindow.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
