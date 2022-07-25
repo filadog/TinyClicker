@@ -51,15 +51,22 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 
 - It is necessary to swith the regular video offers gift (FREE gift that appears every 4-5 minutes) to only offer you bux, TinyClicker will collect them.
 
-- When the setup is done, press Save and Exit buttons in settings, select your emulator in the main window, launch the game and start the TinyClicker. Your settings will be saved and current floor will be automatically tracked. Next time, just select the emulator and start the Clicker.
+- When the setup is done, press Save and Exit buttons in settings, select your emulator in the main window, launch the game and start the TinyClicker. Your settings will be saved and current floor will be automatically incremented. Next time, just select the emulator and start the Clicker.
+
+## Information
+
+### Collecting coins for upgrades with science points
+
+If you wish to collect a big amount of coins without TinyClicker trying to spend them, set the <code>Current floor</code> setting to at least 200 before starting the clicker and set the <code>Rebuild at</code> setting to an even higer value. That way the clicker will assume it needs a lot of coins for a new floor and will farm them indefinitely. Science upgrades are not automated and should be performed manually, TinyClicker will collect science points for you though.
 
 
-## For the iOS players
+### For the iOS players
 
-If you have a Windows PC it is possible to use Tiny Tower cloud save inside the Android version of Tiny Tower inside android emulator, VIP package will be transformed as well.
+If you have a Windows PC it is possible to use Tiny Tower cloud save inside the Android version of Tiny Tower inside android emulator of your choice, VIP package will be transformed as well. 
 
 
-## Libraries in use
+### Cloud sync
 
-[shimat/opencvsharp](https://github.com/shimat/opencvsharp)\
-[charlesw/tesseract](https://github.com/charlesw/tesseract)
+Avoid launching the game on a mobile device when it's already launched inside emulator somewhere else. In-game cloud sync may confuse the most recent version of the game and some progress can be lost. In order to avoid this make sure to run only one instance of the game at all times. 
+
+It's also possible to sync the game manually. To do so, navigate to the <code>CLOUD</code> page inside the game's main menu and click on your email. The game will briefly show "Loading" window which will indicate that cloud sync was successful. In case of an error, check the network.
