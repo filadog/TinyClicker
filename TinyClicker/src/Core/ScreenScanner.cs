@@ -121,6 +121,7 @@ public class ScreenScanner
         if (_currentFloor == 1)
         {
             clickerActions.PassTheTutorial();
+            return;
         }
 
         // Play the hourly raffle at the beginning of every hour and perform all actions
@@ -129,17 +130,15 @@ public class ScreenScanner
             PerformActions();
             _lastRaffleTime = clickerActions.PlayRaffle(_lastRaffleTime);
         }
-
-        // Check for a new floor every iteration
-        if (gameWindow != null)
+        
+        // Check for a new floor every iteration and build it if possible
+        if (_curSecond != DateTime.Now.Second && _currentFloor != 1)
         {
-            if (_curSecond != DateTime.Now.Second && _currentFloor != 1)
-            {
-                _curSecond = DateTime.Now.Second;
-                clickerActions.CheckForNewFloor(_currentFloor, gameWindow);
-            }
-            gameWindow.Dispose();
+            _curSecond = DateTime.Now.Second;
+            clickerActions.CheckForNewFloor(_currentFloor, gameWindow);
         }
+        
+        gameWindow!.Dispose();
         _matchedTemplates.Clear();
     }
 

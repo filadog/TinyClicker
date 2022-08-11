@@ -41,8 +41,22 @@ internal class ImageToText
         {
             int endIndex = result.IndexOf('M');
             result = result[..endIndex];
-            result = TrimWithRegex(result);
-            result += "000";
+            int dotIndex = result.IndexOf('.');
+            if (dotIndex == 1)
+            {
+                result = TrimWithRegex(result);
+                result += "000";
+            }
+            else if (dotIndex == 2)
+            {
+                result = TrimWithRegex(result);
+                result += "0000";
+            }
+            else if (dotIndex == 3)
+            {
+                result = TrimWithRegex(result);
+                result += "00000";
+            }
             return Convert.ToInt32(result);
         }
         else if (result.Contains(' '))
