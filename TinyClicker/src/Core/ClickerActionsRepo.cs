@@ -304,7 +304,7 @@ public class ClickerActionsRepo
         {
             if (currentFloor >= _screenScanner.floorToRebuildAt)
             {
-                WaitSec(1);
+                WaitMs(500);
                 RebuildTower();
                 return;
             }
@@ -312,6 +312,9 @@ public class ClickerActionsRepo
             if (balance > targetPrice && currentFloor < _screenScanner.floorToRebuildAt)
             {
                 BuildNewFloor();
+                // Allow consecutive building of new floors if there is enough coins, recursive call
+                using var newGameWindow = inputSim.MakeScreenshot();
+                CheckForNewFloor(configManager.curConfig.CurrentFloor, newGameWindow);
             }
         }
     }
@@ -320,17 +323,19 @@ public class ClickerActionsRepo
     {
         if (_timeForNewFloor <= DateTime.Now)
         {
+            if (IsImageFound("backButton"))
+            {
+                PressExitButton();
+                return;
+            }
+            
             mainWindow.Log("Building new floor");
             MoveUp();
             WaitSec(1);
             inputSim.SendClick(195, 390); // Click on a new floor
             WaitMs(500);
-
-            if (IsImageFound("backButton"))
-            {
-                PressExitButton();
-            }
-            else if (IsImageFound("continueButton"))
+            
+            if (IsImageFound("continueButton"))
             {
                 inputSim.SendClick(105, 380); // Click "No thanks" on chute notification
             }
@@ -373,7 +378,7 @@ public class ClickerActionsRepo
         inputSim.SendClick(230, 380);
         WaitMs(500);
         inputSim.SendClick(230, 380);
-        WaitSec(1);
+        //WaitSec(1);
         //inputSim.SendClick(170, 444); // Claim independence day bonus
         configManager.SetCurrentFloor(1);
     }
@@ -381,7 +386,7 @@ public class ClickerActionsRepo
     public void PassTheTutorial()
     {
         mainWindow.Log("Passing the tutorial");
-        WaitMs(1500);
+        WaitMs(1000);
         inputSim.SendClick(170, 435); // Continue
         WaitMs(500);
         MoveDown();
@@ -407,9 +412,10 @@ public class ClickerActionsRepo
         inputSim.SendClick(170, 435); // Collect bux
         WaitMs(500);
         inputSim.SendClick(170, 435); // Continue
-        WaitMs(500);
-        inputSim.SendClick(21, 510);  // Click on elevator button
+        WaitMs(1500);                 // Do not make this less than 1s, the elevator won't be there in less time 
+        inputSim.SendClick(21, 510);  // Click on the elevator button
         WaitSec(4);
+        
         // It's possible that the daily rent reward will interfere with the current tutorial completion, hence the check
         if (IsImageFound("freeBuxCollectButton", out Point location))
         {
@@ -418,6 +424,7 @@ public class ClickerActionsRepo
             inputSim.SendClick(21, 510);  // Click on elevator button again
             WaitSec(4);
         }
+        
         inputSim.SendClick(230, 380); // Continue
         WaitMs(500);
         inputSim.SendClick(20, 60);   // Complete quest
@@ -487,8 +494,8 @@ public class ClickerActionsRepo
         inputSim.SendClick(170, 435); // Collect bux
         WaitMs(500);
         inputSim.SendClick(170, 435); // Collect more bux
-        WaitMs(500);
-        inputSim.SendClick(165, 375); // Continue
+        //WaitMs(500);
+        //inputSim.SendClick(165, 375); // Continue
         configManager.SetCurrentFloor(3);
     }
 
@@ -516,7 +523,7 @@ public class ClickerActionsRepo
 
     public void MoveUp()
     {
-        inputSim.SendClick(160, 8);
+        inputSim.SendClick(22, 10);
         WaitSec(1);
     }
 

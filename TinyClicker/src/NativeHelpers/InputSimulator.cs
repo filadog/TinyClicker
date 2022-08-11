@@ -57,7 +57,8 @@ public class InputSimulator
         WM_ACTIVATE = 0x0006,
         WM_NCACTIVATE = 0x0086,
         WM_CAPTURECHANGED = 0x0215,
-        WM_SETFOCUS = 0x0007
+        WM_SETFOCUS = 0x0007,
+        WM_KILLFOCUS = 0x0008
     }
 
     [DllImport("User32.dll")]
@@ -111,6 +112,7 @@ public class InputSimulator
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
                 PostMessageA(_childHandle, (int)KeyCodes.WM_LBUTTONDOWN, 0x0001, location);
                 PostMessageA(_childHandle, (int)KeyCodes.WM_LBUTTONUP, 0x0001, location);
+                SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_KILLFOCUS, 0, 0);
             }
             else
             {
