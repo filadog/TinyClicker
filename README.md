@@ -23,6 +23,7 @@ TinyClicker implements pattern matching and OCR to help you automate the grind o
 - Automatic participation in the hourly raffle
 - Easy configuration 
 - Rebuilding statistics
+- Science points collection
 
 **only with VIP package version at this time*
 
@@ -31,11 +32,11 @@ TinyClicker implements pattern matching and OCR to help you automate the grind o
 
 ## Before running
 
-Make sure to run only one instance of android emulator. 
-Emulator window with the game can be covered with other windows, but do not minimize it to the tray. 
-Player interactions with the game are possible but not recommended.
+Make sure to run only one instance of android emulator. Do not build floors manually if the clicker is running.
+Emulator window with the game can be covered with other windows, but it should not be hidden in the system tray or be partially out of the screen bounds. 
+Player interactions with the game are possible but not recommended. 
 
-By default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens elsewhere before launching the clicker.
+By default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens to the best hotels awailable before launching the clicker.
 
 TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
