@@ -1,10 +1,15 @@
 ## TinyClicker
 
-A simple background autoclicker for the Tiny Tower game. TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower on desktop. Work in progress.
+A simple background autoclicker for the Tiny Tower game tailored for the greedy Golden Tickets collectors.\
+TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower.
+
+## 
 
 ![tinyclicker_png2](https://user-images.githubusercontent.com/51026900/174921574-5e6b74a7-d3b1-4d8e-a21f-95d65431b792.png)
 
-#### Platform: Windows 7 (x64/x86) or later versions
+##
+
+#### Platform: Windows 7 (x86/x64) or later versions
 ### Supported Emulators:
 - LDPlayer 4.x
 - BlueStacks 5.x
@@ -45,7 +50,7 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 - Navigate to settings and create a custom screen resolution under the "Screen" tab. Set <code>Width to 666 px</code> and <code>Height to 1184 px</code>, <code>DPI to 240 or 320</code>. Save and apply the settings. Emulator window can be reasonably resized afterwards by dragging the window edge before the start of TinyClicker. Important part is the screen aspect ratio and it shouldn't be changed. Do not resize the window if the clicker has already started.
 
 #### General setup
-- Launch TinyClicker, navigate to the Settings window (a cog button) and set the <code>Current floor</code> number to the last built floor of your tower. <code>Rebuild at</code> sets the floor at which the clicker will rebuild the tower. <code>Watch Ads From</code> sets the floor number after which ads will be watched, as they become more time-efficient. Set the value higher the more gold bux you already have. Rule of thumb is 100 gold bux = 25th floor, 200 = 35th floor and so on until 50. If you have more than 500 gold bux ads will only waste time. Unchecked <code>Watch Bux Ads</code> will reject all ads with bux reward, as they are inefficient. 
+- Launch TinyClicker, navigate to the Settings window (a cog button) and set the <code>Current floor</code> number to the last built floor of your tower. <code>Rebuild at</code> sets the floor at which the clicker will rebuild the tower. <code>Watch Ads From</code> sets the floor number after which the ads will be watched, as they become more time-efficient. Set the value higher the more golden tickets you already have. Rule of thumb is 100 GT = 25th floor, 200 = 35th floor and so on until 50. If you have more than 500 GT ads will only waste time. Unchecked <code>Watch Bux Ads</code> will reject all ads with bux reward, as they are time-inefficient. 
 
 - It is strongly advisable to disable the web browser and play market apps inside the simulated device since some ads will try to open them and cause the Clicker to stall.
 
