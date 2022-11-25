@@ -1,7 +1,7 @@
 ## TinyClicker
 
 A simple background autoclicker for the Tiny Tower game tailored for the greedy Golden Tickets collectors.\
-TinyClicker implements pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower.
+TinyClicker implements image pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower.
 
 ## 
 
