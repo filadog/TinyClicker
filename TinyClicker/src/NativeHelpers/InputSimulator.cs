@@ -32,7 +32,7 @@ public class InputSimulator
         processId = _process.Id;
         _childHandle = GetChildHandle();
         _screenRect = GetWindowRectangle();
-        _mainWindow = _clickerActionsRepo.mainWindow;
+        _mainWindow = _clickerActionsRepo._mainWindow;
         windowToImage = new WindowToImage();
     }
 
@@ -62,27 +62,27 @@ public class InputSimulator
     }
 
     [DllImport("User32.dll")]
-    public static extern int FindWindow(string strClassName, string strWindowName);
+    private static extern int FindWindow(string strClassName, string strWindowName);
 
     [DllImport("User32.dll")]
-    public static extern int FindWindowEx(int hWndParent, int hWndChildAfter, string strClassName, string strWindowName);
+    private static extern int FindWindowEx(int hWndParent, int hWndChildAfter, string strClassName, string strWindowName);
 
     [DllImport("User32.dll")]
-    public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+    private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
     [DllImport("user32.dll")]
     private static extern int GetWindowRect(IntPtr hWnd, out Rectangle rect);
 
     [DllImport("User32.dll")]
-    public static extern int PostMessageA(IntPtr hWnd, int Msg, int wParam, int lParam);
+    private static extern int PostMessageA(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-    public static Rectangle GetWindowRectangle(IntPtr hWnd)
+    private static Rectangle GetWindowRectangle(IntPtr hWnd)
     {
         GetWindowRect(hWnd, out Rectangle rect);
         return rect;
     }
 
-    public Process GetProcess()
+    private Process GetProcess()
     {
         string curProcName = screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
 

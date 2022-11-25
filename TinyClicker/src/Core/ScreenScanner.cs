@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TinyClicker.Core;
 
 namespace TinyClicker;
 
@@ -67,7 +68,7 @@ public class ScreenScanner
     public void StartIteration()
     {
         // Get an image of the game screen
-        Image gameWindow = clickerActions.inputSim.MakeScreenshot();
+        var gameWindow = clickerActions._inputSim.MakeScreenshot();
 
         // Initialize necessary fields
         _currentFloor = configManager.curConfig.CurrentFloor;
@@ -78,7 +79,7 @@ public class ScreenScanner
         // Print the name of the found element, if any
         foreach (var image in _matchedTemplates)
         {
-            string msg = "Found " + image.Key;
+            var msg = "Found " + image.Key;
             _window.Log(msg);
             _foundNothing = 0;
 
@@ -104,7 +105,7 @@ public class ScreenScanner
         if (_matchedTemplates.Count == 0)
         {
             _foundNothing++;
-            string msg = "Found nothing x" + _foundNothing;
+            var msg = "Found nothing x" + _foundNothing;
             _window.Log(msg);
 
             // Try to close ads with improper close button location after 10 attempts
@@ -142,10 +143,10 @@ public class ScreenScanner
         _matchedTemplates.Clear();
     }
 
-    void TryFindAllOnScreen(Image gameWindow)
+    private void TryFindAllOnScreen(Image gameWindow)
     {
         var windowBitmap = new Bitmap(gameWindow);
-        Mat reference = BitmapConverter.ToMat(windowBitmap);
+        var reference = BitmapConverter.ToMat(windowBitmap);
         windowBitmap.Dispose();
 
         foreach (var template in _templates)
@@ -156,6 +157,7 @@ public class ScreenScanner
                 {
                     continue;
                 }
+
                 if (!_matchedTemplates.ContainsKey(template.Key))
                 {
                     TryFindSingle(template, reference);
@@ -167,6 +169,7 @@ public class ScreenScanner
                 break;
             }
         }
+
         reference.Dispose();
     }
 
@@ -189,7 +192,15 @@ public class ScreenScanner
 
                 if (maxval >= threshold)
                 {
-                    _matchedTemplates.Add(template.Key, clickerActions.inputSim.MakeLParam(maxloc.X, maxloc.Y));
+                    if (template.Key == Button.GiftChute.GetName())
+                    {
+                        _matchedTemplates.Add(template.Key, clickerActions._inputSim.MakeLParam(maxloc.X + 40, maxloc.Y + 40));
+                    }
+                    else
+                    {
+                        _matchedTemplates.Add(template.Key, clickerActions._inputSim.MakeLParam(maxloc.X, maxloc.Y));
+                    }
+
                     break;
                 }
                 else

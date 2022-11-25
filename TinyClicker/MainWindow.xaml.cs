@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.ComponentModel;
+using System.IO;
 
 namespace TinyClicker;
 
@@ -78,6 +79,10 @@ public partial class MainWindow : Window
         Dispatcher.Invoke(() =>
         {
             TextBoxLog.Text = msg;
+            // Simple logging
+            msg += "\n";
+            var time = DateTime.Now.ToString();
+            File.AppendAllText(@"./log.txt", time + " " + msg);
         });
     }
 
