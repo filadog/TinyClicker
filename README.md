@@ -36,7 +36,7 @@ Make sure to run only one instance of android emulator. Do not build floors manu
 Emulator window with the game can be covered with other windows, but it should not be hidden in the system tray or be partially out of the screen bounds. 
 Player interactions with the game are possible but not recommended. 
 
-By default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens to the best hotels awailable before launching the clicker.
+By default the tower will rebuild as soon as it hits 50th floor. If you have more floors make sure to manually transform your bitizens to the best hotels available before launching the clicker.
 
 TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
