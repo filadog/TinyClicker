@@ -116,7 +116,5 @@ namespace TinyClickerTests.ImageProcessing
             int actualLength = _imageToText.ParseBalance(image).ToString().Length;
             Assert.Equal(expectedLength, actualLength);
         }
-
-        
     }
 }

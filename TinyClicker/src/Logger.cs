@@ -10,9 +10,6 @@ public class Logger
 
     public void Log(string message)
     {
-        if (_mainWindow is not null)
-        {
-            _mainWindow.Log(message);
-        }
+        _mainWindow?.Log(message);
     }
 }

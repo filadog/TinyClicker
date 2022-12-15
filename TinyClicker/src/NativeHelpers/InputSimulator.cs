@@ -19,7 +19,7 @@ public class InputSimulator
     private const string _ldPlayerProcName = "dnplayer";
     private const string _blueStacksProcName = "HD-Player";
 
-    private Process _process;
+    private Process? _process;
     private int _processId;
     private IntPtr _childHandle;
     Rectangle _screenRect;
