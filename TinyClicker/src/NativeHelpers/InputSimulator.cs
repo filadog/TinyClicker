@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -11,29 +12,31 @@ namespace TinyClicker;
 
 public class InputSimulator
 {
-    const string _ldPlayerProcName = "dnplayer";
-    const string _blueStacksProcName = "HD-Player";
+    private readonly Logger _logger;
+    private readonly ScreenScanner _screenScanner;
+    private readonly WindowToImage _windowToImage;
 
-    readonly ScreenScanner screenScanner;
-    readonly ClickerActionsRepo _clickerActionsRepo;
-    readonly MainWindow _mainWindow;
-    readonly WindowToImage windowToImage;
+    private const string _ldPlayerProcName = "dnplayer";
+    private const string _blueStacksProcName = "HD-Player";
 
-    internal Process _process;
-    public int processId;
-    readonly IntPtr _childHandle;
+    private Process _process;
+    private int _processId;
+    private IntPtr _childHandle;
     Rectangle _screenRect;
 
-    public InputSimulator(ClickerActionsRepo clickerActionsRepo)
+    public InputSimulator(ScreenScanner screenScanner, Logger logger)
     {
-        _clickerActionsRepo = clickerActionsRepo;
-        screenScanner = _clickerActionsRepo._screenScanner;
-        _process = GetProcess();
-        processId = _process.Id;
+        _logger = logger;
+        _windowToImage = new WindowToImage();
+        _screenScanner = screenScanner;
+    }
+
+    public void GetProcess()
+    {
+        _process = GetEmulatorProcess();
+        _processId = _process.Id;
         _childHandle = GetChildHandle();
         _screenRect = GetWindowRectangle();
-        _mainWindow = _clickerActionsRepo._mainWindow;
-        windowToImage = new WindowToImage();
     }
 
     public enum KeyCodes
@@ -82,19 +85,19 @@ public class InputSimulator
         return rect;
     }
 
-    private Process GetProcess()
+    private Process GetEmulatorProcess()
     {
-        string curProcName = screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
 
-        Process[] processlist = Process.GetProcesses();
-        foreach (Process process in processlist)
+        var processlist = Process.GetProcesses();
+        var process = processlist.Select(x => x).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) && x.ProcessName == curProcName).SingleOrDefault();
+
+        if (process is null)
         {
-            if (!string.IsNullOrEmpty(process.MainWindowTitle) && process.ProcessName == curProcName)
-            {
-                return process;
-            }
+            throw new Exception("Emulator process not found");
         }
-        throw new Exception("Emulator process not found");
+
+        return process;
     }
 
     public Rectangle GetWindowRectangle()
@@ -106,7 +109,7 @@ public class InputSimulator
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (screenScanner._isBluestacks)
+            if (_screenScanner._isBluestacks)
             {
                 // Bluestacks input simulation
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -133,7 +136,7 @@ public class InputSimulator
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (screenScanner._isBluestacks)
+            if (_screenScanner._isBluestacks)
             {
                 // Bluestacks input 
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -149,7 +152,7 @@ public class InputSimulator
 
     public IntPtr GetChildHandle()
     {
-        string curProcName = screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
 
         if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
         {
@@ -159,7 +162,7 @@ public class InputSimulator
                 return childProcesses[0];
             }
         }
-        _mainWindow.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
+        _logger.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
         throw new Exception("Emulator child handle not found");
     }
 
@@ -177,10 +180,10 @@ public class InputSimulator
 
     public Image MakeScreenshot()
     {
-        if (processId != -1)
+        if (_processId != -1)
         {
-            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
-            Image img = windowToImage.CaptureWindow(handle);
+            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
+            Image img = _windowToImage.CaptureWindow(handle);
             return img;
         }
         else
@@ -191,17 +194,17 @@ public class InputSimulator
 
     public void SaveScreenshot()
     {
-        if (processId != -1)
+        if (_processId != -1)
         {
             if (!Directory.Exists($"./screenshots"))
             {
                 Directory.CreateDirectory($"./screenshots");
             }
 
-            IntPtr handle = Process.GetProcessById(processId).MainWindowHandle;
+            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
             // Captures screenshot of a window and saves it to the screenshots folder
-            windowToImage.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
-            _mainWindow.Log($"Made a screenshot. Screenshots can be found inside TinyClicker/screenshots folder");
+            _windowToImage.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
+            _logger.Log($"Made a screenshot. Screenshots can be found inside TinyClicker/screenshots folder");
         }
     }
 

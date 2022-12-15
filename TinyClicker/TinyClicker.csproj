@@ -51,12 +51,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="11.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.5.5.20211231" />
-    <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.5.20211231" />
-    <PackageReference Include="Tesseract" Version="4.1.1" />
-    <PackageReference Include="Tesseract.Drawing" Version="4.1.1" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.6.0.20220608" />
+    <PackageReference Include="OpenCvSharp4.Windows" Version="4.6.0.20220608" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
+    <PackageReference Include="Tesseract.Drawing" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -135,10 +135,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="MainWindow.xaml">
+    <Page Update="ui\windows\MainWindow.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
-    <Page Update="SettingsWindow.xaml">
+    <Page Update="ui\windows\SettingsWindow.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
   </ItemGroup>

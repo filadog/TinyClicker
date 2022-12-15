@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows;
-using System.Linq;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -16,35 +14,36 @@ namespace TinyClicker;
 public class ClickerActionsRepo
 {
     public readonly ScreenScanner _screenScanner;
-    readonly ConfigManager _configManager;
+    private readonly ConfigManager _configManager;
+    private readonly Logger _logger;
     readonly ImageToText _imageToText;
     readonly ImageEditor _imageEditor;
     public readonly InputSimulator _inputSim;
 
     Dictionary<int, int> _floorPrices;
-    public readonly MainWindow _mainWindow;
     DateTime _timeForNewFloor;
     Rectangle _screenRect;
     bool _floorPricesCalculated = false;
 
-    public ClickerActionsRepo(ScreenScanner screenScanner)
+    public ClickerActionsRepo(ScreenScanner screenScanner, ConfigManager configManager, Logger logger)
     {
         _screenScanner = screenScanner;
-        _configManager = _screenScanner.configManager;
-        _mainWindow = Application.Current.Windows.OfType<MainWindow>().First();
-        _inputSim = new InputSimulator(this);
+        _configManager = configManager;
+        _logger = logger;
+
+        _inputSim = new InputSimulator(screenScanner, logger);
         _timeForNewFloor = DateTime.Now;
         _screenRect = _inputSim.GetWindowRectangle();
         _imageEditor = new ImageEditor(_screenRect, this);
         _imageToText = new ImageToText(_imageEditor);
-        _floorPrices = new Dictionary<int, int>();
+        _floorPrices = new();
     }
 
     #region Clicker Actions
 
     public void CancelHurryConstruction()
     {
-        _mainWindow.Log("Exiting the construction menu");
+        _logger.Log("Exiting the construction menu");
 
         _inputSim.SendClick(100, 375); // Cancel action
         WaitSec(1);
@@ -52,13 +51,13 @@ public class ClickerActionsRepo
 
     public void CollectFreeBux()
     {
-        _mainWindow.Log("Collecting free bux");
+        _logger.Log("Collecting free bux");
         _inputSim.SendClick(_screenScanner._matchedTemplates["freeBuxCollectButton"]);
     }
 
     public void ClickOnChute()
     {
-        _mainWindow.Log("Clicking on the parachute");
+        _logger.Log("Clicking on the parachute");
         _inputSim.SendClick(_screenScanner._matchedTemplates[Button.GiftChute.GetName()]);
         WaitMs(500);
         if (IsImageFound(GameWindow.WatchAdPromptCoins) && _configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
@@ -80,7 +79,7 @@ public class ClickerActionsRepo
 
     public void CloseAd()
     {
-        _mainWindow.Log("Closing the advertisement");
+        _logger.Log("Closing the advertisement");
 
         if (_screenScanner._matchedTemplates.ContainsKey("closeAd_7") || _screenScanner._matchedTemplates.ContainsKey("closeAd_8"))
         {
@@ -101,20 +100,20 @@ public class ClickerActionsRepo
 
     public void CloseChuteNotification()
     {
-        _mainWindow.Log("Closing the parachute notification");
+        _logger.Log("Closing the parachute notification");
         _inputSim.SendClick(165, 375); // Close the notification
     }
 
     public void ExitRoofCustomizationMenu()
     {
-        _mainWindow.Log("Exiting the roof customization menu");
+        _logger.Log("Exiting the roof customization menu");
         PressExitButton();
         WaitMs(500);
     }
 
     public void PressContinue()
     {
-        _mainWindow.Log("Clicking continue");
+        _logger.Log("Clicking continue");
 
         _inputSim.SendClick(_screenScanner._matchedTemplates[Button.Continue.GetName()]);
         WaitMs(500);
@@ -124,7 +123,7 @@ public class ClickerActionsRepo
 
     public void Restock()
     {
-        _mainWindow.Log("Restocking");
+        _logger.Log("Restocking");
         MoveDown();
         WaitMs(500);
         _inputSim.SendClick(100, 480); // Stock all
@@ -150,7 +149,7 @@ public class ClickerActionsRepo
 
     public void PressFreeBuxButton()
     {
-        _mainWindow.Log("Pressing free bux icon");
+        _logger.Log("Pressing free bux icon");
         _inputSim.SendClick(25, 130);
         WaitSec(1);
         _inputSim.SendClick(230, 375);
@@ -159,7 +158,7 @@ public class ClickerActionsRepo
     
     public void RideElevator()
     {
-        _mainWindow.Log("Riding the elevator");
+        _logger.Log("Riding the elevator");
         _inputSim.SendClick(21, 510);
         WaitSec(1);
         
@@ -188,7 +187,7 @@ public class ClickerActionsRepo
 
     public void PressQuestButton()
     {
-        _mainWindow.Log("Clicking on the quest button");
+        _logger.Log("Clicking on the quest button");
         _inputSim.SendClick(_screenScanner._matchedTemplates["questButton"]);
         WaitMs(500);
         if (IsImageFound(GameWindow.DeliverBitizens))
@@ -209,7 +208,7 @@ public class ClickerActionsRepo
 
     public void FindBitizens()
     {
-        _mainWindow.Log("Skipping the quest");
+        _logger.Log("Skipping the quest");
         _inputSim.SendClick(95, 445); // Skip the quest
         WaitMs(500);
         _inputSim.SendClick(225, 380); // Confirm skip
@@ -217,7 +216,7 @@ public class ClickerActionsRepo
 
     public void DeliverBitizens()
     {
-        _mainWindow.Log("Delivering bitizens");
+        _logger.Log("Delivering bitizens");
         _inputSim.SendClick(230, 440); // Continue
     }
 
@@ -230,7 +229,7 @@ public class ClickerActionsRepo
 
     public void CloseHiddenAd()
     {
-        _mainWindow.Log("Closing hidden ads");
+        _logger.Log("Closing hidden ads");
         WaitMs(500);
         _inputSim.SendClick(310, 10);
         _inputSim.SendClick(310, 41);
@@ -263,19 +262,19 @@ public class ClickerActionsRepo
 
     public void CloseNewFloorMenu()
     {
-        _mainWindow.Log("Exiting from new floor menu");
+        _logger.Log("Exiting from new floor menu");
         PressExitButton();
     }
 
     public void CloseBuildNewFloorNotification()
     {
-        _mainWindow.Log("Closing the new floor notification");
+        _logger.Log("Closing the new floor notification");
         _inputSim.SendClick(105, 320); // Click no
     }
 
     public void CompleteQuest()
     {
-        _mainWindow.Log("Completing the quest");
+        _logger.Log("Completing the quest");
 
         WaitMs(500);
         _inputSim.SendClick(_screenScanner._matchedTemplates["completedQuestButton"]);
@@ -283,7 +282,7 @@ public class ClickerActionsRepo
 
     public void CollectNewScience()
     {
-        _mainWindow.Log("Collecting new science");
+        _logger.Log("Collecting new science");
         _inputSim.SendClick(_screenScanner._matchedTemplates[Button.NewScience.GetName()]);
         WaitMs(500);
         _inputSim.SendClick(150, 110);
@@ -337,11 +336,11 @@ public class ClickerActionsRepo
             if (IsImageFound(Button.Back))
             {
                 PressExitButton();
-                _mainWindow.Log("Clicking Back button while building");
+                _logger.Log("Clicking Back button while building");
                 return;
             }
 
-            _mainWindow.Log("Building new floor");
+            _logger.Log("Building new floor");
             MoveUp();
 
             _inputSim.SendClick(165, 345); // Click on a new floor
@@ -350,7 +349,7 @@ public class ClickerActionsRepo
             if (IsImageFound(Button.Continue))
             {
                 _inputSim.SendClick(105, 380); // Click "No thanks" on chute notification
-                _mainWindow.Log("Clicking Continue button while building");
+                _logger.Log("Clicking Continue button while building");
             }
             else if (IsImageFound(GameWindow.BuildNewFloorNotification))
             {
@@ -361,13 +360,13 @@ public class ClickerActionsRepo
                 if (!IsImageFound(GameWindow.NewFloorNoCoinsNotification))
                 {
                     _configManager.AddOneFloor();
-                    _mainWindow.Log("Built a new floor");
+                    _logger.Log("Built a new floor");
                 }
                 else
                 {
                     // Cooldown 10s in case building fails (to prevent repeated attempts)
                     _timeForNewFloor = DateTime.Now.AddSeconds(10);
-                    _mainWindow.Log("Not enough coins for a new floor");
+                    _logger.Log("Not enough coins for a new floor");
                 }
 
                 MoveUp();
@@ -375,14 +374,14 @@ public class ClickerActionsRepo
         }
         else
         {
-            _mainWindow.Log("Too early to build a floor");
+            _logger.Log("Too early to build a floor");
             WaitSec(1);
         }
     }
 
     public void RebuildTower()
     {
-        _mainWindow.Log("Rebuilding the tower");
+        _logger.Log("Rebuilding the tower");
         _configManager.SaveStatRebuildTime();
         _inputSim.SendClick(305, 570);
         WaitSec(1);
@@ -398,7 +397,7 @@ public class ClickerActionsRepo
 
     public void PassTheTutorial()
     {
-        _mainWindow.Log("Passing the tutorial");
+        _logger.Log("Passing the tutorial");
         WaitMs(1000);
         _inputSim.SendClick(170, 435); // Continue
         WaitMs(500);
@@ -512,7 +511,7 @@ public class ClickerActionsRepo
 
     public void RestartGame()
     {
-        _mainWindow.Log("Restarting the app");
+        _logger.Log("Restarting the app");
         _inputSim.SendEscapeButton();
         WaitSec(1);
         _inputSim.SendClick(230, 380);
@@ -522,7 +521,7 @@ public class ClickerActionsRepo
     {
         if (_configManager.curConfig.CurrentFloor >= _screenScanner.floorToStartWatchingAds)
         {
-            _mainWindow.Log("Watching the advertisement");
+            _logger.Log("Watching the advertisement");
             _inputSim.SendClick(225, 375);
             WaitSec(20);
         }
@@ -545,7 +544,7 @@ public class ClickerActionsRepo
 
     public void PressExitButton()
     {
-        _mainWindow.Log("Pressing the exit button");
+        _logger.Log("Pressing the exit button");
         _inputSim.SendClick(305, 565);
     }
 
@@ -553,7 +552,7 @@ public class ClickerActionsRepo
     {
         if (lastRaffleTime != DateTime.Now.Hour)
         {
-            _mainWindow.Log("Playing the raffle");
+            _logger.Log("Playing the raffle");
             WaitMs(500);
             _inputSim.SendClick(300, 570); // Open menu
             WaitMs(500);

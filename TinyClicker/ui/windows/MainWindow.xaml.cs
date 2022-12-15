@@ -9,14 +9,25 @@ namespace TinyClicker;
 
 public partial class MainWindow : Window
 {
-    SettingsWindow? _settingsWindow;
-    private readonly BackgroundWorker _worker = new();
-    bool _isBluestacks = false;
-    bool _isLDPlayer = false;
+    private readonly BackgroundWorker _backgroundWorker;
+    private readonly SettingsWindow _settingsWindow;
+    private readonly TinyClickerApp _tinyClickerApp;
+    private readonly Logger _logger;
+
+    private bool _isBluestacks = false;
+    private bool _isLDPlayer = false;
     public bool _settingsOpened = false;
 
-    public MainWindow()
+    public MainWindow(BackgroundWorker backgroundWorker, SettingsWindow settingsWindow, TinyClickerApp tinyClickerApp, Logger logger)
     {
+        _backgroundWorker = backgroundWorker;
+        _settingsWindow = settingsWindow;
+        _tinyClickerApp = tinyClickerApp;
+        _logger = logger;
+
+        _logger.SetMainWindow(this);
+
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
         InitializeComponent();
     }
 
@@ -24,8 +35,7 @@ public partial class MainWindow : Window
     {
         if (_isLDPlayer || _isBluestacks)
         {
-            var tinyClicker = new TinyClickerApp(_isBluestacks);
-            tinyClicker.StartInBackground(_worker);
+            _tinyClickerApp.StartInBackground(_isBluestacks);
 
             Log("Started!");
             ShowStartedButton();
@@ -53,7 +63,7 @@ public partial class MainWindow : Window
 
     private void StopButton_Click(object sender, RoutedEventArgs e)
     {
-        _worker.CancelAsync();
+        _backgroundWorker.CancelAsync();
         Log("Stopped!");
         ShowExitButton();
         ShowCheckboxes();
@@ -151,13 +161,13 @@ public partial class MainWindow : Window
         if (!_settingsOpened)
         {
             _settingsOpened = true;
-            var settingsWindow = new SettingsWindow(this);
-            _settingsWindow = settingsWindow;
+            //_settingsWindow = new SettingsWindow(this);
+            _settingsWindow.Show(this);
         }
         else
         {
             _settingsOpened = false;
-            _settingsWindow.Close();
+            _settingsWindow!.Hide();
         }
     }
 }

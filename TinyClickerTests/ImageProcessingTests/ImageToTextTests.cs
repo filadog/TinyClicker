@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using OpenCvSharp;
-using System.Drawing;
+﻿using System.Drawing;
 using TinyClicker;
 using Xunit;
 
@@ -10,13 +8,19 @@ namespace TinyClickerTests.ImageProcessing
     {
         // Tesseract Tests
         // Accuracy of the OCR for the exact numbers
-        Rectangle _rect;
+
+
+        //Rectangle _rect;
         ImageEditor _imageEditor;
         ImageToText _imageToText;
+
+        //private readonly MainWindow _mainWindow;
+        //private readonly ScreenScanner _screenScanner;
         public ImageToTextTests()
         {
-            _rect = new Rectangle();
-            _imageEditor = new ImageEditor(_rect, new ClickerActionsRepo(new ScreenScanner(true)));
+
+            //_rect = new Rectangle();
+            //_imageEditor = new ImageEditor(_rect, new ClickerActionsRepo(screenScanner, mainWindow));
             _imageToText = new ImageToText(_imageEditor);
         }
 

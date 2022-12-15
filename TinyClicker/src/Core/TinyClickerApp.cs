@@ -5,28 +5,31 @@ namespace TinyClicker;
 
 public class TinyClickerApp
 {
-    readonly ScreenScanner screenScanner;
-
-    public TinyClickerApp(bool isBluestacks)
+    private readonly ScreenScanner _screenScanner;
+    private readonly BackgroundWorker _backgroundWorker;
+    public TinyClickerApp(BackgroundWorker backgroundWorker, ScreenScanner screenScanner)
     {
-        screenScanner = new ScreenScanner(isBluestacks);
+        _backgroundWorker = backgroundWorker;
+        _screenScanner = screenScanner;
     }
 
-    public void StartInBackground(BackgroundWorker worker)
+    public void StartInBackground(bool isBluestacks)
     {
-        worker.WorkerSupportsCancellation = true;
-        worker.DoWork += (s, e) =>
+        _backgroundWorker.WorkerSupportsCancellation = true;
+        _backgroundWorker.DoWork += (s, e) =>
         {
-            RunLoop(worker);
+            RunLoop(_backgroundWorker);
         };
-        worker.RunWorkerAsync();
+
+        _screenScanner.SetEmulator(isBluestacks);
+        _backgroundWorker.RunWorkerAsync();
     }
 
     public void RunLoop(BackgroundWorker worker)
     {
         while (!worker.CancellationPending)
         {
-            screenScanner.StartIteration();
+            _screenScanner.StartIteration();
             Task.Delay(1500).Wait();
         }
     }

@@ -8,9 +8,9 @@ namespace TinyClicker;
 
 public partial class SettingsWindow : Window
 {
-    readonly ConfigManager _configManager;
-    readonly MainWindow _mainWindow;
+    public MainWindow? MainWindow { get; private set; }
 
+    private readonly ConfigManager _configManager;
     private float _elevatorSpeed = 10f;
     private int _currentFloor;
     private int _rebuildAtFloor;
@@ -19,11 +19,28 @@ public partial class SettingsWindow : Window
     private bool _vipPackage = true;
     private DateTime _lastRebuildTime;
 
-    public SettingsWindow(MainWindow mainWindow)
+    public SettingsWindow(ConfigManager configManager)
     {
-        InitializeComponent();
-        _mainWindow = mainWindow;
-        _configManager = new ConfigManager();
+        _configManager = configManager;
+    }
+
+    public void Show(MainWindow mainWindow)
+    {
+        if (mainWindow is not null)
+        {
+            MainWindow = mainWindow;
+            Owner = mainWindow;
+
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            InitializeComponent();
+            InitFields();
+            Show();
+        }
+    }
+
+    private void InitFields()
+    {
         TextBoxCurrentFloor.Text = _configManager.curConfig.CurrentFloor.ToString();
         TextBoxFloorToRebuildAt.Text = _configManager.curConfig.RebuildAtFloor.ToString();
         TextBoxWatchAdsFrom.Text = _configManager.curConfig.WatchAdsFromFloor.ToString();
@@ -35,7 +52,8 @@ public partial class SettingsWindow : Window
         _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
         _watchBuxAds = _configManager.curConfig.WatchBuxAds;
         _lastRebuildTime = _configManager.curConfig.LastRebuildTime;
-        VersionText.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
+
+        VersionText.Text = GetVersionInfo();
     }
 
     private void SettingsWindow_MouseDown(object sender, MouseButtonEventArgs e)
@@ -61,7 +79,7 @@ public partial class SettingsWindow : Window
             }
             catch (FormatException)
             {
-                _mainWindow.Log("Invalid input value");
+                MainWindow!.Log("Invalid input value");
                 _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
             }
         }
@@ -82,7 +100,7 @@ public partial class SettingsWindow : Window
             }
             catch (FormatException)
             {
-                _mainWindow.Log("Invalid input value");
+                MainWindow!.Log("Invalid input value");
                 _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
             }
         }
@@ -103,7 +121,7 @@ public partial class SettingsWindow : Window
             }
             catch (FormatException)
             {
-                _mainWindow.Log("Invalid input value");
+                MainWindow!.Log("Invalid input value");
                 _currentFloor = _configManager.curConfig.CurrentFloor;
             }
         }
@@ -111,8 +129,11 @@ public partial class SettingsWindow : Window
 
     private void ExitSettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        _mainWindow._settingsOpened = false;
-        Close();
+        if (MainWindow is not null)
+        {
+            MainWindow._settingsOpened = false;
+            Hide();
+        }
     }
 
     private void CheckboxWatchBuxAds_Checked(object sender, RoutedEventArgs e)
@@ -129,5 +150,10 @@ public partial class SettingsWindow : Window
     {
         var config = new Config(_vipPackage, _elevatorSpeed, _currentFloor, _rebuildAtFloor, _watchAdsFromFloor, _watchBuxAds, _lastRebuildTime);
         _configManager.SaveConfig(config);
+    }
+
+    private string GetVersionInfo()
+    {
+        return $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
     }
 }
