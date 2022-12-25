@@ -11,9 +11,10 @@ public class Config
     public int RebuildAtFloor { get; set; }
     public int WatchAdsFromFloor { get; set; }
     public bool WatchBuxAds { get; set; }
+    public bool BuildFloors { get; set; }
 
-    public Config() : this(true, 10f, 3, 50, 25, false, DateTime.Now) { }
-    public Config(bool vip, float elevatorSpeed, int currentFloor, int rebuildAtFloor, int watchAdsFromFloor, bool watchBuxAds, DateTime lastRebuildTime)
+    public Config() : this(true, 10f, 3, 50, 25, false, DateTime.Now, true) { }
+    public Config(bool vip, float elevatorSpeed, int currentFloor, int rebuildAtFloor, int watchAdsFromFloor, bool watchBuxAds, DateTime lastRebuildTime, bool buildFloors)
     {
         VipPackage = vip;
         ElevatorSpeed = elevatorSpeed;
@@ -22,5 +23,6 @@ public class Config
         RebuildAtFloor = rebuildAtFloor;
         WatchAdsFromFloor = watchAdsFromFloor;
         WatchBuxAds = watchBuxAds;
+        BuildFloors = buildFloors;
     }
 }

@@ -18,6 +18,7 @@ public partial class SettingsWindow : Window
     private bool _watchBuxAds;
     private bool _vipPackage = true;
     private DateTime _lastRebuildTime;
+    private bool _buildFloors;
 
     public SettingsWindow(ConfigManager configManager)
     {
@@ -46,12 +47,14 @@ public partial class SettingsWindow : Window
         TextBoxWatchAdsFrom.Text = _configManager.curConfig.WatchAdsFromFloor.ToString();
         CheckboxWatchBuxAds.IsChecked = _configManager.curConfig.WatchBuxAds ? true : false;
         CheckboxVipPackage.IsChecked = _configManager.curConfig.VipPackage ? true : false;
+        cbBuildFloors.IsChecked = _configManager.curConfig.BuildFloors ? true : false;
 
         _currentFloor = _configManager.curConfig.CurrentFloor;
         _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
         _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
         _watchBuxAds = _configManager.curConfig.WatchBuxAds;
         _lastRebuildTime = _configManager.curConfig.LastRebuildTime;
+        _buildFloors = _configManager.curConfig.BuildFloors;
 
         VersionText.Text = GetVersionInfo();
     }
@@ -148,7 +151,7 @@ public partial class SettingsWindow : Window
 
     private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        var config = new Config(_vipPackage, _elevatorSpeed, _currentFloor, _rebuildAtFloor, _watchAdsFromFloor, _watchBuxAds, _lastRebuildTime);
+        var config = new Config(_vipPackage, _elevatorSpeed, _currentFloor, _rebuildAtFloor, _watchAdsFromFloor, _watchBuxAds, _lastRebuildTime, cbBuildFloors.IsChecked.Value);
         _configManager.SaveConfig(config);
     }
 

@@ -22,6 +22,7 @@ public class InputSimulator
     private Process? _process;
     private int _processId;
     private IntPtr _childHandle;
+    private string _curProcName;
     Rectangle _screenRect;
 
     public InputSimulator(ScreenScanner screenScanner, Logger logger)
@@ -29,6 +30,8 @@ public class InputSimulator
         _logger = logger;
         _windowToImage = new WindowToImage();
         _screenScanner = screenScanner;
+
+        GetProcess();
     }
 
     public void GetProcess()
@@ -87,15 +90,18 @@ public class InputSimulator
 
     private Process GetEmulatorProcess()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        //string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
+        var processes = new string[] { "HD-Player", "dnplayer" };
 
         var processlist = Process.GetProcesses();
-        var process = processlist.Select(x => x).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) && x.ProcessName == curProcName).SingleOrDefault();
+        var process = processlist.Select(x => x).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName)).SingleOrDefault();
 
         if (process is null)
         {
             throw new Exception("Emulator process not found");
         }
+
+        _curProcName = process.ProcessName;
 
         return process;
     }
@@ -152,11 +158,9 @@ public class InputSimulator
 
     public IntPtr GetChildHandle()
     {
-        string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
-
-        if (WindowHandleInfo.GetChildrenHandles(curProcName) != null)
+        if (WindowHandleInfo.GetChildrenHandles(_curProcName) != null)
         {
-            List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(curProcName);
+            List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(_curProcName);
             if (childProcesses != null)
             {
                 return childProcesses[0];

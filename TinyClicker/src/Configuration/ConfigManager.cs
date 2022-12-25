@@ -59,6 +59,7 @@ public class ConfigManager
         var options = new JsonSerializerOptions { WriteIndented = true };
         string json = JsonSerializer.Serialize(config, options);
         File.WriteAllText(_configPath, json);
+        curConfig = config;
     }
 
     public void SaveConfig()

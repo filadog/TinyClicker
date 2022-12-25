@@ -294,6 +294,11 @@ public class ClickerActionsRepo
     
     public void CheckForNewFloor(int currentFloor, Image gameWindow)
     {
+        if (!_configManager.curConfig.BuildFloors)
+        {
+            return;
+        }
+
         MoveUp();
         if (!_floorPricesCalculated)
         {

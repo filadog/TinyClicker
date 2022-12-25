@@ -71,7 +71,7 @@ public class ScreenScanner
             _isLDPlayer = true;
         }
 
-        _clickerActionsRepo._inputSim.GetProcess();
+        //_clickerActionsRepo._inputSim.GetProcess();
     }
 
     public void StartIteration()

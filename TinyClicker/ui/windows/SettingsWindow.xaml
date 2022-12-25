@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TinyClicker"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="242" Width="265" ResizeMode="NoResize" Visibility="Visible" ShowActivated="False" WindowStyle="None" AllowsTransparency="True" MouseDown="SettingsWindow_MouseDown">
+        Title="SettingsWindow" Height="270" Width="265" ResizeMode="NoResize" Visibility="Visible" ShowActivated="False" WindowStyle="None" AllowsTransparency="True" MouseDown="SettingsWindow_MouseDown">
     <Window.Background>
         <ImageBrush ImageSource="/UI/images/settings_window.png"/>
     </Window.Background>
@@ -13,11 +13,11 @@
 
 
     <Grid>
-        <Button x:Name="ExitSettingsButton" Click="ExitSettingsButton_Click"  Margin="145,188,25,18"  Background="Transparent" BorderBrush="Transparent">
+        <Button x:Name="ExitSettingsButton" Click="ExitSettingsButton_Click"  Margin="145,210,25,22"  Background="Transparent" BorderBrush="Transparent">
             <Image Width="91" Height="32" Source="/UI/images/exit_button.png"/>
         </Button>
-        <Button x:Name="SaveSettingsButton" Click="SaveSettingsButton_Click"  Margin="25,188,149,18"  Background="Transparent" BorderBrush="Transparent">
-            <Image Width="93" Height="32" Source="/UI/images/save_button.png"/>
+        <Button x:Name="SaveSettingsButton" Click="SaveSettingsButton_Click"  Margin="25,210,145,22"  Background="Transparent" BorderBrush="Transparent">
+            <Image Width="91" Height="33" Source="/UI/images/save_button.png"/>
         </Button>
 
 
@@ -33,6 +33,8 @@
         <TextBlock HorizontalAlignment="Left" Margin="62,132,0,0" TextWrapping="Wrap" Text="Watch Bux Ads:" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" FontWeight="Bold" FontSize="14" Opacity="0.8"/>
         <CheckBox x:Name="CheckboxWatchBuxAds" Content="" HorizontalAlignment="Left" Margin="184,133,0,0" VerticalAlignment="Top" Width="15" Height="15" Checked="CheckboxWatchBuxAds_Checked" Unchecked="CheckboxWatchBuxAds_Unchecked"/>
         <TextBlock x:Name="VersionText" HorizontalAlignment="Left" Margin="208,26,0,0" TextWrapping="Wrap" Text="v" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" FontWeight="Bold" Opacity="0.5"/>
+        <TextBlock x:Name="tbBuildFloors" HorizontalAlignment="Left" Margin="76,180,0,0" TextWrapping="Wrap" Text="Build Floors" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" FontWeight="Bold" FontSize="14" Opacity="0.8"/>
+        <CheckBox x:Name="cbBuildFloors" Content="" HorizontalAlignment="Left" Margin="184,181,0,0" VerticalAlignment="Top" Width="15" Height="15" Checked="CheckboxWatchBuxAds_Checked" Unchecked="CheckboxWatchBuxAds_Unchecked" RenderTransformOrigin="0.492,0.533" IsChecked="True"/>
 
 
 
