@@ -4,10 +4,11 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.IO;
+using TinyClickerLib.Core;
 
 namespace TinyClicker;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, IMainWindow
 {
     private readonly BackgroundWorker _backgroundWorker;
     private readonly SettingsWindow _settingsWindow;
@@ -31,7 +32,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    void Startup()
+    private void Startup()
     {
         if (_isLDPlayer || _isBluestacks)
         {
@@ -75,11 +76,11 @@ public partial class MainWindow : Window
         Application.Current.Shutdown();
     }
 
-    void DisableSettingsButton()
+    private void DisableSettingsButton()
     {
         SettingsButton.IsEnabled = false;
     }
-    void EnableSettingsButton()
+    private void EnableSettingsButton()
     {
         SettingsButton.IsEnabled = true;
     }

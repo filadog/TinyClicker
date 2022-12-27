@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace TinyClicker;
+namespace TinyClickerLib.Extensions;
 
 public static class EnumExtensions
 {

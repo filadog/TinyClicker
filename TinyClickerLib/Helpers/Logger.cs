@@ -1,9 +1,11 @@
-﻿namespace TinyClicker;
+﻿using TinyClickerLib.Core;
+
+namespace TinyClicker;
 
 public class Logger
 {
-    private MainWindow? _mainWindow;
-    public void SetMainWindow(MainWindow mainWindow)
+    private IMainWindow? _mainWindow;
+    public void SetMainWindow(IMainWindow mainWindow)
     {
         _mainWindow = mainWindow;
     }

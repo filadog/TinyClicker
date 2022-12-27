@@ -13,7 +13,7 @@ namespace TinyClicker;
 public class InputSimulator
 {
     private readonly Logger _logger;
-    private readonly ScreenScanner _screenScanner;
+    private ScreenScanner _screenScanner;
     private readonly WindowToImage _windowToImage;
 
     private const string _ldPlayerProcName = "dnplayer";
@@ -25,17 +25,15 @@ public class InputSimulator
     private string _curProcName;
     Rectangle _screenRect;
 
-    public InputSimulator(ScreenScanner screenScanner, Logger logger)
+    public InputSimulator(WindowToImage windowToImage, Logger logger)
     {
         _logger = logger;
-        _windowToImage = new WindowToImage();
-        _screenScanner = screenScanner;
-
-        GetProcess();
+        _windowToImage = windowToImage;
     }
 
-    public void GetProcess()
+    public void Init(ScreenScanner screenScanner)
     {
+        _screenScanner = screenScanner;
         _process = GetEmulatorProcess();
         _processId = _process.Id;
         _childHandle = GetChildHandle();

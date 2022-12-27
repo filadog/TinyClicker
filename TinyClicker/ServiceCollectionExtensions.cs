@@ -16,5 +16,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ScreenScanner>();
         collection.AddSingleton<ClickerActionsRepo>();
         collection.AddSingleton<Logger>();
+        collection.AddSingleton<InputSimulator>();
+        collection.AddSingleton<WindowToImage>();
     }
 }

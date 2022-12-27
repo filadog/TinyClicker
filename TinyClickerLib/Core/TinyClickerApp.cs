@@ -21,7 +21,7 @@ public class TinyClickerApp
             RunLoop(_backgroundWorker);
         };
 
-        _screenScanner.SetEmulator(isBluestacks);
+        _screenScanner.Init(isBluestacks);
         _backgroundWorker.RunWorkerAsync();
     }
 

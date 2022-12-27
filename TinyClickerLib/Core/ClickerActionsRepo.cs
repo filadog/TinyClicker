@@ -8,35 +8,42 @@ using OpenCvSharp.Extensions;
 using Point = OpenCvSharp.Point;
 using ImageMagick;
 using TinyClicker.Core;
+using TinyClickerLib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace TinyClicker;
 
 public class ClickerActionsRepo
 {
-    public readonly ScreenScanner _screenScanner;
+    public ScreenScanner _screenScanner;
+    public InputSimulator _inputSim;
     private readonly ConfigManager _configManager;
     private readonly Logger _logger;
-    readonly ImageToText _imageToText;
-    readonly ImageEditor _imageEditor;
-    public readonly InputSimulator _inputSim;
+    private ImageToText _imageToText;
+    private ImageEditor _imageEditor;
 
-    Dictionary<int, int> _floorPrices;
+    Dictionary<int, int> _floorPrices = new();
     DateTime _timeForNewFloor;
     Rectangle _screenRect;
     bool _floorPricesCalculated = false;
 
-    public ClickerActionsRepo(ScreenScanner screenScanner, ConfigManager configManager, Logger logger)
+    public ClickerActionsRepo(ConfigManager configManager, InputSimulator inputSimulator, Logger logger)
     {
-        _screenScanner = screenScanner;
         _configManager = configManager;
         _logger = logger;
+        _inputSim = inputSimulator;
+    }
 
-        _inputSim = new InputSimulator(screenScanner, logger);
-        _timeForNewFloor = DateTime.Now;
+    public void Init(ScreenScanner screenScanner)
+    {
+        _screenScanner = screenScanner;
+        _inputSim.Init(screenScanner);
+
         _screenRect = _inputSim.GetWindowRectangle();
+
         _imageEditor = new ImageEditor(_screenRect, this);
         _imageToText = new ImageToText(_imageEditor);
-        _floorPrices = new();
+        _timeForNewFloor = DateTime.Now;
     }
 
     #region Clicker Actions
@@ -740,7 +747,7 @@ public class ClickerActionsRepo
         return array;
     }
 
-    public Dictionary<string, Image> GetSamples()
+    private Dictionary<string, Image> GetSamples()
     {
         var dict = new Dictionary<string, Image>();
         string[] buttonNames = File.ReadAllLines($"./samples/button_names.txt");
@@ -759,8 +766,9 @@ public class ClickerActionsRepo
         return dict;
     }
 
-    public Dictionary<string, Mat> MakeTemplates(Dictionary<string, Image> images)
+    public Dictionary<string, Mat> MakeTemplates()
     {
+        var images = GetSamples();
         var percentages = GetScreenDiffPercentage();
         Dictionary<string, Mat> mats = new();
 

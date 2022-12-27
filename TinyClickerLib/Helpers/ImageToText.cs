@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace TinyClicker;
 
-internal class ImageToText
+public class ImageToText
 {
     readonly TesseractEngine _tesseract;
     readonly ImageEditor _imageEditor;
