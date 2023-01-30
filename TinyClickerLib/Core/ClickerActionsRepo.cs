@@ -9,7 +9,6 @@ using Point = OpenCvSharp.Point;
 using ImageMagick;
 using TinyClicker.Core;
 using TinyClickerLib.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace TinyClicker;
 

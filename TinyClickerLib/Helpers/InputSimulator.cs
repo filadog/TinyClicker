@@ -190,7 +190,7 @@ public class InputSimulator
         }
         else
         {
-            throw new Exception("No emulator process found");
+            throw new InvalidOperationException("No emulator process found");
         }
     }
 
