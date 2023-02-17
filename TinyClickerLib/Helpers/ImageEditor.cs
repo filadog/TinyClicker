@@ -26,8 +26,8 @@ public class ImageEditor
         var result = CropCurrentBalance(window);
 
         // Uncomment to save the balance image for manual checking
-        string filename = @"./screenshots/balance.png";
-        WindowToImage.SaveScreenshot(result, filename);
+        //string filename = @"./screenshots/balance.png";
+        //WindowToImage.SaveScreenshot(result, filename);
 
         return result;
     }

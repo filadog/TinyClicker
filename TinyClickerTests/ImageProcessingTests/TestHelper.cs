@@ -2,18 +2,17 @@
 using System.Drawing;
 using System.IO;
 
-namespace TinyClickerTests
+namespace TinyClickerTests;
+
+internal static class TestHelper
 {
-    internal static class TestHelper
+    public static Image LoadBalanceSample(string imageName)
     {
-        public static Image LoadBalanceSample(string imageName)
+        string fileName = $@".\samples\Tests\BalanceImageSamples\{imageName}.png";
+        if (!File.Exists(fileName))
         {
-            string fileName = $@".\samples\Tests\BalanceImageSamples\{imageName}.png";
-            if (!File.Exists(fileName))
-            {
-                throw new FileNotFoundException($"Could not find the image at: {fileName}");
-            }
-            return Image.FromFile(fileName);
+            throw new FileNotFoundException($"Could not find the image at: {fileName}");
         }
+        return Image.FromFile(fileName);
     }
 }

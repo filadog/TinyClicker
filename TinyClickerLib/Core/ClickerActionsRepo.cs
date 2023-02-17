@@ -5,11 +5,10 @@ using System.IO;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using Point = OpenCvSharp.Point;
 using ImageMagick;
 using TinyClicker.Core;
 using TinyClickerLib.Extensions;
-using System.ComponentModel.DataAnnotations;
+using Point = OpenCvSharp.Point;
 
 namespace TinyClicker;
 
@@ -326,11 +325,20 @@ public class ClickerActionsRepo
             int targetPrice = _floorPrices[currentFloor + 1];
             if (balance > targetPrice && currentFloor < _screenScanner.floorToRebuildAt)
             {
-                //MoveUp();
                 BuildNewFloor();
-                // Allow consecutive building of new floors if there is enough coins
-                using var newGameWindow = _inputSim.MakeScreenshot();
-                CheckForNewFloor(_configManager.curConfig.CurrentFloor, newGameWindow);
+
+                if (IsImageFound(GameWindow.NewFloorNoCoinsNotification))
+                {
+                    _timeForNewFloor = DateTime.Now.AddSeconds(10);
+                    _logger.Log("Not enough coins for a new floor");
+                    _inputSim.SendClick(230, 380); // continue
+                }
+                else
+                {
+                    // Allow consecutive building of new floors if there is enough coins
+                    using var newGameWindow = _inputSim.MakeScreenshot();
+                    CheckForNewFloor(_configManager.curConfig.CurrentFloor, newGameWindow);
+                }
             }
         }
     }
@@ -341,7 +349,7 @@ public class ClickerActionsRepo
         {
             if (IsImageFound(Button.Continue))
             {
-                _inputSim.SendClick(160, 380); // Continue
+                _inputSim.SendClick(230, 380); // Continue
                 return;
             }
 
@@ -379,6 +387,7 @@ public class ClickerActionsRepo
                     // Cooldown 10s in case building fails (to prevent repeated attempts)
                     _timeForNewFloor = DateTime.Now.AddSeconds(10);
                     _logger.Log("Not enough coins for a new floor");
+                    _inputSim.SendClick(230, 380); // continue
                 }
 
                 MoveUp();
@@ -388,6 +397,7 @@ public class ClickerActionsRepo
         {
             _logger.Log("Too early to build a floor");
             WaitSec(1);
+            return;
         }
     }
 
@@ -518,7 +528,7 @@ public class ClickerActionsRepo
         _inputSim.SendClick(170, 435); // Collect bux
         WaitMs(500);
         _inputSim.SendClick(170, 435); // Collect more bux
-        _configManager.SetCurrentFloor(3);
+        _configManager.SetCurrentFloor(4); // 3 is the default old value
     }
 
     public void RestartGame()
