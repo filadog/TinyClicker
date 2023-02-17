@@ -27,7 +27,6 @@ public class ScreenScanner
     internal bool _isBluestacks;
 
     int _foundNothing;
-    int _lastRaffleTime;
     int _curSecond;
     int _currentFloor;
 
@@ -52,7 +51,6 @@ public class ScreenScanner
         _templates = _clickerActionsRepo.MakeTemplates();
 
         _foundNothing = 0;
-        _lastRaffleTime = DateTime.Now.Hour - 1;
         _curSecond = DateTime.Now.Second - 1;
     }
 
@@ -92,7 +90,7 @@ public class ScreenScanner
         if (_currentFloor != floorToRebuildAt)
         {
             PerformActions();
-            _lastRaffleTime = _clickerActionsRepo.PlayRaffle(_lastRaffleTime);
+            _clickerActionsRepo.PlayRaffle();
         }
         
         if (_curSecond != DateTime.Now.Second && _currentFloor != 1)

@@ -19,6 +19,7 @@ public partial class SettingsWindow : Window
     private bool _vipPackage = true;
     private DateTime _lastRebuildTime;
     private bool _buildFloors;
+    private DateTime _lastRaffleTime;
 
     public SettingsWindow(ConfigManager configManager)
     {
@@ -55,6 +56,7 @@ public partial class SettingsWindow : Window
         _watchBuxAds = _configManager.curConfig.WatchBuxAds;
         _lastRebuildTime = _configManager.curConfig.LastRebuildTime;
         _buildFloors = _configManager.curConfig.BuildFloors;
+        _lastRaffleTime = _configManager.curConfig.LastRaffleTime;
 
         VersionText.Text = GetVersionInfo();
     }
@@ -151,7 +153,7 @@ public partial class SettingsWindow : Window
 
     private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        var config = new Config(_vipPackage, _elevatorSpeed, _currentFloor, _rebuildAtFloor, _watchAdsFromFloor, _watchBuxAds, _lastRebuildTime, cbBuildFloors.IsChecked.Value);
+        var config = new Config(_vipPackage, _elevatorSpeed, _currentFloor, _rebuildAtFloor, _watchAdsFromFloor, _watchBuxAds, _lastRebuildTime, cbBuildFloors.IsChecked.Value, _lastRaffleTime);
         _configManager.SaveConfig(config);
     }
 

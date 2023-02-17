@@ -570,23 +570,29 @@ public class ClickerActionsRepo
         _inputSim.SendClick(305, 565);
     }
 
-    public int PlayRaffle(int lastRaffleTime)
+    public void PlayRaffle()
     {
-        if (lastRaffleTime != DateTime.Now.Hour)
+        var lastRaffleTime = _configManager.curConfig.LastRaffleTime;
+        var dateTimeNow = DateTime.Now;
+        if (lastRaffleTime > dateTimeNow.AddHours(-1))
         {
-            _logger.Log("Playing the raffle");
-            WaitMs(500);
-            _inputSim.SendClick(300, 570); // Open menu
-            WaitMs(500);
-            _inputSim.SendClick(275, 440); // Open raffle
-            WaitSec(2);
-            _inputSim.SendClick(160, 345); // Enter raffle
-            return DateTime.Now.Hour;
+            return;
         }
-        else
+
+        if (IsImageFound(Button.Continue))
         {
-            return lastRaffleTime;
+            _inputSim.SendClick(160, 380); // Continue
         }
+
+        _logger.Log("Playing the raffle");
+        WaitMs(500);
+        _inputSim.SendClick(300, 570); // Open menu
+        WaitMs(500);
+        _inputSim.SendClick(275, 440); // Open raffle
+        WaitSec(2);
+        _inputSim.SendClick(160, 345); // Enter raffle
+
+        _configManager.curConfig.LastRaffleTime = dateTimeNow;
     }
 
     #endregion
