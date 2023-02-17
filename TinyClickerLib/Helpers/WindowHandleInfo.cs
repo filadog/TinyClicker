@@ -50,6 +50,11 @@ public class WindowHandleInfo
         }
 
         List<IntPtr> childHandles = gcChildhandlesList.Target as List<IntPtr>;
+        if (childHandles is null)
+        {
+            throw new InvalidOperationException("Child handles list is null");
+        }
+
         childHandles.Add(hWnd);
         return true;
     }
