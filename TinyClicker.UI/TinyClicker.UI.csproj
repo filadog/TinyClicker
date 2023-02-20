@@ -8,15 +8,16 @@
     <StartupObject></StartupObject>
     <DebugType>none</DebugType>
     <Description>Background clicker for the Tiny Tower game</Description>
-    <Copyright>filadog @ 2022</Copyright>
-    <AssemblyVersion>1.5.0.0</AssemblyVersion>
-    <FileVersion>1.5.0.0</FileVersion>
+    <Copyright>filadog @ 2023</Copyright>
+    <AssemblyVersion>1.6.0.0</AssemblyVersion>
+    <FileVersion>1.6.0.0</FileVersion>
     <Authors>filadog</Authors>
     <ApplicationIcon>tinyclicker_icon.ico</ApplicationIcon>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <ErrorReport>prompt</ErrorReport>
     <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+    <AssemblyName>TinyClicker</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
