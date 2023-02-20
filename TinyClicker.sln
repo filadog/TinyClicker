@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClicker", "TinyClicker\TinyClicker.csproj", "{A180B50E-1221-420B-9381-40E6C5C4AC32}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B0D8EC6-8058-4AC4-8CEF-BE1D3ED95D19}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClickerTests", "TinyClickerTests\TinyClickerTests.csproj", "{35B84D31-D57D-4DC4-A48B-6D3FA461861D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClicker.Core", "TinyClicker.Core\TinyClicker.Core.csproj", "{F76CB737-A88E-42F4-BBFF-DD44F420FFEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyClickerLib", "TinyClickerLib\TinyClickerLib.csproj", "{AEF53C0A-F06B-4E86-988A-FCC345F4918C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClicker.Tests", "TinyClicker.Tests\TinyClicker.Tests.csproj", "{50DE3F40-308D-4C97-A36C-ECDB245CB1CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyClicker.UI", "TinyClicker.UI\TinyClicker.UI.csproj", "{7A56F513-95A1-408A-AC5D-E344C9AF6A65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +20,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A180B50E-1221-420B-9381-40E6C5C4AC32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A180B50E-1221-420B-9381-40E6C5C4AC32}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A180B50E-1221-420B-9381-40E6C5C4AC32}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A180B50E-1221-420B-9381-40E6C5C4AC32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35B84D31-D57D-4DC4-A48B-6D3FA461861D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEF53C0A-F06B-4E86-988A-FCC345F4918C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F76CB737-A88E-42F4-BBFF-DD44F420FFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F76CB737-A88E-42F4-BBFF-DD44F420FFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F76CB737-A88E-42F4-BBFF-DD44F420FFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F76CB737-A88E-42F4-BBFF-DD44F420FFEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DE3F40-308D-4C97-A36C-ECDB245CB1CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DE3F40-308D-4C97-A36C-ECDB245CB1CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DE3F40-308D-4C97-A36C-ECDB245CB1CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DE3F40-308D-4C97-A36C-ECDB245CB1CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A56F513-95A1-408A-AC5D-E344C9AF6A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A56F513-95A1-408A-AC5D-E344C9AF6A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A56F513-95A1-408A-AC5D-E344C9AF6A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A56F513-95A1-408A-AC5D-E344C9AF6A65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
