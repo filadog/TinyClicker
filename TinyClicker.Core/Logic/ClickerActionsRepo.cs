@@ -92,16 +92,17 @@ public class ClickerActionsRepo
         {
             _inputSim.SendClick(22, 22);
             _inputSim.SendClick(311, 22);
-            _inputSim.SendClick(302, 52);
-            _inputSim.SendClick(310, 41);
         }
         else
         {
             _inputSim.SendClick(311, 22);
             _inputSim.SendClick(22, 22);
-            _inputSim.SendClick(302, 52);
-            _inputSim.SendClick(310, 41);
         }
+
+        _inputSim.SendClick(310, 41);
+        _inputSim.SendClick(302, 52);
+        _inputSim.SendClick(319, 15);
+
         CheckForLostAdsReward();
     }
 
