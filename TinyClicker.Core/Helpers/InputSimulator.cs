@@ -98,7 +98,7 @@ public class InputSimulator
 
         if (process is null)
         {
-            throw new Exception("Emulator process not found");
+            throw new InvalidOperationException("Emulator process not found");
         }
 
         _curProcName = process.ProcessName;
@@ -166,8 +166,9 @@ public class InputSimulator
                 return childProcesses[0];
             }
         }
+
         _logger.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
-        throw new Exception("Emulator child handle not found");
+        throw new InvalidOperationException("Emulator child handle not found");
     }
 
     public int GetRelativeCoords(int x, int y)
@@ -179,6 +180,7 @@ public class InputSimulator
 
         int x2 = (int)(rectX * x1);
         int y2 = (int)(rectY * y1);
+
         return MakeLParam(x2, y2);
     }
 

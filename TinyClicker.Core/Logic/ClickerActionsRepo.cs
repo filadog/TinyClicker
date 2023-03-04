@@ -611,12 +611,16 @@ public class ClickerActionsRepo
     (Percentage x, Percentage y) GetScreenDiffPercentage()
     {
         var _screenRect = _inputSim.GetWindowRectangle();
+
         int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
         int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
+
         float x1 = (float)rectX * 100 / 333;
         float y1 = (float)rectY * 100 / 592;
+
         var _screenHeightPercentage = new Percentage(y1);
         var _screenWidthPercentage = new Percentage(x1);
+
         return (_screenHeightPercentage, _screenWidthPercentage);
     }
 
@@ -668,7 +672,7 @@ public class ClickerActionsRepo
     }
 
     /// <summary>
-    /// Checks if the image is on the game screen.
+    /// Checks if the image is on the game screen and returns image location.
     /// </summary>
     /// <param name="imageKey">Image name from the button_names.txt</param>
     /// <param name="location">OpenCvSharp.Point stuct with coordinates of the specified image, in case the image is found</param>
@@ -769,6 +773,7 @@ public class ClickerActionsRepo
 
             file.Close();
         }
+
         return array;
     }
 
@@ -819,6 +824,7 @@ public class ClickerActionsRepo
     {
         using var ms = new MemoryStream();
         image.Save(ms, image.RawFormat);
+
         return ms.ToArray();
     }
 

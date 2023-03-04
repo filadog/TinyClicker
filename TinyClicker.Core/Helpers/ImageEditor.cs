@@ -53,6 +53,7 @@ public class ImageEditor
                 bitmap.SetPixel(x, y, inv);
             }
         }
+
         return bitmap;
     }
 

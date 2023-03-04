@@ -26,6 +26,7 @@ public class ImageToText
             {
                 result = page.GetText().Trim();
                 source.Dispose();
+
                 return ResultToBalance(result);
             }
         }
@@ -57,12 +58,14 @@ public class ImageToText
                 result = TrimWithRegex(result);
                 result += "00000";
             }
+
             return Convert.ToInt32(result);
         }
         else if (result.Contains(' '))
         {
             int endIndex = result.IndexOf(' ');
             result = result[..endIndex];
+
             return Convert.ToInt32(TrimWithRegex(result));
         }
         else
@@ -73,7 +76,6 @@ public class ImageToText
 
     string TrimWithRegex(string str)
     {
-        str = Regex.Replace(str, "[^0-9]", "").Trim();
-        return str;
+        return Regex.Replace(str, "[^0-9]", "").Trim();
     }
 }

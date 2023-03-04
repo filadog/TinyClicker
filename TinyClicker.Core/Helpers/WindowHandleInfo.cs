@@ -50,7 +50,7 @@ public class WindowHandleInfo
         }
 
         List<IntPtr> childHandles = gcChildhandlesList.Target as List<IntPtr>;
-        if (childHandles is null)
+        if (childHandles == null)
         {
             throw new InvalidOperationException("Child handles list is null");
         }
@@ -72,7 +72,7 @@ public class WindowHandleInfo
         }
         else
         {
-            throw new Exception($"There is no process with {processName} name");
+            throw new InvalidOperationException($"There is no process with {processName} name");
         }
     }
 }

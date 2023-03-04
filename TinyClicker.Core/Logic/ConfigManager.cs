@@ -85,6 +85,7 @@ public class ConfigManager
                 result = formatted;
             }
         }
+
         string statsPath = $"./Stats.txt";
         SaveNewRebuildTime(dateTimeNow);
         string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
