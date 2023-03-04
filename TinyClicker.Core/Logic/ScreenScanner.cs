@@ -100,8 +100,11 @@ public class ScreenScanner
 
         if (_curSecond != DateTime.Now.Second && _currentFloor != 1)
         {
-            _curSecond = DateTime.Now.Second;
-            _clickerActionsRepo.CheckForNewFloor(_currentFloor, gameWindow);
+            if (_configManager.curConfig.BuildFloors)
+            {
+                _curSecond = DateTime.Now.Second;
+                _clickerActionsRepo.CheckForNewFloor(_currentFloor, gameWindow);
+            }
         }
 
         gameWindow!.Dispose();
