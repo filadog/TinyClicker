@@ -82,7 +82,7 @@ public class ScreenScanner
 
             if (_foundNothing >= 20)
             {
-                _clickerActionsRepo.CloseHiddenAd();
+                _clickerActionsRepo.CloseAd();
             }
         }
 

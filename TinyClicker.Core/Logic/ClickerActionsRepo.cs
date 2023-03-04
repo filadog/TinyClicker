@@ -88,20 +88,14 @@ public class ClickerActionsRepo
     {
         _logger.Log("Closing the advertisement");
 
-        if (_screenScanner._matchedTemplates.ContainsKey("closeAd_7") || _screenScanner._matchedTemplates.ContainsKey("closeAd_8"))
-        {
-            _inputSim.SendClick(22, 22);
-            _inputSim.SendClick(311, 22);
-        }
-        else
-        {
-            _inputSim.SendClick(311, 22);
-            _inputSim.SendClick(22, 22);
-        }
-
+        _inputSim.SendClick(22, 22);
+        _inputSim.SendClick(311, 22);
+        _inputSim.SendClick(310, 10);
         _inputSim.SendClick(310, 41);
+        _inputSim.SendClick(311, 22);
         _inputSim.SendClick(302, 52);
         _inputSim.SendClick(319, 15);
+        _inputSim.SendClick(317, 15);
 
         CheckForLostAdsReward();
     }
@@ -233,17 +227,6 @@ public class ClickerActionsRepo
         WaitSec(1);
         _inputSim.SendClick(_screenScanner._matchedTemplates["gameIcon"]);
         WaitSec(7);
-    }
-
-    public void CloseHiddenAd()
-    {
-        _logger.Log("Closing hidden ads");
-        WaitMs(500);
-        _inputSim.SendClick(310, 10);
-        _inputSim.SendClick(310, 41);
-        WaitMs(500);
-        _inputSim.SendClick(311, 22);
-        CheckForLostAdsReward();
     }
 
     public void CheckForLostAdsReward()
