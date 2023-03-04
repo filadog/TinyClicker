@@ -18,18 +18,8 @@ public class ScreenScanner
     private readonly ClickerActionsRepo _clickerActionsRepo;
     private readonly InputSimulator _inputSimulator;
 
-    internal int floorToRebuildAt;
-    internal bool acceptBuxVideoOffers;
-    internal int floorToStartWatchingAds;
-
-    internal Dictionary<string, int> _matchedTemplates = new();
-    internal Dictionary<string, Mat> _templates;
-
     internal bool _isBluestacks;
-
-    int _foundNothing;
     int _curSecond;
-    int _currentFloor;
 
     public ScreenScanner(
         ConfigManager configManager,
@@ -43,112 +33,121 @@ public class ScreenScanner
         _logger = logger;
     }
 
+    public Dictionary<string, Mat> Templates { get; private set; }
+    public Dictionary<string, int> FoundImages { get; private set; }
+    public int FloorToRebuildAt { get; private set; }
+    public int FloorToStartWatchingAds { get; private set; }
+    public bool AcceptBuxVideoOffers { get; private set; }
+    private int FoundCount { get; set; } = 0;
+
     public void Init(bool isBluestacks)
     {
         _isBluestacks = isBluestacks;
         _clickerActionsRepo.Init(this);
         _inputSimulator.Init(this);
 
-        floorToRebuildAt = _configManager.curConfig.RebuildAtFloor;
-        acceptBuxVideoOffers = _configManager.curConfig.WatchBuxAds;
-        floorToStartWatchingAds = _configManager.curConfig.WatchAdsFromFloor;
+        AcceptBuxVideoOffers = _configManager.CurrentConfig.WatchBuxAds;
+        FloorToStartWatchingAds = _configManager.CurrentConfig.WatchAdsFromFloor;
+        FloorToRebuildAt = _configManager.CurrentConfig.RebuildAtFloor;
+        Templates = _clickerActionsRepo.MakeTemplates();
 
-        _templates = _clickerActionsRepo.MakeTemplates();
-
-        _foundNothing = 0;
         _curSecond = DateTime.Now.Second - 1;
     }
 
     public void StartIteration()
     {
         var gameWindow = _inputSimulator.MakeScreenshot();
+        var currentFloor = _configManager.CurrentConfig.CurrentFloor;
 
-        _currentFloor = _configManager.curConfig.CurrentFloor;
+        FoundImages = TryFindFirstOnScreen(gameWindow, Templates);
 
-        TryFindAllOnScreen(gameWindow);
-
-        foreach (var image in _matchedTemplates)
+        foreach (var image in FoundImages)
         {
             var msg = "Found " + image.Key;
             _logger.Log(msg);
-            _foundNothing = 0;
+            FoundCount = 0;
         }
 
-        if (_matchedTemplates.Count == 0)
+        if (FoundImages.Count == 0)
         {
-            _foundNothing++;
-            var msg = "Found nothing x" + _foundNothing;
+            FoundCount++;
+            var msg = "Found nothing x" + FoundCount;
             _logger.Log(msg);
 
-            if (_foundNothing >= 20)
+            if (FoundCount >= 20)
             {
                 _clickerActionsRepo.CloseAd();
             }
         }
 
-        if (_currentFloor == 1)
+        if (currentFloor == 1)
         {
             _clickerActionsRepo.PassTheTutorial();
+            _configManager.SetCurrentFloor(4); // 3 is the default old value
             return;
         }
 
-        if (_currentFloor != floorToRebuildAt)
+        if (currentFloor != FloorToRebuildAt)
         {
-            PerformActions();
+            if (FoundImages.Any())
+            {
+                var image = FoundImages.First();
+                PerformActions((image.Key, image.Value));
+            }
+
             _clickerActionsRepo.PlayRaffle();
         }
 
-        if (_curSecond != DateTime.Now.Second && _currentFloor != 1)
+        if (_curSecond != DateTime.Now.Second && currentFloor != 1)
         {
-            if (_configManager.curConfig.BuildFloors)
+            if (_configManager.CurrentConfig.BuildFloors)
             {
                 _curSecond = DateTime.Now.Second;
-                _clickerActionsRepo.CheckForNewFloor(_currentFloor, gameWindow);
+                _clickerActionsRepo.CheckForNewFloor(currentFloor, gameWindow);
             }
         }
 
         gameWindow!.Dispose();
-        _matchedTemplates.Clear();
     }
 
-    private void TryFindAllOnScreen(Image gameWindow)
+    private Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen, Dictionary<string, Mat> templates)
     {
-        var windowBitmap = new Bitmap(gameWindow);
-        var reference = windowBitmap.ToMat();
-        windowBitmap.Dispose();
+        var screenBitmap = new Bitmap(gameScreen);
+        var screenMat = screenBitmap.ToMat();
+        screenBitmap.Dispose();
 
-        foreach (var template in _templates)
+        var result = new Dictionary<string, int>();
+        foreach (var template in templates)
         {
-            if (_matchedTemplates.Count == 0)
+            if (template.Key == "gameIcon" || template.Key == "balanceCoin" || template.Key == "restockButton")
             {
-                if (template.Key == "gameIcon" || template.Key == "balanceCoin" || template.Key == "restockButton")
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                if (!_matchedTemplates.ContainsKey(template.Key))
-                {
-                    TryFindSingle(template, reference);
-                    Task.Delay(10).Wait(); // Smooth the CPU peak load
-                }
-            }
-            else
+            var item = TryFindSingle(template, screenMat);
+            if (string.IsNullOrEmpty(item.Key))
             {
-                break;
+                continue;
             }
+
+            result.Add(item.Key, item.Location);
+            Task.Delay(10).Wait(); // Smooth the CPU peak load
         }
 
-        reference.Dispose();
+        screenMat.Dispose();
+        return result;
     }
 
-    public void TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
+    public (string Key, int Location) TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
     {
         using (Mat res = new(reference.Rows - template.Value.Rows + 1, reference.Cols - template.Value.Cols + 1, MatType.CV_8S))
         {
             Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
             Mat gtpl = template.Value.CvtColor(ColorConversionCodes.BGR2GRAY);
+
             Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
             Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
+
             gref.Dispose();
             gtpl.Dispose();
 
@@ -162,63 +161,56 @@ public class ScreenScanner
                 {
                     if (template.Key == Button.GiftChute.GetName())
                     {
-                        _matchedTemplates.Add(template.Key, _inputSimulator.MakeLParam(maxloc.X + 40, maxloc.Y + 40));
+                        return new(template.Key, _inputSimulator.MakeLParam(maxloc.X + 40, maxloc.Y + 40));
                     }
                     else
                     {
-                        _matchedTemplates.Add(template.Key, _inputSimulator.MakeLParam(maxloc.X, maxloc.Y));
+                        return new(template.Key, _inputSimulator.MakeLParam(maxloc.X, maxloc.Y));
                     }
-
-                    break;
                 }
                 else
                 {
-                    break;
+                    return new("", 0);
                 }
             }
         }
     }
 
-    public void PerformActions()
+    public void PerformActions((string Key, int Location) item)
     {
-        string key;
-        if (_matchedTemplates.Keys.Count > 0)
+        switch (item.Key)
         {
-            key = _matchedTemplates.Keys.First();
-            switch (key)
-            {
-                case "closeAd":
-                case "closeAd_2":
-                case "closeAd_3":
-                case "closeAd_4":
-                case "closeAd_5":
-                case "closeAd_6":
-                case "closeAd_7":
-                case "closeAd_8":
-                case "closeAd_9": _clickerActionsRepo.CloseAd(); break;
-                case "freeBuxCollectButton": _clickerActionsRepo.CollectFreeBux(); break;
-                case "roofCustomizationWindow": _clickerActionsRepo.ExitRoofCustomizationMenu(); break;
-                case "hurryConstructionPrompt": _clickerActionsRepo.CancelHurryConstruction(); break;
-                case "continueButton": _clickerActionsRepo.PressContinue(); break;
-                case "foundCoinsChuteNotification": _clickerActionsRepo.CloseChuteNotification(); break;
-                case "restockButton": _clickerActionsRepo.Restock(); break;
-                case "freeBuxButton": _clickerActionsRepo.PressFreeBuxButton(); break;
-                case "giftChute": _clickerActionsRepo.ClickOnChute(); break;
-                case "backButton": _clickerActionsRepo.PressExitButton(); break;
-                case "elevatorButton": _clickerActionsRepo.RideElevator(); break;
-                case "questButton": _clickerActionsRepo.PressQuestButton(); break;
-                case "completedQuestButton": _clickerActionsRepo.CompleteQuest(); break;
-                case "watchAdPromptCoins":
-                case "watchAdPromptBux": _clickerActionsRepo.TryWatchAds(); break;
-                case "findBitizens": _clickerActionsRepo.FindBitizens(); break;
-                case "deliverBitizens": _clickerActionsRepo.DeliverBitizens(); break;
-                case "newFloorMenu": _clickerActionsRepo.CloseNewFloorMenu(); break;
-                case "buildNewFloorNotification": _clickerActionsRepo.CloseBuildNewFloorNotification(); break;
-                case "gameIcon": _clickerActionsRepo.OpenTheGame(); break;
-                case "adsLostReward": _clickerActionsRepo.CheckForLostAdsReward(); break;
-                case "newScienceButton": _clickerActionsRepo.CollectNewScience(); break;
-                default: break;
-            }
+            case "closeAd":
+            case "closeAd_2":
+            case "closeAd_3":
+            case "closeAd_4":
+            case "closeAd_5":
+            case "closeAd_6":
+            case "closeAd_7":
+            case "closeAd_8":
+            case "closeAd_9": _clickerActionsRepo.CloseAd(); break;
+            case "freeBuxCollectButton": _clickerActionsRepo.CollectFreeBux(); break;
+            case "roofCustomizationWindow": _clickerActionsRepo.ExitRoofCustomizationMenu(); break;
+            case "hurryConstructionPrompt": _clickerActionsRepo.CancelHurryConstruction(); break;
+            case "continueButton": _clickerActionsRepo.PressContinue(); break;
+            case "foundCoinsChuteNotification": _clickerActionsRepo.CloseChuteNotification(); break;
+            case "restockButton": _clickerActionsRepo.Restock(); break;
+            case "freeBuxButton": _clickerActionsRepo.PressFreeBuxButton(); break;
+            case "giftChute": _clickerActionsRepo.ClickOnChute(); break;
+            case "backButton": _clickerActionsRepo.PressExitButton(); break;
+            case "elevatorButton": _clickerActionsRepo.RideElevator(); break;
+            case "questButton": _clickerActionsRepo.PressQuestButton(); break;
+            case "completedQuestButton": _clickerActionsRepo.CompleteQuest(); break;
+            case "watchAdPromptCoins":
+            case "watchAdPromptBux": _clickerActionsRepo.TryWatchAds(); break;
+            case "findBitizens": _clickerActionsRepo.FindBitizens(); break;
+            case "deliverBitizens": _clickerActionsRepo.DeliverBitizens(); break;
+            case "newFloorMenu": _clickerActionsRepo.CloseNewFloorMenu(); break;
+            case "buildNewFloorNotification": _clickerActionsRepo.CloseBuildNewFloorNotification(); break;
+            case "gameIcon": _clickerActionsRepo.OpenTheGame(); break;
+            case "adsLostReward": _clickerActionsRepo.CheckForLostAdsReward(); break;
+            case "newScienceButton": _clickerActionsRepo.CollectNewScience(); break;
+            default: break;
         }
     }
 }

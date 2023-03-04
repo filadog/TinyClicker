@@ -44,20 +44,20 @@ public partial class SettingsWindow : Window
 
     private void InitFields()
     {
-        TextBoxCurrentFloor.Text = _configManager.curConfig.CurrentFloor.ToString();
-        TextBoxFloorToRebuildAt.Text = _configManager.curConfig.RebuildAtFloor.ToString();
-        TextBoxWatchAdsFrom.Text = _configManager.curConfig.WatchAdsFromFloor.ToString();
-        CheckboxWatchBuxAds.IsChecked = _configManager.curConfig.WatchBuxAds ? true : false;
-        CheckboxVipPackage.IsChecked = _configManager.curConfig.VipPackage ? true : false;
-        cbBuildFloors.IsChecked = _configManager.curConfig.BuildFloors ? true : false;
+        TextBoxCurrentFloor.Text = _configManager.CurrentConfig.CurrentFloor.ToString();
+        TextBoxFloorToRebuildAt.Text = _configManager.CurrentConfig.RebuildAtFloor.ToString();
+        TextBoxWatchAdsFrom.Text = _configManager.CurrentConfig.WatchAdsFromFloor.ToString();
+        CheckboxWatchBuxAds.IsChecked = _configManager.CurrentConfig.WatchBuxAds ? true : false;
+        CheckboxVipPackage.IsChecked = _configManager.CurrentConfig.VipPackage ? true : false;
+        cbBuildFloors.IsChecked = _configManager.CurrentConfig.BuildFloors ? true : false;
 
-        _currentFloor = _configManager.curConfig.CurrentFloor;
-        _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
-        _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
-        _watchBuxAds = _configManager.curConfig.WatchBuxAds;
-        _lastRebuildTime = _configManager.curConfig.LastRebuildTime;
-        _buildFloors = _configManager.curConfig.BuildFloors;
-        _lastRaffleTime = _configManager.curConfig.LastRaffleTime;
+        _currentFloor = _configManager.CurrentConfig.CurrentFloor;
+        _rebuildAtFloor = _configManager.CurrentConfig.RebuildAtFloor;
+        _watchAdsFromFloor = _configManager.CurrentConfig.WatchAdsFromFloor;
+        _watchBuxAds = _configManager.CurrentConfig.WatchBuxAds;
+        _lastRebuildTime = _configManager.CurrentConfig.LastRebuildTime;
+        _buildFloors = _configManager.CurrentConfig.BuildFloors;
+        _lastRaffleTime = _configManager.CurrentConfig.LastRaffleTime;
 
         VersionText.Text = GetVersionInfo();
     }
@@ -86,7 +86,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 MainWindow!.Log("Invalid input value");
-                _rebuildAtFloor = _configManager.curConfig.RebuildAtFloor;
+                _rebuildAtFloor = _configManager.CurrentConfig.RebuildAtFloor;
             }
         }
     }
@@ -107,7 +107,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 MainWindow!.Log("Invalid input value");
-                _watchAdsFromFloor = _configManager.curConfig.WatchAdsFromFloor;
+                _watchAdsFromFloor = _configManager.CurrentConfig.WatchAdsFromFloor;
             }
         }
     }
@@ -128,7 +128,7 @@ public partial class SettingsWindow : Window
             catch (FormatException)
             {
                 MainWindow!.Log("Invalid input value");
-                _currentFloor = _configManager.curConfig.CurrentFloor;
+                _currentFloor = _configManager.CurrentConfig.CurrentFloor;
             }
         }
     }
