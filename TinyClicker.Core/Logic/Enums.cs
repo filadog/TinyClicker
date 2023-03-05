@@ -8,7 +8,7 @@ public enum Button
     Continue,
 
     [Description("backButton")]
-    Back,
+    BackButton,
 
     [Description("newScienceButton")]
     NewScience,
@@ -17,7 +17,19 @@ public enum Button
     FullyStockedBonus,
 
     [Description("giftChute")]
-    GiftChute
+    GiftChute,
+
+    [Description("elevatorButton")]
+    ElevatorButton,
+
+    [Description("freeBuxButton")]
+    FreeBuxButton,
+
+    [Description("freeBuxCollectButton")]
+    FreeBuxCollectButton,
+
+    [Description("questButton")]
+    QuestButton
 }
 
 public enum GameWindow
@@ -41,5 +53,8 @@ public enum GameWindow
     FindBitizens,
 
     [Description("adsLostReward")]
-    AdsLostReward
+    AdsLostReward,
+
+    [Description("balanceCoin")]
+    BalanceCoin
 }

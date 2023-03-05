@@ -7,8 +7,8 @@ namespace TinyClicker.Core.Helpers;
 
 public class ImageToText
 {
-    readonly TesseractEngine _tesseract;
-    readonly ImageEditor _imageEditor;
+    private readonly TesseractEngine _tesseract;
+    private readonly ImageEditor _imageEditor;
 
     public ImageToText(ImageEditor editor)
     {
@@ -18,14 +18,14 @@ public class ImageToText
 
     public int ParseBalance(Image window)
     {
-        Bitmap source = _imageEditor.GetAdjustedBalanceImage(window);
+        var sourceImage = _imageEditor.GetAdjustedBalanceImage(window);
         string result;
         try
         {
-            using (var page = _tesseract.Process(source, PageSegMode.SingleLine))
+            using (var page = _tesseract.Process(sourceImage, PageSegMode.SingleLine))
             {
                 result = page.GetText().Trim();
-                source.Dispose();
+                sourceImage.Dispose();
 
                 return ResultToBalance(result);
             }
@@ -36,7 +36,7 @@ public class ImageToText
         }
     }
 
-    int ResultToBalance(string result)
+    private int ResultToBalance(string result)
     {
         if (result.Contains('M'))
         {

@@ -1,118 +1,71 @@
-﻿using System.Drawing;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TinyClicker.Core.Helpers;
 using Xunit;
 
 namespace TinyClicker.Tests.ImageProcessing;
 
-public class ImageToTextTests
+public class ImageToTextTests : IClassFixture<DependencySetupFixture>
 {
-    // Tesseract Tests
-    // Accuracy of the OCR for the exact numbers
-
-    //Rectangle _rect;
-    ImageEditor _imageEditor;
-    ImageToText _imageToText;
-
-    //private readonly MainWindow _mainWindow;
-    //private readonly ScreenScanner _screenScanner;
-    public ImageToTextTests()
+    private readonly ServiceProvider _serviceProvider;
+    private readonly ImageToText _imageToText;
+    public ImageToTextTests(DependencySetupFixture fixture)
     {
-
-        //_rect = new Rectangle();
-        //_imageEditor = new ImageEditor(_rect, new ClickerActionsRepo(screenScanner, mainWindow));
-        _imageToText = new ImageToText(_imageEditor);
+        _serviceProvider = fixture.ServiceProvider;
+        _imageToText = _serviceProvider.GetRequiredService<ImageToText>();
     }
 
     [Fact]
-    public void ParseBalanceFromImage_96245()
+    public void ParseBalanceFromImage_17890000()
     {
-        var image = TestHelper.LoadBalanceSample("96245");
-        int expected = 96245;
-        int actual = _imageToText.ParseBalance(image);
-        Assert.Equal(expected, actual);
+        var screenshot = TestHelper.LoadGameScreenshot("ElevatorButton");
+
+        int actualBalance = _imageToText.ParseBalance(screenshot);
+        int expected = 17890000;
+
+        Assert.Equal(expected, actualBalance);
     }
 
     [Fact]
-    public void ParseBalanceFromImage_188214()
+    public void ParseBalanceFromImage_6989000()
     {
-        var image = TestHelper.LoadBalanceSample("188214");
-        int expected = 188214;
-        int actual = _imageToText.ParseBalance(image);
-        Assert.Equal(expected, actual);
-    }
+        var screenshot = TestHelper.LoadGameScreenshot("QuestButton");
 
-    // Accuracy of the OCR for the amount of digits
+        int actualBalance = _imageToText.ParseBalance(screenshot);
+        int expected = 6989000;
 
-    [Fact]
-    public void ParseBalanceFromImage_8_digits_1()
-    {
-        var image = TestHelper.LoadBalanceSample("10130000");
-        int expectedLength = 8;
-        int actual = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actual);
+        Assert.Equal(expected, actualBalance);
     }
 
     [Fact]
-    public void ParseBalanceFromImage_8_digits_2()
+    public void ParseBalanceFromImage_7000000()
     {
-        var image = TestHelper.LoadBalanceSample("11220000");
-        int expectedLength = 8;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
+        var screenshot = TestHelper.LoadGameScreenshot("BackButton");
+
+        int actualBalance = _imageToText.ParseBalance(screenshot);
+        int expected = 7000000;
+
+        Assert.Equal(expected, actualBalance);
     }
 
     [Fact]
-    public void ParseBalanceFromImage_8_digits_3()
+    public void ParseBalanceFromImage_47751()
     {
-        var image = TestHelper.LoadBalanceSample("32M");
-        int expectedLength = 8;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
+        var screenshot = TestHelper.LoadGameScreenshot("47751");
+
+        int actualBalance = _imageToText.ParseBalance(screenshot);
+        int expected = 47751;
+
+        Assert.Equal(expected, actualBalance);
     }
 
     [Fact]
-    public void ParseBalanceFromImage_7_digits_1()
+    public void ParseBalanceFromImage_441825()
     {
-        var image = TestHelper.LoadBalanceSample("1253000");
-        int expectedLength = 7;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
-    }
+        var screenshot = TestHelper.LoadGameScreenshot("441825");
 
-    [Fact]
-    public void ParseBalanceFromImage_7_digits_2()
-    {
-        var image = TestHelper.LoadBalanceSample("3463M");
-        int expectedLength = 7;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
-    }
+        int actualBalance = _imageToText.ParseBalance(screenshot);
+        int expected = 441825;
 
-    [Fact]
-    public void ParseBalanceFromImage_6_digits_1()
-    {
-        var image = TestHelper.LoadBalanceSample("109407");
-        int expectedLength = 6;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
-    }
-
-    [Fact]
-    public void ParseBalanceFromImage_6_digits_2()
-    {
-        var image = TestHelper.LoadBalanceSample("445007");
-        int expectedLength = 6;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
-    }
-
-
-    [Fact]
-    public void ParseBalanceFromImage_5_digits()
-    {
-        var image = TestHelper.LoadBalanceSample("64357");
-        int expectedLength = 5;
-        int actualLength = _imageToText.ParseBalance(image).ToString().Length;
-        Assert.Equal(expectedLength, actualLength);
+        Assert.Equal(expected, actualBalance);
     }
 }

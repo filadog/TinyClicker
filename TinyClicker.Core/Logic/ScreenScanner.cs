@@ -15,7 +15,7 @@ public class ScreenScanner
 {
     private readonly ILogger _logger;
     private readonly ConfigManager _configManager;
-    private readonly ClickerActionsRepo _clickerActionsRepo;
+    private readonly ClickerActionsRepository _clickerActionsRepo;
     private readonly InputSimulator _inputSimulator;
 
     internal bool _isBluestacks;
@@ -23,7 +23,7 @@ public class ScreenScanner
 
     public ScreenScanner(
         ConfigManager configManager,
-        ClickerActionsRepo clickerActionsRepo,
+        ClickerActionsRepository clickerActionsRepo,
         ILogger logger,
         InputSimulator inputSimulator)
     {
@@ -31,9 +31,14 @@ public class ScreenScanner
         _clickerActionsRepo = clickerActionsRepo;
         _inputSimulator = inputSimulator;
         _logger = logger;
+
+        AcceptBuxVideoOffers = _configManager.CurrentConfig.WatchBuxAds;
+        FloorToStartWatchingAds = _configManager.CurrentConfig.WatchAdsFromFloor;
+        FloorToRebuildAt = _configManager.CurrentConfig.RebuildAtFloor;
+        _curSecond = DateTime.Now.Second - 1;
     }
 
-    public Dictionary<string, Mat> Templates { get; private set; }
+    public Dictionary<string, Mat> Templates { get; private set; } = new();
     public Dictionary<string, int> FoundImages { get; private set; }
     public int FloorToRebuildAt { get; private set; }
     public int FloorToStartWatchingAds { get; private set; }
@@ -45,19 +50,17 @@ public class ScreenScanner
         _isBluestacks = isBluestacks;
         _clickerActionsRepo.Init(this);
         _inputSimulator.Init(this);
-
-        AcceptBuxVideoOffers = _configManager.CurrentConfig.WatchBuxAds;
-        FloorToStartWatchingAds = _configManager.CurrentConfig.WatchAdsFromFloor;
-        FloorToRebuildAt = _configManager.CurrentConfig.RebuildAtFloor;
-        Templates = _clickerActionsRepo.MakeTemplates();
-
-        _curSecond = DateTime.Now.Second - 1;
     }
 
     public void StartIteration()
     {
         var gameWindow = _inputSimulator.MakeScreenshot();
         var currentFloor = _configManager.CurrentConfig.CurrentFloor;
+
+        if (!Templates.Any())
+        {
+            Templates = _clickerActionsRepo.MakeTemplates(gameWindow);
+        }
 
         FoundImages = TryFindFirstOnScreen(gameWindow, Templates);
 
@@ -107,10 +110,11 @@ public class ScreenScanner
             }
         }
 
+        FoundImages.Clear();
         gameWindow!.Dispose();
     }
 
-    private Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen, Dictionary<string, Mat> templates)
+    public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen, Dictionary<string, Mat> templates)
     {
         var screenBitmap = new Bitmap(gameScreen);
         var screenMat = screenBitmap.ToMat();
@@ -127,11 +131,12 @@ public class ScreenScanner
             var item = TryFindSingle(template, screenMat);
             if (string.IsNullOrEmpty(item.Key))
             {
+                Task.Delay(15).Wait(); // Smooth the CPU peak load
                 continue;
             }
 
             result.Add(item.Key, item.Location);
-            Task.Delay(10).Wait(); // Smooth the CPU peak load
+            break;
         }
 
         screenMat.Dispose();
@@ -165,7 +170,7 @@ public class ScreenScanner
                     }
                     else
                     {
-                        return new(template.Key, _inputSimulator.MakeLParam(maxloc.X, maxloc.Y));
+                        return new(template.Key, _inputSimulator.MakeLParam(maxloc.X, maxloc.Y + 10));
                     }
                 }
                 else

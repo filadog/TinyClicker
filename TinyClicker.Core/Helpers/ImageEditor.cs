@@ -1,49 +1,48 @@
-﻿using System;
+﻿using ImageMagick;
 using System.Drawing;
-using TinyClicker.Core.Logic;
+using System.IO;
 
 namespace TinyClicker.Core.Helpers;
 
 public class ImageEditor
 {
-    Rectangle _screenRect;
-    Rectangle _balanceRect;
-    readonly ClickerActionsRepo _actionsRepo;
-    bool _isBalanceLocationFound;
-
-    public ImageEditor(Rectangle screenRect, ClickerActionsRepo actionsRepo)
+    private readonly InputSimulator _inputSimulator;
+    public ImageEditor(InputSimulator inputSimulator)
     {
-        _screenRect = screenRect;
-        _actionsRepo = actionsRepo;
-        _isBalanceLocationFound = false;
+        _inputSimulator = inputSimulator;
     }
 
-    public Bitmap GetAdjustedBalanceImage(Image window)
+    public Bitmap GetAdjustedBalanceImage(Image gameWindow)
     {
-        if (!_isBalanceLocationFound)
+        // resize image to default size
+        var percentage = GetScreenDiffPercentageForBalance(gameWindow);
+        using (var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png))
         {
-            _balanceRect = GetBalanceRect(_screenRect);
+            imageOld.Resize(percentage.x, percentage.y);
+            imageOld.BrightnessContrast(new Percentage(-40), new Percentage(100));
+
+            var image = BytesToImage(imageOld.ToByteArray());
+            var result = CropCurrentBalance(image);
+
+            //Uncomment to save the balance image for manual checking
+            //string filename = @"./screenshots/balance.png";
+            //WindowToImage.SaveScreenshot(result, filename);
+
+            return result;
         }
-        var result = CropCurrentBalance(window);
-
-        // Uncomment to save the balance image for manual checking
-        //string filename = @"./screenshots/balance.png";
-        //WindowToImage.SaveScreenshot(result, filename);
-
-        return result;
     }
 
-    public Bitmap CropCurrentBalance(Image window)
+    private Bitmap CropCurrentBalance(Image window)
     {
         // Crop the image
-        var cropRect = _balanceRect;
-        var bitmap = new Bitmap(cropRect.Width, cropRect.Height);
+        Rectangle crop = new Rectangle(20, 541, 70, 20);
+        var bitmap = new Bitmap(crop.Width, crop.Height);
         using (var gr = Graphics.FromImage(bitmap))
         {
-            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRect, GraphicsUnit.Pixel);
+            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), crop, GraphicsUnit.Pixel);
         }
 
-        // Invert the image
+        //Invert the image
         for (int y = 0; y <= bitmap.Height - 1; y++)
         {
             for (int x = 0; x <= bitmap.Width - 1; x++)
@@ -57,31 +56,33 @@ public class ImageEditor
         return bitmap;
     }
 
-    Rectangle GetBalanceRect(Rectangle screenRect)
+    private (Percentage x, Percentage y) GetScreenDiffPercentageForBalance(Image? screenshot = null)
     {
-        int posX = 0;
-        int posY = 0;
+        var x = new Percentage(100 * 333 / (float)screenshot.Width);
+        var y = new Percentage(100 * 592 / (float)screenshot.Height);
 
-        // Check for balance coordinates on the screen
-        if (!_isBalanceLocationFound)
-        {
-            bool found = _actionsRepo.IsImageFound("balanceCoin", out OpenCvSharp.Point location);
-            posX = location.X + 15;
-            posY = location.Y - 5;
-            if (found)
-            {
-                _isBalanceLocationFound = true;
-            }
-        }
+        return (x, y);
+    }
 
-        // Adjust coordinates to the actual window size
-        int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
-        int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
-        float x1 = (float)posX * 100 / 333 / 100;
-        float y1 = (float)posY * 100 / 592 / 100;
-        int x2 = (int)(rectX * x1);
-        int y2 = (int)(rectY * y1);
+    public (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null)
+    {
+        var x = new Percentage((float)screenshot.Width * 100 / 333);
+        var y = new Percentage((float)screenshot.Height * 100 / 592);
 
-        return new Rectangle(x2, y2, 74, 25);
+        return (x, y);
+    }
+
+    public byte[] ImageToBytes(Image image)
+    {
+        var imageConverter = new ImageConverter();
+        var result = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
+
+        return result;
+    }
+
+    public Image BytesToImage(byte[] bytes)
+    {
+        using var ms = new MemoryStream(bytes);
+        return Image.FromStream(ms);
     }
 }

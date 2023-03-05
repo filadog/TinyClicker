@@ -8,30 +8,37 @@ using OpenCvSharp.Extensions;
 using ImageMagick;
 using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Helpers;
-using Point = OpenCvSharp.Point;
 using TinyClicker.Core.Logging;
+using Point = OpenCvSharp.Point;
 
 namespace TinyClicker.Core.Logic;
 
-public class ClickerActionsRepo
+public class ClickerActionsRepository
 {
+    private readonly ConfigManager _configManager;
+    private readonly ImageToText _imageToText;
+    private readonly ImageEditor _imageEditor;
+    private readonly ILogger _logger;
+
     public ScreenScanner _screenScanner;
     public InputSimulator _inputSim;
-    private readonly ConfigManager _configManager;
-    private readonly ILogger _logger;
-    private ImageToText _imageToText;
-    private ImageEditor _imageEditor;
 
     Dictionary<int, int> _floorPrices = new();
     DateTime _timeForNewFloor;
-    Rectangle _screenRect;
     bool _floorPricesCalculated = false;
 
-    public ClickerActionsRepo(ConfigManager configManager, InputSimulator inputSimulator, ILogger logger)
+    public ClickerActionsRepository(
+        ConfigManager configManager,
+        InputSimulator inputSimulator,
+        ImageToText imageToText,
+        ImageEditor imageEditor,
+        ILogger logger)
     {
         _configManager = configManager;
         _logger = logger;
         _inputSim = inputSimulator;
+        _imageToText = imageToText;
+        _imageEditor = imageEditor;
     }
 
     public void Init(ScreenScanner screenScanner)
@@ -39,10 +46,6 @@ public class ClickerActionsRepo
         _screenScanner = screenScanner;
         _inputSim.Init(screenScanner);
 
-        _screenRect = _inputSim.GetWindowRectangle();
-
-        _imageEditor = new ImageEditor(_screenRect, this);
-        _imageToText = new ImageToText(_imageEditor);
         _timeForNewFloor = DateTime.Now;
     }
 
@@ -164,7 +167,7 @@ public class ClickerActionsRepo
         _inputSim.SendClick(21, 510);
         WaitSec(1);
 
-        if (IsImageFound(Button.Back))
+        if (IsImageFound(Button.BackButton))
         {
             PressExitButton();
         }
@@ -190,7 +193,7 @@ public class ClickerActionsRepo
     public void PressQuestButton()
     {
         _logger.Log("Clicking on the quest button");
-        _inputSim.SendClick(_screenScanner.FoundImages["questButton"]);
+        _inputSim.SendClick(_screenScanner.FoundImages[Button.QuestButton.GetName()]);
         WaitMs(500);
         if (IsImageFound(GameWindow.DeliverBitizens))
         {
@@ -245,7 +248,7 @@ public class ClickerActionsRepo
 
     public void CheckForExitButton()
     {
-        if (IsImageFound(Button.Back))
+        if (IsImageFound(Button.BackButton))
         {
             PressExitButton();
         }
@@ -312,14 +315,16 @@ public class ClickerActionsRepo
             {
                 BuildNewFloor();
 
+
                 if (IsImageFound(GameWindow.NewFloorNoCoinsNotification))
                 {
                     _timeForNewFloor = DateTime.Now.AddSeconds(10);
                     _logger.Log("Not enough coins for a new floor");
                     _inputSim.SendClick(230, 380); // continue
+                    return;
                 }
 
-                if (IsImageFound(Button.Back))
+                if (IsImageFound(Button.BackButton))
                 {
                     return;
                 }
@@ -345,7 +350,7 @@ public class ClickerActionsRepo
                 return;
             }
 
-            if (IsImageFound(Button.Back))
+            if (IsImageFound(Button.BackButton))
             {
                 PressExitButton();
                 _logger.Log("Clicking Back button while building");
@@ -379,7 +384,7 @@ public class ClickerActionsRepo
                     // Cooldown 10s in case building fails (to prevent repeated attempts)
                     _timeForNewFloor = DateTime.Now.AddSeconds(10);
                     _logger.Log("Not enough coins for a new floor");
-                    _inputSim.SendClick(230, 380); // continue
+                    //_inputSim.SendClick(230, 380); // continue
                 }
 
                 MoveUp();
@@ -590,22 +595,6 @@ public class ClickerActionsRepo
 
     #region Utility Methods
 
-    (Percentage x, Percentage y) GetScreenDiffPercentage()
-    {
-        var _screenRect = _inputSim.GetWindowRectangle();
-
-        int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
-        int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
-
-        float x1 = (float)rectX * 100 / 333;
-        float y1 = (float)rectY * 100 / 592;
-
-        var _screenHeightPercentage = new Percentage(y1);
-        var _screenWidthPercentage = new Percentage(x1);
-
-        return (_screenHeightPercentage, _screenWidthPercentage);
-    }
-
     void WaitSec(int seconds)
     {
         int ms = seconds * 1000;
@@ -622,15 +611,16 @@ public class ClickerActionsRepo
     /// </summary>
     /// <param name="imageKey">Image name from the button_names.txt</param>
     /// <returns>true if the image is found within the screen</returns>  
-    bool IsImageFound(Enum image)
+    public bool IsImageFound(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
     {
-        Image gameWindow = _inputSim.MakeScreenshot();
+        Image gameWindow = screenshot == null ? _inputSim.MakeScreenshot() : screenshot;
         var windowBitmap = new Bitmap(gameWindow);
         gameWindow.Dispose();
         Mat reference = windowBitmap.ToMat();
         windowBitmap.Dispose();
 
-        var template = _screenScanner.Templates[image.GetName()];
+        var template = templates == null ? _screenScanner.Templates[image.GetName()] : templates[image.GetName()];
+
         using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
         {
             Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -642,14 +632,7 @@ public class ClickerActionsRepo
             double threshold = 0.7;
             Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
 
-            if (maxval >= threshold)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return maxval >= threshold;
         }
     }
 
@@ -718,6 +701,7 @@ public class ClickerActionsRepo
             }
             dict.Add(i, (int)floorCost);
         }
+
         return dict;
     }
 
@@ -778,20 +762,21 @@ public class ClickerActionsRepo
         return dict;
     }
 
-    public Dictionary<string, Mat> MakeTemplates()
+    public Dictionary<string, Mat> MakeTemplates(Image screenshot)
     {
         var images = GetSamples();
-        var percentages = GetScreenDiffPercentage();
-        Dictionary<string, Mat> mats = new();
+        var percentage = _imageEditor.GetScreenDiffPercentageForTemplates(screenshot);
+
+        var mats = new Dictionary<string, Mat>();
 
         foreach (var image in images)
         {
             // Resize images before making templates
-            using (var imageOld = new MagickImage(ImageToBytes(image.Value), MagickFormat.Png))
+            using (var imageOld = new MagickImage(_imageEditor.ImageToBytes(image.Value), MagickFormat.Png))
             {
-                imageOld.Resize(percentages.y);
-                var imageBitmap = new Bitmap(BytesToImage(imageOld.ToByteArray()));
-                Mat template = imageBitmap.ToMat();
+                imageOld.Resize(percentage.x, percentage.y);
+                var imageBitmap = new Bitmap(_imageEditor.BytesToImage(imageOld.ToByteArray()));
+                var template = imageBitmap.ToMat();
 
                 imageBitmap.Dispose();
                 mats.Add(image.Key, template);
@@ -800,20 +785,6 @@ public class ClickerActionsRepo
 
         images.Clear();
         return mats;
-    }
-
-    private byte[] ImageToBytes(Image image)
-    {
-        using var ms = new MemoryStream();
-        image.Save(ms, image.RawFormat);
-
-        return ms.ToArray();
-    }
-
-    private Image BytesToImage(byte[] bytes)
-    {
-        using var ms = new MemoryStream(bytes);
-        return Image.FromStream(ms);
     }
 
     #endregion

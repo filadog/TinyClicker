@@ -13,8 +13,10 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ConfigManager>();
         collection.AddSingleton<TinyClickerApp>();
         collection.AddSingleton<ScreenScanner>();
-        collection.AddSingleton<ClickerActionsRepo>();
+        collection.AddSingleton<ClickerActionsRepository>();
         collection.AddSingleton<InputSimulator>();
         collection.AddSingleton<WindowToImage>();
+        collection.AddSingleton<ImageEditor>();
+        collection.AddSingleton<ImageToText>();
     }
 }

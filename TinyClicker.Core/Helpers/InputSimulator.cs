@@ -188,8 +188,7 @@ public class InputSimulator
     {
         if (_processId != -1)
         {
-            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
-            Image img = _windowToImage.CaptureWindow(handle);
+            Image img = _windowToImage.CaptureWindow(_childHandle);
             return img;
         }
         else
