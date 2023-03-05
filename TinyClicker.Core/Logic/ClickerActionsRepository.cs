@@ -7,7 +7,6 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using ImageMagick;
 using TinyClicker.Core.Logging;
-using Point = OpenCvSharp.Point;
 using TinyClicker.Core.Services;
 using System.Linq;
 
@@ -158,7 +157,7 @@ public class ClickerActionsRepository
         {
             PressExitButton();
         }
-        else if (IsImageFound(Button.Continue.GetName(), out Point location))
+        else if (IsImageFound(Button.Continue.GetName(), out OpenCvSharp.Point location))
         {
             // Click continue in case a new bitizen moved in
             _windowsApiService.SendClick(location.X, location.Y); 
@@ -427,7 +426,7 @@ public class ClickerActionsRepository
         WaitSec(4);
 
         // Daily rent check (in case it's past midnight)
-        if (IsImageFound("freeBuxCollectButton", out Point location))
+        if (IsImageFound("freeBuxCollectButton", out OpenCvSharp.Point location))
         {
             _windowsApiService.SendClick(location.X, location.Y); // Collect daily rent
             WaitMs(500);
@@ -681,7 +680,7 @@ public class ClickerActionsRepository
             Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
 
             double threshold = 0.7;
-            Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
+            Cv2.MinMaxLoc(res, out double minval, out double maxval, out OpenCvSharp.Point minloc, out OpenCvSharp.Point maxloc);
 
             return maxval >= threshold;
         }
@@ -693,7 +692,7 @@ public class ClickerActionsRepository
     /// <param name="imageKey">Image name from the button_names.txt</param>
     /// <param name="location">OpenCvSharp.Point stuct with coordinates of the specified image, in case the image is found</param>
     /// <returns>true if the image is found within the screen</returns>
-    public bool IsImageFound(string imageKey, out Point location)
+    public bool IsImageFound(string imageKey, out OpenCvSharp.Point location)
     {
         var gameWindow = _windowsApiService.MakeScreenshot();
         var windowBitmap = new Bitmap(gameWindow);
@@ -711,7 +710,7 @@ public class ClickerActionsRepository
             Cv2.Threshold(res, res, 0.7, 1.0, ThresholdTypes.Tozero);
 
             double threshold = 0.7;
-            Cv2.MinMaxLoc(res, out double minval, out double maxval, out Point minloc, out Point maxloc);
+            Cv2.MinMaxLoc(res, out double minval, out double maxval, out OpenCvSharp.Point minloc, out OpenCvSharp.Point maxloc);
 
             if (maxval >= threshold)
             {

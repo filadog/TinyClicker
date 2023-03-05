@@ -26,8 +26,6 @@ public class ScreenScanner
 
     public Dictionary<string, int> FoundImages { get; private set; }
     public int FloorToRebuildAt => _configService.Config.RebuildAtFloor;
-    public int FloorToStartWatchingAds => _configService.Config.WatchAdsFromFloor;
-    public bool AcceptBuxVideoOffers => _configService.Config.WatchBuxAds;
     private int FoundCount { get; set; } = 0;
 
     public void StartIteration()
