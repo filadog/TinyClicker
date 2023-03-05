@@ -26,13 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="samples\button_names.txt">
+    <None Update="Samples\button_names.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="samples\samples.dat">
+    <None Update="Samples\samples.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="tessdata\pixel.traineddata">
+    <None Update="Tessdata\pixel.traineddata">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

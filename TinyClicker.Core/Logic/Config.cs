@@ -13,8 +13,9 @@ public class Config
     public bool WatchBuxAds { get; set; }
     public bool BuildFloors { get; set; }
     public DateTime LastRaffleTime { get; set; }
+    public bool IsBluestacks { get; set; }
 
-    public Config() : this(true, 10f, 3, 50, 25, false, DateTime.Now, true, default) { }
+    public Config() : this(true, 10f, 3, 50, 25, false, DateTime.Now, true, default, true) { }
     public Config(
         bool vip,
         float elevatorSpeed,
@@ -24,7 +25,8 @@ public class Config
         bool watchBuxAds,
         DateTime lastRebuildTime,
         bool buildFloors,
-        DateTime lastRaffleTime)
+        DateTime lastRaffleTime,
+        bool isBluestacks)
     {
         VipPackage = vip;
         ElevatorSpeed = elevatorSpeed;
@@ -35,5 +37,6 @@ public class Config
         WatchBuxAds = watchBuxAds;
         BuildFloors = buildFloors;
         LastRaffleTime = lastRaffleTime;
+        IsBluestacks = isBluestacks;
     }
 }

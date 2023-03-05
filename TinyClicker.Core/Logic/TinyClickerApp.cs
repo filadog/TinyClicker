@@ -13,7 +13,7 @@ public class TinyClickerApp
         _screenScanner = screenScanner;
     }
 
-    public void StartInBackground(bool isBluestacks)
+    public void StartInBackground()
     {
         _backgroundWorker.WorkerSupportsCancellation = true;
         _backgroundWorker.DoWork += (s, e) =>
@@ -21,7 +21,6 @@ public class TinyClickerApp
             RunLoop(_backgroundWorker);
         };
 
-        _screenScanner.Init(isBluestacks);
         _backgroundWorker.RunWorkerAsync();
     }
 

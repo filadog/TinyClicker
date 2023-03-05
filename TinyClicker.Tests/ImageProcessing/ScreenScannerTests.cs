@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using TinyClicker.Core.Extensions;
+using TinyClicker.Core;
 using TinyClicker.Core.Logic;
 using Xunit;
 
@@ -81,13 +81,10 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindNothingOnScreen()
     {
-        var screenshot = TestHelper.LoadGameScreenshot("NothingOnScreen");
-
-        var screenScanner = _serviceProvider.GetService<ScreenScanner>();
         var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
-        var templates = clickerActionsRepo.MakeTemplates(screenshot);
 
-        var foundItems = screenScanner.TryFindFirstOnScreen(screenshot, templates);
+        var screenshot = TestHelper.LoadGameScreenshot("NothingOnScreen");
+        var foundItems = clickerActionsRepo.TryFindFirstOnScreen(screenshot);
 
         Assert.True(foundItems.Count == 0);
     }
@@ -95,12 +92,9 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     private string TryFindFirstItemOnScreen(string itemName, string? screenshotName = null)
     {
         var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
-        var screenScanner = _serviceProvider.GetService<ScreenScanner>();
 
         var screenshot = TestHelper.LoadGameScreenshot(screenshotName == null ? itemName : screenshotName);
-        var templates = clickerActionsRepo.MakeTemplates(screenshot);
-
-        var foundItems = screenScanner.TryFindFirstOnScreen(screenshot, templates);
+        var foundItems = clickerActionsRepo.TryFindFirstOnScreen(screenshot);
 
         var item = foundItems.FirstOrDefault();
         return item.Key;

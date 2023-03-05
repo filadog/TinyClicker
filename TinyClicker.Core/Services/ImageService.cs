@@ -1,15 +1,81 @@
 ﻿using ImageMagick;
+using System;
 using System.Drawing;
 using System.IO;
+using System.Text.RegularExpressions;
+using Tesseract;
 
-namespace TinyClicker.Core.Helpers;
+namespace TinyClicker.Core.Services;
 
-public class ImageEditor
+public class ImageService : IImageService
 {
-    private readonly InputSimulator _inputSimulator;
-    public ImageEditor(InputSimulator inputSimulator)
+    private readonly TesseractEngine _tesseractEngine;
+    public ImageService(TesseractEngine tesseractEngine)
     {
-        _inputSimulator = inputSimulator;
+        _tesseractEngine = tesseractEngine;
+    }
+
+    public int ParseBalance(Image window)
+    {
+        var sourceImage = GetAdjustedBalanceImage(window);
+        string result;
+        try
+        {
+            using (var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine))
+            {
+                result = page.GetText().Trim();
+                sourceImage.Dispose();
+
+                return ResultToBalance(result);
+            }
+        }
+        catch (Exception)
+        {
+            return -1;
+        }
+    }
+
+    private int ResultToBalance(string result)
+    {
+        if (result.Contains('M'))
+        {
+            int endIndex = result.IndexOf('M');
+            result = result[..endIndex];
+            int dotIndex = result.IndexOf('.');
+            if (dotIndex == 1)
+            {
+                result = TrimWithRegex(result);
+                result += "000";
+            }
+            else if (dotIndex == 2)
+            {
+                result = TrimWithRegex(result);
+                result += "0000";
+            }
+            else if (dotIndex == 3)
+            {
+                result = TrimWithRegex(result);
+                result += "00000";
+            }
+
+            return Convert.ToInt32(result);
+        }
+        else if (result.Contains(' '))
+        {
+            int endIndex = result.IndexOf(' ');
+            result = result[..endIndex];
+
+            return Convert.ToInt32(TrimWithRegex(result));
+        }
+        else
+        {
+            return Convert.ToInt32(TrimWithRegex(result));
+        }
+    }
+
+    private string TrimWithRegex(string str)
+    {
+        return Regex.Replace(str, "[^0-9]", "").Trim();
     }
 
     public Bitmap GetAdjustedBalanceImage(Image gameWindow)

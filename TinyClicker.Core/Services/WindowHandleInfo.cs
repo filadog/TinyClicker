@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace TinyClicker.Core.Helpers;
+namespace TinyClicker.Core.Services;
 
 public class WindowHandleInfo
 {

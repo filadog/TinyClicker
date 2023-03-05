@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Logging;
+using TinyClicker.Core.Services;
 
 namespace TinyClicker.UI;
 
@@ -14,21 +15,24 @@ public partial class MainWindow : Window, IMainWindow
     private readonly BackgroundWorker _backgroundWorker;
     private readonly SettingsWindow _settingsWindow;
     private readonly TinyClickerApp _tinyClickerApp;
+    private readonly ConfigService _configService;
     private readonly ILogger _logger;
 
-    private bool _isBluestacks = false;
-    private bool _isLDPlayer = false;
+    public bool _isBluestacks = false;
+    public bool _isLDPlayer = false;
     public bool _settingsOpened = false;
 
     public MainWindow(
         BackgroundWorker backgroundWorker,
         SettingsWindow settingsWindow,
         TinyClickerApp tinyClickerApp,
+        ConfigService configService,
         ILogger logger)
     {
         _backgroundWorker = backgroundWorker;
         _settingsWindow = settingsWindow;
         _tinyClickerApp = tinyClickerApp;
+        _configService = configService;
         _logger = logger;
 
         _logger.SetMainWindow(this);
@@ -39,9 +43,10 @@ public partial class MainWindow : Window, IMainWindow
 
     private void Startup()
     {
-        if (_isLDPlayer || _isBluestacks)
+        if (_isLDPlayer ^ _isBluestacks)
         {
-            _tinyClickerApp.StartInBackground(_isBluestacks);
+            _configService.Config.IsBluestacks = _isBluestacks;
+            _tinyClickerApp.StartInBackground();
 
             Log("Started!");
             ShowStartedButton();
@@ -95,10 +100,11 @@ public partial class MainWindow : Window, IMainWindow
         Dispatcher.Invoke(() =>
         {
             TextBoxLog.Text = msg;
-            // Simple logging
-            msg += "\n";
-            var time = DateTime.Now.ToString();
-            File.AppendAllText(@"./log.txt", time + " " + msg);
+
+            // todo add logging enabled parameter
+            //msg += "\n";
+            //var time = DateTime.Now.ToString();
+            //File.AppendAllText(@"./log.txt", time + " " + msg);
         });
     }
 
@@ -167,7 +173,6 @@ public partial class MainWindow : Window, IMainWindow
         if (!_settingsOpened)
         {
             _settingsOpened = true;
-            //_settingsWindow = new SettingsWindow(this);
             _settingsWindow.Show(this);
         }
         else

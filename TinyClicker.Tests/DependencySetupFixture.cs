@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TinyClicker.Core;
-using TinyClicker.Core.Helpers;
-using TinyClicker.Core.Logic;
 using TinyClicker.UI;
 
 namespace TinyClicker.Tests;

@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Text.Json;
 using System.IO;
+using TinyClicker.Core.Logic;
 
-namespace TinyClicker.Core.Logic;
+namespace TinyClicker.Core.Services;
 
-public class ConfigManager
+public class ConfigService
 {
     static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
 
-    public Config CurrentConfig { get; private set; }
+    public Config Config { get; private set; }
 
-    public ConfigManager()
+    public ConfigService()
     {
-        CurrentConfig = GetConfig();
-        SaveConfig(CurrentConfig);
+        Config = GetConfig();
+        SaveConfig(Config);
     }
 
     public void AddOneFloor()
     {
-        CurrentConfig.CurrentFloor += 1;
-        SaveConfig(CurrentConfig);
+        Config.CurrentFloor += 1;
+        SaveConfig(Config);
     }
 
     public void SetCurrentFloor(int floor)
     {
-        CurrentConfig.CurrentFloor = floor;
-        SaveConfig(CurrentConfig);
+        Config.CurrentFloor = floor;
+        SaveConfig(Config);
     }
 
     public void SaveNewRebuildTime(DateTime rebuildTime)
     {
-        CurrentConfig.LastRebuildTime = rebuildTime;
-        SaveConfig(CurrentConfig);
+        Config.LastRebuildTime = rebuildTime;
+        SaveConfig(Config);
     }
 
     public Config GetConfig()
@@ -60,18 +61,18 @@ public class ConfigManager
         var options = new JsonSerializerOptions { WriteIndented = true };
         string json = JsonSerializer.Serialize(config, options);
         File.WriteAllText(_configPath, json);
-        CurrentConfig = config;
+        Config = config;
     }
 
     public void SaveConfig()
     {
-        SaveConfig(CurrentConfig);
+        SaveConfig(Config);
     }
 
     public void SaveStatRebuildTime()
     {
         DateTime dateTimeNow = DateTime.Now;
-        DateTime lastRebuild = CurrentConfig.LastRebuildTime;
+        DateTime lastRebuild = Config.LastRebuildTime;
         string result = "";
         if (lastRebuild != DateTime.MinValue)
         {

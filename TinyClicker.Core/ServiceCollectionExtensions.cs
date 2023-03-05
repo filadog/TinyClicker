@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
-using TinyClicker.Core.Helpers;
+using Tesseract;
 using TinyClicker.Core.Logic;
+using TinyClicker.Core.Services;
 
 namespace TinyClicker.Core;
 
@@ -10,13 +11,13 @@ public static class ServiceCollectionExtensions
     public static void AddCoreServices(this IServiceCollection collection)
     {
         collection.AddSingleton<BackgroundWorker>();
-        collection.AddSingleton<ConfigManager>();
+        collection.AddSingleton<ConfigService>();
         collection.AddSingleton<TinyClickerApp>();
         collection.AddSingleton<ScreenScanner>();
         collection.AddSingleton<ClickerActionsRepository>();
-        collection.AddSingleton<InputSimulator>();
-        collection.AddSingleton<WindowToImage>();
-        collection.AddSingleton<ImageEditor>();
-        collection.AddSingleton<ImageToText>();
+        collection.AddSingleton<IWindowsApiService, WindowsApiService>();
+        collection.AddSingleton<IImageService, ImageService>();
+
+        collection.AddSingleton(x => new TesseractEngine(@"./Tessdata", "pixel", EngineMode.LstmOnly));
     }
 }

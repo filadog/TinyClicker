@@ -1,44 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
-using TinyClicker.Core.Logic;
+using System.Linq;
 
-namespace TinyClicker.Core.Helpers;
+namespace TinyClicker.Core.Services;
 
-public class InputSimulator
+public class WindowsApiService : IWindowsApiService
 {
     private readonly ILogger _logger;
-    private ScreenScanner _screenScanner;
-    private readonly WindowToImage _windowToImage;
+    private readonly ConfigService _configService;
 
     private const string _ldPlayerProcName = "dnplayer";
     private const string _blueStacksProcName = "HD-Player";
 
     private Process? _process;
-    private int _processId;
     private IntPtr _childHandle;
-    private string _curProcName;
     Rectangle _screenRect;
 
-    public InputSimulator(WindowToImage windowToImage, ILogger logger)
+    public WindowsApiService(ConfigService configService, ILogger logger)
     {
+        _configService = configService;
         _logger = logger;
-        _windowToImage = windowToImage;
-    }
 
-    public void Init(ScreenScanner screenScanner)
-    {
-        _screenScanner = screenScanner;
         _process = GetEmulatorProcess();
-        _processId = _process.Id;
-        _childHandle = GetChildHandle();
+        _childHandle = GetChildHandle(_process.ProcessName);
         _screenRect = GetWindowRectangle();
     }
 
@@ -90,18 +81,14 @@ public class InputSimulator
 
     private Process GetEmulatorProcess()
     {
-        //string curProcName = _screenScanner._isBluestacks ? _blueStacksProcName : _ldPlayerProcName;
-        var processes = new string[] { "HD-Player", "dnplayer" };
-
+        var processes = new string[] { _blueStacksProcName, _ldPlayerProcName };
         var processlist = Process.GetProcesses();
         var process = processlist.Select(x => x).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName)).FirstOrDefault();
 
-        if (process is null)
+        if (process == null)
         {
             throw new InvalidOperationException("Emulator process not found");
         }
-
-        _curProcName = process.ProcessName;
 
         return process;
     }
@@ -115,7 +102,7 @@ public class InputSimulator
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_screenScanner._isBluestacks)
+            if (_configService.Config.IsBluestacks)
             {
                 // Bluestacks input simulation
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -135,14 +122,14 @@ public class InputSimulator
 
     public void SendClick(int x, int y)
     {
-        SendClick(GetRelativeCoords(x, y));
+        SendClick(GetRelativeCoordinates(x, y));
     }
 
     public void SendEscapeButton()
     {
         if (_childHandle != IntPtr.Zero)
         {
-            if (_screenScanner._isBluestacks)
+            if (_configService.Config.IsBluestacks)
             {
                 // Bluestacks input 
                 SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
@@ -156,12 +143,12 @@ public class InputSimulator
         }
     }
 
-    public IntPtr GetChildHandle()
+    public IntPtr GetChildHandle(string processName)
     {
-        if (WindowHandleInfo.GetChildrenHandles(_curProcName) != null)
+        if (WindowHandleInfo.GetChildrenHandles(processName) != null)
         {
-            List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(_curProcName);
-            if (childProcesses != null)
+            List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(processName);
+            if (childProcesses != null && childProcesses.Any())
             {
                 return childProcesses[0];
             }
@@ -171,10 +158,11 @@ public class InputSimulator
         throw new InvalidOperationException("Emulator child handle not found");
     }
 
-    public int GetRelativeCoords(int x, int y)
+    public int GetRelativeCoordinates(int x, int y)
     {
         int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
         int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
+
         float x1 = (float)x * 100 / 333 / 100;
         float y1 = (float)y * 100 / 592 / 100;
 
@@ -186,10 +174,10 @@ public class InputSimulator
 
     public Image MakeScreenshot()
     {
-        if (_processId != -1)
+        if (_childHandle != -1)
         {
-            Image img = _windowToImage.CaptureWindow(_childHandle);
-            return img;
+            var image = CaptureWindow(_childHandle);
+            return image;
         }
         else
         {
@@ -197,21 +185,112 @@ public class InputSimulator
         }
     }
 
-    public void SaveScreenshot()
-    {
-        if (_processId != -1)
-        {
-            if (!Directory.Exists($"./screenshots"))
-            {
-                Directory.CreateDirectory($"./screenshots");
-            }
+    public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen
 
-            IntPtr handle = Process.GetProcessById(_processId).MainWindowHandle;
-            // Captures screenshot of a window and saves it to the screenshots folder
-            _windowToImage.CaptureWindowToFile(handle, $"./screenshots/window.png", ImageFormat.Png);
-            _logger.Log($"Made a screenshot. Screenshots can be found inside TinyClicker/screenshots folder");
-        }
+    public Image CaptureScreen()
+    {
+        return CaptureWindow(User32.GetDesktopWindow());
     }
 
-    public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen
+    public static void SaveScreenshot(Image screenshot, string filename)
+    {
+        if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
+        {
+            Directory.CreateDirectory(Environment.CurrentDirectory + @"/screenshots");
+        }
+        screenshot.Save(filename, ImageFormat.Png);
+    }
+
+    // Creates an Image object containing a screenshot of a specific window
+    public Image CaptureWindow(IntPtr handle)
+    {
+        IntPtr hdcSrc = User32.GetWindowDC(handle);
+
+        User32.RECT windowRect = new User32.RECT();
+        User32.GetWindowRect(handle, ref windowRect);
+
+        int width = windowRect.right - windowRect.left;
+        int height = windowRect.bottom - windowRect.top;
+
+        IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
+        IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc, width, height);
+        IntPtr hOld = GDI32.SelectObject(hdcDest, hBitmap);
+
+        GDI32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, GDI32.SRCCOPY);
+        GDI32.SelectObject(hdcDest, hOld);
+        GDI32.DeleteDC(hdcDest);
+        User32.ReleaseDC(handle, hdcSrc);
+
+        Image img = Image.FromHbitmap(hBitmap);
+        GDI32.DeleteObject(hBitmap);
+
+        return img;
+    }
+
+    // Captures a screenshot of a window and saves it to a file
+    public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
+    {
+        Image img = CaptureWindow(handle);
+        img.Save(filename, format);
+    }
+
+    private class GDI32
+    {
+        public const int SRCCOPY = 0x00CC0020;
+
+        [DllImport("gdi32.dll")]
+        public static extern bool BitBlt(
+            IntPtr hObject,
+            int nXDest,
+            int nYDest,
+            int nWidth,
+            int nHeight,
+            IntPtr hObjectSource,
+            int nXSrc,
+            int nYSrc,
+            int dwRop);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateCompatibleBitmap(
+            IntPtr hDC,
+            int nWidth,
+            int nHeight);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteDC(IntPtr hDC);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+    }
+
+    // Helper class containing User32 API functions
+    private class User32
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
+    }
 }
