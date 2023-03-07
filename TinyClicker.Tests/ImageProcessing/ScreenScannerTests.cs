@@ -89,6 +89,15 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
         Assert.True(foundItems.Count == 0);
     }
 
+    [Fact]
+    public void FindBuildNewFloorNotificationOnScreen()
+    {
+        var itemName = GameWindow.BuildNewFloorNotification.GetName();
+        var foundName = TryFindFirstItemOnScreen(itemName);
+
+        Assert.Equal(itemName, foundName);
+    }
+
     private string TryFindFirstItemOnScreen(string itemName, string? screenshotName = null)
     {
         var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
