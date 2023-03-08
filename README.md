@@ -63,7 +63,8 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 
 ### Collecting coins for upgrades with science points
 
-If you wish to collect a big amount of coins without TinyClicker trying to spend them, set the <code>Current floor</code> setting to at least 200 before starting the clicker and set the <code>Rebuild at</code> setting to an even higer value. That way the clicker will assume it needs a lot of coins for a new floor and will farm them indefinitely. Science upgrades are not automated and should be performed manually, TinyClicker will collect science points for you though.
+If you wish to collect a big amount of coins without TinyClicker trying to spend them, uncheck the <code>Build Floors</code> setting and make sure <code>Current floor</code> value is lower than <code>Rebuild at</code> value. 
+Science upgrades are not automated and should be performed manually, TinyClicker will collect science points for you though.
 
 
 ### For the iOS players
