@@ -20,7 +20,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("ElevatorButton");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
+        int actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         int expected = 17890000;
 
         Assert.Equal(expected, actualBalance);
@@ -31,7 +31,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("QuestButton");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
+        int actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         int expected = 6989000;
 
         Assert.Equal(expected, actualBalance);
@@ -42,7 +42,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("BackButton");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
+        int actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         int expected = 7000000;
 
         Assert.Equal(expected, actualBalance);
@@ -53,8 +53,8 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("47751");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
-        int expected = 47751;
+        var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
+        var expected = 47751;
 
         Assert.Equal(expected, actualBalance);
     }
@@ -64,7 +64,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("441825");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
+        int actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         int expected = 441825;
 
         Assert.Equal(expected, actualBalance);
@@ -75,7 +75,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     {
         var screenshot = TestHelper.LoadGameScreenshot("644177");
 
-        int actualBalance = _imageService.ParseBalance(screenshot);
+        int actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         int expected = 644177;
 
         Assert.Equal(expected, actualBalance);

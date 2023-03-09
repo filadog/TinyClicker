@@ -27,10 +27,6 @@ public class WindowsApiService : IWindowsApiService
     {
         _configService = configService;
         _logger = logger;
-
-        _process = GetEmulatorProcess();
-        _childHandle = GetChildHandle(_process.ProcessName);
-        _screenRect = GetWindowRectangle();
     }
 
     public enum KeyCodes
@@ -174,15 +170,15 @@ public class WindowsApiService : IWindowsApiService
 
     public Image MakeScreenshot()
     {
-        if (_childHandle != -1)
+        if (_childHandle == default)
         {
-            var image = CaptureWindow(_childHandle);
-            return image;
+            _process = GetEmulatorProcess();
+            _childHandle = GetChildHandle(_process.ProcessName);
+            _screenRect = GetWindowRectangle();
         }
-        else
-        {
-            throw new InvalidOperationException("No emulator process found");
-        }
+
+        var image = CaptureWindow(_childHandle);
+        return image;
     }
 
     public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen

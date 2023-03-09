@@ -9,5 +9,5 @@ public interface IImageService
     Bitmap GetAdjustedBalanceImage(Image gameWindow);
     (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null);
     byte[] ImageToBytes(Image image);
-    int ParseBalance(Image window);
+    int GetBalanceFromWindow(Image window);
 }

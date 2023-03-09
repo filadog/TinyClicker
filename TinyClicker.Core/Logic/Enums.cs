@@ -29,7 +29,16 @@ public enum Button
     FreeBuxCollectButton,
 
     [Description("questButton")]
-    QuestButton
+    QuestButton,
+
+    [Description("restockButton")]
+    RestockButton,
+
+    [Description("balanceCoin")]
+    BalanceCoin,
+
+    [Description("gameIcon")]
+    GameIcon
 }
 
 public enum GameWindow

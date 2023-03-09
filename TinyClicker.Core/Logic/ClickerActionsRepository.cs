@@ -40,9 +40,7 @@ public class ClickerActionsRepository
     public void CancelHurryConstruction()
     {
         _logger.Log("Exiting the construction menu");
-
-        _windowsApiService.SendClick(100, 375); // Cancel action
-        WaitSec(1);
+        ClickAndWaitSec(100, 375, 1); // Cancel action
     }
 
     public void CollectFreeBux(int location)
@@ -117,15 +115,12 @@ public class ClickerActionsRepository
         _logger.Log("Restocking");
         MoveDown();
         WaitMs(500);
-        _windowsApiService.SendClick(100, 480); // Stock all
-        WaitMs(500);
-        _windowsApiService.SendClick(225, 375);
-        WaitMs(500);
+        ClickAndWaitMs(100, 480, 500); // Stock all
+        ClickAndWaitMs(225, 375, 500); 
 
         if (IsImageFound(Button.FullyStockedBonus))
         {
-            _windowsApiService.SendClick(165, 375); // Close the bonus tooltip
-            WaitSec(1);
+            ClickAndWaitSec(165, 375, 1); // Close the bonus tooltip
             MoveUp();
             WaitSec(1);
             return;
@@ -141,23 +136,20 @@ public class ClickerActionsRepository
     public void PressFreeBuxButton()
     {
         _logger.Log("Pressing free bux icon");
-        _windowsApiService.SendClick(25, 130);
-        WaitSec(1);
-        _windowsApiService.SendClick(230, 375);
-        WaitSec(1);
+        ClickAndWaitSec(25, 130, 1);
+        ClickAndWaitSec(230, 375, 1);
     }
 
     public void RideElevator()
     {
         _logger.Log("Riding the elevator");
-        _windowsApiService.SendClick(21, 510);
-        WaitSec(1);
+        ClickAndWaitSec(21, 510, 1); // Move up
 
         if (IsImageFound(Button.BackButton))
         {
             PressExitButton();
         }
-        else if (IsImageFound(Button.Continue.GetName(), out OpenCvSharp.Point location))
+        else if (IsImageFound(Button.Continue, out OpenCvSharp.Point location))
         {
             // Click continue in case a new bitizen moved in
             _windowsApiService.SendClick(location.X, location.Y); 
@@ -182,6 +174,7 @@ public class ClickerActionsRepository
         _logger.Log("Clicking on the quest button");
         _windowsApiService.SendClick(location);
         WaitMs(500);
+
         if (IsImageFound(GameWindow.DeliverBitizens))
         {
             DeliverBitizens();
@@ -192,18 +185,16 @@ public class ClickerActionsRepository
         }
         else
         {
-            _windowsApiService.SendClick(90, 440); // Skip the quest
-            WaitMs(500);
-            _windowsApiService.SendClick(230, 380); // Confirm
+            ClickAndWaitMs(90, 440, 500); // Skip the quest
+            ClickAndWaitMs(230, 380, 0);  // Confirm
         }
     }
 
     public void FindBitizens()
     {
         _logger.Log("Skipping the quest");
-        _windowsApiService.SendClick(95, 445); // Skip the quest
-        WaitMs(500);
-        _windowsApiService.SendClick(225, 380); // Confirm skip
+        ClickAndWaitMs(95, 445, 500); // Skip the quest
+        ClickAndWaitMs(225, 380, 0);  // Confirm skip
     }
 
     public void DeliverBitizens()
@@ -266,8 +257,7 @@ public class ClickerActionsRepository
         _logger.Log("Collecting new science");
         _windowsApiService.SendClick(location);
         WaitMs(500);
-        _windowsApiService.SendClick(150, 110);
-        WaitMs(300);
+        ClickAndWaitMs(150, 110, 300);
         PressExitButton();
         WaitMs(300);
         PressExitButton();
@@ -282,7 +272,7 @@ public class ClickerActionsRepository
 
         MoveUp();
 
-        int balance = _imageService.ParseBalance(gameWindow);
+        var balance = _imageService.GetBalanceFromWindow(gameWindow);
         if (balance != -1 && currentFloor >= 3)
         {
             if (currentFloor >= _configService.Config.RebuildAtFloor)
@@ -292,7 +282,7 @@ public class ClickerActionsRepository
                 return;
             }
 
-            int targetPrice = FloorPrices[currentFloor + 1];
+            var targetPrice = FloorPrices[currentFloor + 1];
             if (balance > targetPrice && currentFloor < _configService.Config.RebuildAtFloor)
             {
                 BuildNewFloor();
@@ -338,9 +328,7 @@ public class ClickerActionsRepository
 
             _logger.Log("Building new floor");
             MoveUp();
-
-            _windowsApiService.SendClick(165, 345); // Click on a new floor
-            WaitMs(500);
+            ClickAndWaitMs(165, 345, 500); // Click on a new floor
 
             if (IsImageFound(Button.Continue))
             {
@@ -380,129 +368,79 @@ public class ClickerActionsRepository
     {
         _logger.Log("Rebuilding the tower");
         _configService.SaveStatRebuildTime();
-        _windowsApiService.SendClick(305, 570);
-        WaitSec(1);
-        _windowsApiService.SendClick(165, 435);
-        WaitMs(500);
-        _windowsApiService.SendClick(165, 440);
-        WaitMs(500);
-        _windowsApiService.SendClick(230, 380);
-        WaitMs(500);
-        _windowsApiService.SendClick(230, 380);
+
+        ClickAndWaitSec(305, 570, 1);
+        ClickAndWaitMs(165, 435, 500);
+        ClickAndWaitMs(165, 440, 500);
+        ClickAndWaitMs(230, 380, 500);
+        ClickAndWaitMs(230, 380, 0);
+
         _configService.SetCurrentFloor(1);
     }
 
     public void PassTheTutorial()
     {
         _logger.Log("Passing the tutorial");
-        WaitMs(1000);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
+        WaitSec(1);
+        ClickAndWaitMs(170, 435, 500); // Continue
         MoveDown();
         WaitMs(1500);
-        _windowsApiService.SendClick(195, 260); // Build a new floor
-        WaitMs(500);
-        _windowsApiService.SendClick(230, 380); // Confirm
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(190, 300); // Click on a new floor
-        WaitMs(500);
-        _windowsApiService.SendClick(240, 150); // Build a residential floor
-        WaitMs(500);
-        _windowsApiService.SendClick(160, 375); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(1500);                  // Not less than 1000ms, the elevator won't be there in less time 
-        _windowsApiService.SendClick(21, 510);  // Click on the elevator button
-        WaitSec(4);
+
+        ClickAndWaitMs(195, 260, 500); // Build a new floor
+        ClickAndWaitMs(230, 380, 500); // Confirm
+        ClickAndWaitMs(20, 60, 500);   // Complete quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(190, 300, 500); // Click on a new floor
+        ClickAndWaitMs(240, 150, 500); // Build a residential floor
+        ClickAndWaitMs(160, 375, 500); // Continue
+        ClickAndWaitMs(20, 60, 500);   // Complete quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 1500);// Continue
+        ClickAndWaitSec(21, 510, 4);   // Click on the elevator button
 
         // Daily rent check (in case it's past midnight)
-        if (IsImageFound("freeBuxCollectButton", out OpenCvSharp.Point location))
+        if (IsImageFound(Button.FreeBuxCollectButton, out OpenCvSharp.Point location))
         {
-            _windowsApiService.SendClick(location.X, location.Y); // Collect daily rent
-            WaitMs(500);
-            _windowsApiService.SendClick(21, 510);  // Click on elevator button again
-            WaitSec(4);
+            ClickAndWaitMs(location.X, location.Y, 500); // Collect daily rent
+            ClickAndWaitMs(21, 510, 4000); // Click on elevator button again
         }
 
-        _windowsApiService.SendClick(230, 380); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(190, 200); // Build a new floor
-        WaitMs(500);
-        _windowsApiService.SendClick(225, 380); // Confirm
-        WaitMs(500);
-        _windowsApiService.SendClick(200, 200); // Open the new floor
-        WaitMs(500);
-        _windowsApiService.SendClick(90, 340);  // Build random food floor
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 375); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete the quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(200, 200); // Open food floor
-        WaitMs(500);
-        _windowsApiService.SendClick(75, 210);  // Open the hire menu
-        WaitMs(500);
-        _windowsApiService.SendClick(80, 100);  // Select our bitizen
-        WaitMs(500);
-        _windowsApiService.SendClick(230, 380); // Hire him
-        WaitMs(500);
-        _windowsApiService.SendClick(160, 380); // Continue on dream job assignement
-        WaitMs(500);
-        _windowsApiService.SendClick(300, 560); // Exit the food store
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete the quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(200, 200); // Open the food store again
-        WaitMs(500);
-        _windowsApiService.SendClick(200, 210); // Request restock of the first item in the store
-        WaitSec(15);
-        _windowsApiService.SendClick(305, 190); // Press restock button
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete the quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(200, 200); // Open food store again
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 130); // Click upgrade
-        WaitMs(500);
-        _windowsApiService.SendClick(230, 375); // Confirm
-        WaitMs(500);
-        _windowsApiService.SendClick(165, 375); // Continue
-        WaitMs(500);
-        _windowsApiService.SendClick(300, 560); // Exit the food store
-        WaitMs(500);
-        _windowsApiService.SendClick(20, 60);   // Complete the quest
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect bux
-        WaitMs(500);
-        _windowsApiService.SendClick(170, 435); // Collect more bux
+        ClickAndWaitMs(230, 380, 500); // Continue
+        ClickAndWaitMs(20, 60, 500);   // Complete quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(190, 200, 500); // Build a new floor
+        ClickAndWaitMs(225, 380, 500); // Confirm
+        ClickAndWaitMs(200, 200, 500); // Open the new floor
+        ClickAndWaitMs(90, 340, 500);  // Build random food floor
+        ClickAndWaitMs(170, 375, 500); // Continue
+        ClickAndWaitMs(20, 60, 500);   // Complete the quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(200, 200, 500); // Open the food floor
+        ClickAndWaitMs(75, 210, 500);  // Open the hire menu
+        ClickAndWaitMs(80, 100, 500);  // Select bitizen
+        ClickAndWaitMs(230, 380, 500); // Hire him
+        ClickAndWaitMs(160, 380, 500); // Continue on dream job assignement
+        ClickAndWaitMs(300, 560, 500); // Exit the food store
+        ClickAndWaitMs(20, 60, 500);   // Complete the quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(200, 200, 500); // Open the food store again
+        ClickAndWaitSec(200, 210, 15); // Request restock of the first item in the store
+        ClickAndWaitMs(305, 190, 500); // Press restock button
+        ClickAndWaitMs(20, 60, 500);   // Complete the quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(200, 200, 500); // Open food store again
+        ClickAndWaitMs(170, 130, 500); // Click upgrade
+        ClickAndWaitMs(230, 375, 500); // Confirm upgrade
+        ClickAndWaitMs(165, 375, 500); // Continue
+        ClickAndWaitMs(300, 560, 500); // Exit the food store
+        ClickAndWaitMs(20, 60, 500);   // Complete the quest
+        ClickAndWaitMs(170, 435, 500); // Collect bux
+        ClickAndWaitMs(170, 435, 0);   // Collect more bux
     }
 
     public void RestartGame()
@@ -518,8 +456,7 @@ public class ClickerActionsRepository
         if (_configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
         {
             _logger.Log("Watching the advertisement");
-            _windowsApiService.SendClick(225, 375);
-            WaitSec(20);
+            ClickAndWaitSec(225, 375, 20);
         }
         else
         {
@@ -529,8 +466,7 @@ public class ClickerActionsRepository
 
     public void MoveUp()
     {
-        _windowsApiService.SendClick(22, 10);
-        WaitSec(1);
+        ClickAndWaitSec(22, 10, 1);
     }
 
     public void MoveDown()
@@ -560,10 +496,8 @@ public class ClickerActionsRepository
 
         _logger.Log("Playing the raffle");
         WaitMs(500);
-        _windowsApiService.SendClick(300, 570); // Open menu
-        WaitMs(500);
-        _windowsApiService.SendClick(275, 440); // Open raffle
-        WaitSec(2);
+        ClickAndWaitMs(300, 570, 500); // Open menu
+        ClickAndWaitMs(275, 440, 2000); // Open raffle
         _windowsApiService.SendClick(160, 345); // Enter raffle
 
         _configService.Config.LastRaffleTime = dateTimeNow;
@@ -573,16 +507,35 @@ public class ClickerActionsRepository
 
     #region Utility Methods
 
-    void WaitSec(int seconds)
+    private void WaitSec(int seconds)
     {
         int ms = seconds * 1000;
         Task.Delay(ms).Wait();
     }
 
-    void WaitMs(int milliseconds)
+    private void WaitMs(int milliseconds)
     {
         Task.Delay(milliseconds).Wait();
     }
+
+    private void ClickAndWaitMs(int locationX, int locationY, int waitMs)
+    {
+        _windowsApiService.SendClick(locationX, locationY);
+        WaitMs(waitMs);
+    }
+
+    private void ClickAndWaitSec(int locationX, int locationY, int waitSec)
+    {
+        _windowsApiService.SendClick(locationX, locationY);
+        WaitSec(waitSec);
+    }
+
+    private HashSet<string> SkipButtons = new()
+    {
+        Button.GameIcon.GetName(),
+        Button.BalanceCoin.GetName(),
+        Button.RestockButton.GetName()
+    };
 
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
     {
@@ -598,7 +551,7 @@ public class ClickerActionsRepository
         var result = new Dictionary<string, int>();
         foreach (var template in Templates)
         {
-            if (template.Key == "gameIcon" || template.Key == "balanceCoin" || template.Key == "restockButton")
+            if (SkipButtons.Contains(template.Key))
             {
                 continue;
             }
@@ -689,10 +642,10 @@ public class ClickerActionsRepository
     /// <summary>
     /// Checks if the image is on the game screen and returns image location.
     /// </summary>
-    /// <param name="imageKey">Image name from the button_names.txt</param>
+    /// <param name="image">Image name from the button_names.txt</param>
     /// <param name="location">OpenCvSharp.Point stuct with coordinates of the specified image, in case the image is found</param>
     /// <returns>true if the image is found within the screen</returns>
-    public bool IsImageFound(string imageKey, out OpenCvSharp.Point location)
+    public bool IsImageFound(Enum image, out OpenCvSharp.Point location)
     {
         var gameWindow = _windowsApiService.MakeScreenshot();
         var windowBitmap = new Bitmap(gameWindow);
@@ -700,7 +653,7 @@ public class ClickerActionsRepository
         var reference = windowBitmap.ToMat();
         windowBitmap.Dispose();
 
-        var template = Templates[imageKey];
+        var template = Templates[image.GetName()];
         using (Mat res = new(reference.Rows - template.Rows + 1, reference.Cols - template.Cols + 1, MatType.CV_8S))
         {
             Mat gref = reference.CvtColor(ColorConversionCodes.BGR2GRAY);

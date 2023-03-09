@@ -15,67 +15,44 @@ public class ImageService : IImageService
         _tesseractEngine = tesseractEngine;
     }
 
-    public int ParseBalance(Image window)
+    public int GetBalanceFromWindow(Image window)
     {
         var sourceImage = GetAdjustedBalanceImage(window);
-        string result;
-        try
+        using (var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine))
         {
-            using (var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine))
-            {
-                result = page.GetText().Trim();
-                sourceImage.Dispose();
+            var result = page.GetText().Trim();
+            sourceImage.Dispose();
 
-                return ResultToBalance(result);
-            }
-        }
-        catch (Exception)
-        {
-            return -1;
+            return StringToBalance(result);
         }
     }
 
-    private int ResultToBalance(string result)
+    private int StringToBalance(string result)
     {
         if (result.Contains('M'))
         {
-            int endIndex = result.IndexOf('M');
+            var endIndex = result.IndexOf('M');
             result = result[..endIndex];
-            int dotIndex = result.IndexOf('.');
-            if (dotIndex == 1)
-            {
-                result = TrimWithRegex(result);
-                result += "000";
-            }
-            else if (dotIndex == 2)
-            {
-                result = TrimWithRegex(result);
-                result += "0000";
-            }
-            else if (dotIndex == 3)
-            {
-                result = TrimWithRegex(result);
-                result += "00000";
-            }
 
-            return Convert.ToInt32(result);
+            var dotIndex = result.IndexOf('.');
+            var zeroes = new string('0', dotIndex + 2);
+
+            result = TrimWithRegex(result);
+            result += zeroes;
         }
         else if (result.Contains(' '))
         {
-            int endIndex = result.IndexOf(' ');
+            var endIndex = result.IndexOf(' ');
             result = result[..endIndex];
+        }
 
-            return Convert.ToInt32(TrimWithRegex(result));
-        }
-        else
-        {
-            return Convert.ToInt32(TrimWithRegex(result));
-        }
+        var success = int.TryParse(TrimWithRegex(result), out int value);
+        return success ? value : -1;
     }
 
-    private string TrimWithRegex(string str)
+    private string TrimWithRegex(string input)
     {
-        return Regex.Replace(str, "[^0-9]", "").Trim();
+        return Regex.Replace(input, "[^0-9]", "").Trim();
     }
 
     public Bitmap GetAdjustedBalanceImage(Image gameWindow)
@@ -101,11 +78,11 @@ public class ImageService : IImageService
     private Bitmap CropCurrentBalance(Image window)
     {
         // Crop the image
-        Rectangle crop = new Rectangle(20, 541, 70, 20);
-        var bitmap = new Bitmap(crop.Width, crop.Height);
+        var cropRectangle = new Rectangle(20, 541, 70, 20);
+        var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
         using (var gr = Graphics.FromImage(bitmap))
         {
-            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), crop, GraphicsUnit.Pixel);
+            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
         }
 
         //Invert the image
@@ -113,9 +90,9 @@ public class ImageService : IImageService
         {
             for (int x = 0; x <= bitmap.Width - 1; x++)
             {
-                Color inv = bitmap.GetPixel(x, y);
-                inv = Color.FromArgb(255, 255 - inv.R, 255 - inv.G, 255 - inv.B);
-                bitmap.SetPixel(x, y, inv);
+                var color = bitmap.GetPixel(x, y);
+                color = Color.FromArgb(255, 255 - color.R, 255 - color.G, 255 - color.B);
+                bitmap.SetPixel(x, y, color);
             }
         }
 
@@ -124,6 +101,11 @@ public class ImageService : IImageService
 
     private (Percentage x, Percentage y) GetScreenDiffPercentageForBalance(Image? screenshot = null)
     {
+        if (screenshot == null)
+        {
+            throw new ArgumentNullException(nameof(screenshot));
+        }
+
         var x = new Percentage(100 * 333 / (float)screenshot.Width);
         var y = new Percentage(100 * 592 / (float)screenshot.Height);
 
@@ -132,6 +114,11 @@ public class ImageService : IImageService
 
     public (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null)
     {
+        if (screenshot == null)
+        {
+            throw new ArgumentNullException(nameof(screenshot));
+        }
+
         var x = new Percentage((float)screenshot.Width * 100 / 333);
         var y = new Percentage((float)screenshot.Height * 100 / 592);
 
