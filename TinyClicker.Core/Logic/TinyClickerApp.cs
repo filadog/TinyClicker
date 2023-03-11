@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using TinyClicker.Core.Logging;
 
 namespace TinyClicker.Core.Logic;
 
@@ -7,10 +9,12 @@ public class TinyClickerApp
 {
     private readonly ScreenScanner _screenScanner;
     private readonly BackgroundWorker _backgroundWorker;
-    public TinyClickerApp(BackgroundWorker backgroundWorker, ScreenScanner screenScanner)
+    private readonly ILogger _logger;
+    public TinyClickerApp(BackgroundWorker backgroundWorker, ScreenScanner screenScanner, ILogger logger)
     {
         _backgroundWorker = backgroundWorker;
         _screenScanner = screenScanner;
+        _logger = logger;
     }
 
     public void StartInBackground()
@@ -28,8 +32,15 @@ public class TinyClickerApp
     {
         while (!worker.CancellationPending)
         {
-            _screenScanner.StartIteration();
-            Task.Delay(1500).Wait();
+            try
+            {
+                _screenScanner.StartIteration();
+                Task.Delay(1500).Wait();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.Log(ex.Message);
+            }
         }
     }
 }

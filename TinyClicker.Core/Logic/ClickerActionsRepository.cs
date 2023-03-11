@@ -14,13 +14,13 @@ namespace TinyClicker.Core.Logic;
 
 public class ClickerActionsRepository
 {
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
     private readonly IWindowsApiService _windowsApiService;
     private readonly IImageService _imageService;
     private readonly ILogger _logger;
 
     public ClickerActionsRepository(
-        ConfigService configService,
+        IConfigService configService,
         IWindowsApiService windowsApiService,
         IImageService imageService,
         ILogger logger)

@@ -12,7 +12,8 @@ public partial class SettingsWindow : Window
 {
     public MainWindow? MainWindow { get; private set; }
 
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
+
     private float _elevatorSpeed = 10f;
     private int _currentFloor;
     private int _rebuildAtFloor;
@@ -23,7 +24,7 @@ public partial class SettingsWindow : Window
     private bool _buildFloors;
     private DateTime _lastRaffleTime;
 
-    public SettingsWindow(ConfigService configService)
+    public SettingsWindow(IConfigService configService)
     {
         _configService = configService;
     }

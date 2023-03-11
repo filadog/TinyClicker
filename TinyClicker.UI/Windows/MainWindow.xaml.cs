@@ -1,9 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.ComponentModel;
-using System.IO;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
@@ -15,7 +13,7 @@ public partial class MainWindow : Window, IMainWindow
     private readonly BackgroundWorker _backgroundWorker;
     private readonly SettingsWindow _settingsWindow;
     private readonly TinyClickerApp _tinyClickerApp;
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
     private readonly ILogger _logger;
 
     public bool _isBluestacks = false;
@@ -26,7 +24,7 @@ public partial class MainWindow : Window, IMainWindow
         BackgroundWorker backgroundWorker,
         SettingsWindow settingsWindow,
         TinyClickerApp tinyClickerApp,
-        ConfigService configService,
+        IConfigService configService,
         ILogger logger)
     {
         _backgroundWorker = backgroundWorker;

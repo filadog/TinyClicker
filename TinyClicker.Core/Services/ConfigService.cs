@@ -5,7 +5,7 @@ using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Services;
 
-public class ConfigService
+public class ConfigService : IConfigService
 {
     static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
 

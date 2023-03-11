@@ -14,7 +14,7 @@ namespace TinyClicker.Core.Services;
 public class WindowsApiService : IWindowsApiService
 {
     private readonly ILogger _logger;
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
 
     private const string _ldPlayerProcName = "dnplayer";
     private const string _blueStacksProcName = "HD-Player";
@@ -23,7 +23,7 @@ public class WindowsApiService : IWindowsApiService
     private IntPtr _childHandle;
     Rectangle _screenRect;
 
-    public WindowsApiService(ConfigService configService, ILogger logger)
+    public WindowsApiService(IConfigService configService, ILogger logger)
     {
         _configService = configService;
         _logger = logger;

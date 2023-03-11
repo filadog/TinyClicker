@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Services;
 

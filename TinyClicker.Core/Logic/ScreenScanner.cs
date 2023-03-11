@@ -7,13 +7,13 @@ namespace TinyClicker.Core.Logic;
 
 public class ScreenScanner
 {
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
     private readonly ClickerActionsRepository _clickerActionsRepository;
     private readonly IWindowsApiService _windowsApiService;
     private readonly ILogger _logger;
 
     public ScreenScanner(
-        ConfigService configService,
+        IConfigService configService,
         ClickerActionsRepository clickerActionsRepository,
         IWindowsApiService windowsApiService,
         ILogger logger)
