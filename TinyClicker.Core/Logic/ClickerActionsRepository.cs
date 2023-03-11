@@ -270,8 +270,6 @@ public class ClickerActionsRepository
             return;
         }
 
-        MoveUp();
-
         var balance = _imageService.GetBalanceFromWindow(gameWindow);
         if (balance != -1 && currentFloor >= 3)
         {
@@ -285,6 +283,13 @@ public class ClickerActionsRepository
             var targetPrice = FloorPrices[currentFloor + 1];
             if (balance > targetPrice && currentFloor < _configService.Config.RebuildAtFloor)
             {
+                MoveUp();
+
+                if (IsImageFound(Button.ElevatorButton))
+                {
+                    RideElevator();
+                }
+
                 BuildNewFloor();
 
                 if (IsImageFound(GameWindow.NewFloorNoCoinsNotification))
@@ -328,7 +333,7 @@ public class ClickerActionsRepository
 
             _logger.Log("Building new floor");
             MoveUp();
-            ClickAndWaitMs(165, 345, 500); // Click on a new floor
+            ClickAndWaitMs(300, 360, 500); // Click on a new floor
 
             if (IsImageFound(Button.Continue))
             {
