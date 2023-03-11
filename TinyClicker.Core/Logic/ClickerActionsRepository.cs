@@ -31,7 +31,7 @@ public class ClickerActionsRepository
         _logger = logger;
     }
 
-    private Dictionary<int, int> FloorPrices => CalculateFloorPrices();
+    public Dictionary<int, int> FloorPrices { get; private set; }
     private DateTime TimeForNewFloor { get; set; } = DateTime.Now;
     private Dictionary<string, Mat> Templates { get; set; } = new();
 
@@ -270,6 +270,11 @@ public class ClickerActionsRepository
             return;
         }
 
+        if (FloorPrices == null)
+        {
+            FloorPrices = CalculateFloorPrices();
+        }
+
         var balance = _imageService.GetBalanceFromWindow(gameWindow);
         if (balance != -1 && currentFloor >= 3)
         {
@@ -280,8 +285,7 @@ public class ClickerActionsRepository
                 return;
             }
 
-            var targetPrice = FloorPrices[currentFloor + 1];
-            if (balance > targetPrice && currentFloor < _configService.Config.RebuildAtFloor)
+            if (balance > FloorPrices[currentFloor + 1] && currentFloor < _configService.Config.RebuildAtFloor)
             {
                 MoveUp();
 
@@ -689,12 +693,12 @@ public class ClickerActionsRepository
     /// <returns>Private Dictionary<int, int> where key is the floor number and value is the floor price</returns>
     private Dictionary<int, int> CalculateFloorPrices()
     {
-        var dict = new Dictionary<int, int>();
+        var result = new Dictionary<int, int>();
 
         // Floors 1 through 9 cost 5000
         for (int i = 1; i <= 9; i++)
         {
-            dict.Add(i, 5000);
+            result.Add(i, 5000);
         }
 
         // Calculate the prices for floors 10 through 50+
@@ -707,10 +711,11 @@ public class ClickerActionsRepository
             {
                 floorCost += 500;
             }
-            dict.Add(i, (int)floorCost);
+
+            result.Add(i, (int)floorCost);
         }
 
-        return dict;
+        return result;
     }
 
     private byte[][] LoadButtonData()
