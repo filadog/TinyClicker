@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using Tesseract;
+using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace TinyClicker.Core.Services;
 
@@ -17,17 +18,15 @@ public class ImageService : IImageService
 
     public int GetBalanceFromWindow(Image window)
     {
-        var sourceImage = GetAdjustedBalanceImage(window);
-        using (var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine))
-        {
-            var result = page.GetText().Trim();
-            sourceImage.Dispose();
+        using var sourceImage = GetAdjustedBalanceImage(window);
+        using var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine);
 
-            return StringToBalance(result);
-        }
+        var result = page.GetText().Trim();
+
+        return StringToBalance(result);
     }
 
-    private int StringToBalance(string result)
+    private static int StringToBalance(string result)
     {
         if (result.Contains('M'))
         {
@@ -46,11 +45,11 @@ public class ImageService : IImageService
             result = result[..endIndex];
         }
 
-        var success = int.TryParse(TrimWithRegex(result), out int value);
+        var success = int.TryParse(TrimWithRegex(result), out var value);
         return success ? value : -1;
     }
 
-    private string TrimWithRegex(string input)
+    private static string TrimWithRegex(string input)
     {
         return Regex.Replace(input, "[^0-9]", "").Trim();
     }
@@ -59,26 +58,25 @@ public class ImageService : IImageService
     {
         // resize image to default size
         var percentage = GetScreenDiffPercentageForBalance(gameWindow);
-        using (var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png))
-        {
-            imageOld.Resize(percentage.x, percentage.y);
-            imageOld.BrightnessContrast(new Percentage(-40), new Percentage(100));
 
-            var image = BytesToImage(imageOld.ToByteArray());
-            var result = CropCurrentBalance(image);
+        using var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png);
 
-            //Uncomment to save the balance image for manual checking
-            //string filename = @"./screenshots/balance.png";
-            //WindowToImage.SaveScreenshot(result, filename);
+        imageOld.Resize(percentage.x, percentage.y);
+        imageOld.Threshold(new Percentage(40));
 
-            return result;
-        }
+        var image = BytesToImage(imageOld.ToByteArray());
+        var result = CropCurrentBalance(image);
+
+        //var filename = @"./screenshots/balance.png";
+        //SaveScreenshot(result, filename);
+
+        return result;
     }
 
-    private Bitmap CropCurrentBalance(Image window)
+    private static Bitmap CropCurrentBalance(Image window)
     {
         // Crop the image
-        var cropRectangle = new Rectangle(20, 541, 70, 20);
+        var cropRectangle = new Rectangle(20, 541, 65, 20);
         var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
         using (var gr = Graphics.FromImage(bitmap))
         {
@@ -99,7 +97,7 @@ public class ImageService : IImageService
         return bitmap;
     }
 
-    private (Percentage x, Percentage y) GetScreenDiffPercentageForBalance(Image? screenshot = null)
+    private static (Percentage x, Percentage y) GetScreenDiffPercentageForBalance(Image? screenshot = null)
     {
         if (screenshot == null)
         {
@@ -130,12 +128,22 @@ public class ImageService : IImageService
         var imageConverter = new ImageConverter();
         var result = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
 
-        return result;
+        return result ?? throw new InvalidOperationException("Cannot convert samples to images");
     }
 
     public Image BytesToImage(byte[] bytes)
     {
         using var ms = new MemoryStream(bytes);
         return Image.FromStream(ms);
+    }
+
+    private static void SaveScreenshot(Image screenshot, string filename)
+    {
+        if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
+        {
+            Directory.CreateDirectory(Environment.CurrentDirectory + @"/screenshots");
+        }
+
+        screenshot.Save(filename, ImageFormat.Png);
     }
 }

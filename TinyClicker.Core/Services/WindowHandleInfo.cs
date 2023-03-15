@@ -1,78 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
+using Vanara.PInvoke;
 
 namespace TinyClicker.Core.Services;
 
 public class WindowHandleInfo
 {
-    private delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
+    private readonly nint _mainHandle;
 
-    [DllImport("user32")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool EnumChildWindows(IntPtr window, EnumWindowProc callback, IntPtr lParam);
-
-    private IntPtr _mainHandle;
-
-    public WindowHandleInfo(IntPtr handle)
+    private WindowHandleInfo(nint handle)
     {
         _mainHandle = handle;
     }
 
-    public List<IntPtr> GetAllChildHandles()
+    private List<nint> GetAllChildHandles()
     {
-        List<IntPtr> childHandles = new List<IntPtr>();
+        var childHandles = new List<nint>();
 
-        GCHandle gcChildhandlesList = GCHandle.Alloc(childHandles);
-        IntPtr pointerChildHandlesList = GCHandle.ToIntPtr(gcChildhandlesList);
+        var gcChildHandlesList = GCHandle.Alloc(childHandles);
+        var pointerChildHandlesList = GCHandle.ToIntPtr(gcChildHandlesList);
 
         try
         {
-            EnumWindowProc childProc = new EnumWindowProc(EnumWindow);
-            EnumChildWindows(_mainHandle, childProc, pointerChildHandlesList);
+            User32.EnumChildWindows(_mainHandle, EnumWindow, pointerChildHandlesList);
         }
         finally
         {
-            gcChildhandlesList.Free();
+            gcChildHandlesList.Free();
         }
 
         return childHandles;
     }
 
-    private bool EnumWindow(IntPtr hWnd, IntPtr lParam)
+    private static bool EnumWindow(HWND hWnd, nint lParam)
     {
-        GCHandle gcChildhandlesList = GCHandle.FromIntPtr(lParam);
+        var gcChildHandlesList = GCHandle.FromIntPtr(lParam);
 
-        if (gcChildhandlesList.Target == null)
+        if (gcChildHandlesList.Target == null)
         {
             return false;
         }
 
-        List<IntPtr> childHandles = gcChildhandlesList.Target as List<IntPtr>;
-        if (childHandles == null)
+        if (gcChildHandlesList.Target is not List<nint> childHandles)
         {
             throw new InvalidOperationException("Child handles list is null");
         }
 
-        childHandles.Add(hWnd);
+        childHandles.Add((nint)hWnd);
         return true;
     }
 
-    [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
-    public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-
-    public static List<IntPtr>? GetChildrenHandles(string processName)
+    public static List<nint> GetChildrenHandles(string processName)
     {
-        Process[] processes = Process.GetProcessesByName(processName);
-        if (processes[0] != null)
+        var processes = Process.GetProcessesByName(processName);
+        if (processes.Any())
         {
-            var allChildWindows = new WindowHandleInfo(processes[0].MainWindowHandle).GetAllChildHandles();
-            return allChildWindows;
+            return new WindowHandleInfo(processes[0].MainWindowHandle).GetAllChildHandles();
         }
-        else
-        {
-            throw new InvalidOperationException($"There is no process with {processName} name");
-        }
+
+        throw new InvalidOperationException($"There is no process with {processName} name");
     }
 }

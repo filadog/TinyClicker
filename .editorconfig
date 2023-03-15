@@ -2,3 +2,9 @@
 
 # CS8600: Converting null literal or possible null value to non-nullable type.
 dotnet_diagnostic.CS8600.severity = silent
+
+# SYSLIB1045: Convert to 'GeneratedRegexAttribute'.
+dotnet_diagnostic.SYSLIB1045.severity = none
+
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = none

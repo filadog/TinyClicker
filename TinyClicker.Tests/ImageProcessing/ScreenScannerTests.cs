@@ -3,13 +3,14 @@ using System;
 using System.Linq;
 using TinyClicker.Core;
 using TinyClicker.Core.Logic;
+using TinyClicker.Core.Services;
 using Xunit;
 
 namespace TinyClicker.Tests.ImageProcessing;
 
 public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
 {
-    private ServiceProvider _serviceProvider;
+    private readonly ServiceProvider _serviceProvider;
     public ScreenScannerTests(DependencySetupFixture fixture)
     {
         _serviceProvider = fixture.ServiceProvider;
@@ -81,12 +82,12 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindNothingOnScreen()
     {
-        var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
+        var openCvService = _serviceProvider.GetService<IOpenCvService>();
 
         var screenshot = TestHelper.LoadGameScreenshot("NothingOnScreen");
-        var foundItems = clickerActionsRepo.TryFindFirstOnScreen(screenshot);
+        var foundItems = openCvService?.TryFindFirstOnScreen(screenshot);
 
-        Assert.True(foundItems.Count == 0);
+        Assert.True(foundItems?.Count == 0);
     }
 
     [Fact]
@@ -100,12 +101,12 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
 
     private string TryFindFirstItemOnScreen(string itemName, string? screenshotName = null)
     {
-        var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
-
-        var screenshot = TestHelper.LoadGameScreenshot(screenshotName == null ? itemName : screenshotName);
-        var foundItems = clickerActionsRepo.TryFindFirstOnScreen(screenshot);
+        var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
+        var screenshot = TestHelper.LoadGameScreenshot(screenshotName ?? itemName);
+        var foundItems = openCvService.TryFindFirstOnScreen(screenshot);
 
         var item = foundItems.FirstOrDefault();
+
         return item.Key;
     }
 
@@ -113,11 +114,10 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     {
         var itemName = item.GetName();
 
-        var clickerActionsRepo = _serviceProvider.GetService<ClickerActionsRepository>();
-
+        var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);
-        var templates = clickerActionsRepo.MakeTemplates(screenshot);
-        var isImageFound = clickerActionsRepo.IsImageFound(item, templates, screenshot);
+        var templates = openCvService.MakeTemplates(screenshot);
+        var isImageFound = openCvService.IsImageFound(item, templates, screenshot);
 
         return isImageFound;
     }

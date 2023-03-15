@@ -7,7 +7,8 @@ namespace TinyClicker.Core.Services;
 
 public class ConfigService : IConfigService
 {
-    static readonly string _configPath = Environment.CurrentDirectory + @"\Config.txt";
+    private const string STATS_PATH = "./Stats.txt";
+    private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
 
     public Config Config { get; private set; }
 
@@ -37,29 +38,21 @@ public class ConfigService : IConfigService
 
     public Config GetConfig()
     {
-        try
-        {
-            string json = File.ReadAllText(_configPath);
-            var config = JsonSerializer.Deserialize<Config>(json);
-            if (config != null)
-            {
-                return config;
-            }
-            else
-            {
-                return new Config();
-            }
-        }
-        catch (FileNotFoundException)
+        if (!File.Exists(_configPath))
         {
             return new Config();
         }
+
+        var json = File.ReadAllText(_configPath);
+        var result = JsonSerializer.Deserialize<Config>(json);
+
+        return result ?? throw new InvalidOperationException("Invalid configuration file");
     }
 
     public void SaveConfig(Config config)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(config, options);
+        var json = JsonSerializer.Serialize(config, options);
         File.WriteAllText(_configPath, json);
         Config = config;
     }
@@ -71,16 +64,16 @@ public class ConfigService : IConfigService
 
     public void SaveStatRebuildTime()
     {
-        DateTime dateTimeNow = DateTime.Now;
-        DateTime lastRebuild = Config.LastRebuildTime;
-        string result = "";
-        if (lastRebuild != DateTime.MinValue)
+        var dateTimeNow = DateTime.Now;
+        var lastRebuildTime = Config.LastRebuildTime;
+        var result = "";
+        if (lastRebuildTime != DateTime.MinValue)
         {
-            TimeSpan diff = dateTimeNow - lastRebuild;
-            string formatted = diff.ToString(@"hh\:mm\:ss");
+            var diff = dateTimeNow - lastRebuildTime;
+            var formatted = diff.ToString(@"hh\:mm\:ss");
             if (diff.Days >= 1)
             {
-                result = string.Format("{0} days ", diff.Days) + formatted;
+                result = $"{diff.Days} days " + formatted;
             }
             else
             {
@@ -88,9 +81,8 @@ public class ConfigService : IConfigService
             }
         }
 
-        string statsPath = $"./Stats.txt";
         SaveNewRebuildTime(dateTimeNow);
-        string data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
-        File.AppendAllText(statsPath, data);
+        var data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
+        File.AppendAllText(STATS_PATH, data);
     }
 }

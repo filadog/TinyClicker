@@ -6,20 +6,21 @@ using System.Windows.Input;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
 
-namespace TinyClicker.UI;
+namespace TinyClicker.UI.Windows;
 
-public partial class SettingsWindow : Window
+public partial class SettingsWindow
 {
-    public MainWindow? MainWindow { get; private set; }
+    private MainWindow? MainWindow { get; set; }
 
     private readonly IConfigService _configService;
 
-    private float _elevatorSpeed = 10f;
+    private const float ELEVATOR_SPEED = 10f;
+    private const bool VIP_PACKAGE = true;
+
     private int _currentFloor;
     private int _rebuildAtFloor;
     private int _watchAdsFromFloor;
     private bool _watchBuxAds;
-    private bool _vipPackage = true;
     private DateTime _lastRebuildTime;
     private bool _buildFloors;
     private DateTime _lastRaffleTime;
@@ -31,17 +32,14 @@ public partial class SettingsWindow : Window
 
     public void Show(MainWindow mainWindow)
     {
-        if (mainWindow is not null)
-        {
-            MainWindow = mainWindow;
-            Owner = mainWindow;
+        MainWindow = mainWindow;
+        Owner = mainWindow;
 
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            InitializeComponent();
-            InitFields();
-            Show();
-        }
+        InitializeComponent();
+        InitFields();
+        Show();
     }
 
     private void InitFields()
@@ -49,9 +47,9 @@ public partial class SettingsWindow : Window
         TextBoxCurrentFloor.Text = _configService.Config.CurrentFloor.ToString();
         TextBoxFloorToRebuildAt.Text = _configService.Config.RebuildAtFloor.ToString();
         TextBoxWatchAdsFrom.Text = _configService.Config.WatchAdsFromFloor.ToString();
-        CheckboxWatchBuxAds.IsChecked = _configService.Config.WatchBuxAds ? true : false;
-        CheckboxVipPackage.IsChecked = _configService.Config.VipPackage ? true : false;
-        cbBuildFloors.IsChecked = _configService.Config.BuildFloors ? true : false;
+        CheckboxWatchBuxAds.IsChecked = _configService.Config.WatchBuxAds;
+        CheckboxVipPackage.IsChecked = _configService.Config.VipPackage;
+        BuildFloors.IsChecked = _configService.Config.BuildFloors;
 
         _currentFloor = _configService.Config.CurrentFloor;
         _rebuildAtFloor = _configService.Config.RebuildAtFloor;
@@ -74,74 +72,93 @@ public partial class SettingsWindow : Window
 
     private void TextBoxFloorToRebuildAt_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (_configService != null)
+        if (ValidateNumberField(TextBoxFloorToRebuildAt.Text))
         {
-            try
-            {
-                string text = TextBoxFloorToRebuildAt.Text;
-                int value = int.Parse(text);
-                if (value != 0)
-                {
-                    _rebuildAtFloor = value;
-                }
-            }
-            catch (FormatException)
-            {
-                MainWindow!.Log("Invalid input value");
-                _rebuildAtFloor = _configService.Config.RebuildAtFloor;
-            }
+            _rebuildAtFloor = int.Parse(TextBoxFloorToRebuildAt.Text);
         }
     }
 
     private void TextBoxWatchAdsFrom_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (_configService != null)
+        if (ValidateNumberField(TextBoxWatchAdsFrom.Text))
         {
-            try
-            {
-                string text = TextBoxWatchAdsFrom.Text;
-                int value = int.Parse(text);
-                if (value != 0)
-                {
-                    _watchAdsFromFloor = value;
-                }
-            }
-            catch (FormatException)
-            {
-                MainWindow!.Log("Invalid input value");
-                _watchAdsFromFloor = _configService.Config.WatchAdsFromFloor;
-            }
+            _watchAdsFromFloor = int.Parse(TextBoxWatchAdsFrom.Text);
         }
     }
 
     private void TextBoxCurrentFloor_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (_configService != null)
+        if (ValidateNumberField(TextBoxCurrentFloor.Text))
         {
-            try
+            _currentFloor = int.Parse(TextBoxCurrentFloor.Text);
+        }
+    }
+
+    private bool ValidateNumberField(string text)
+    {
+        try
+        {
+            var value = int.Parse(text);
+            if (value != 0)
             {
-                string text = TextBoxCurrentFloor.Text;
-                int value = int.Parse(text);
-                if (value != 0)
-                {
-                    _currentFloor = value;
-                }
+                _currentFloor = value;
             }
-            catch (FormatException)
-            {
-                MainWindow!.Log("Invalid input value");
-                _currentFloor = _configService.Config.CurrentFloor;
-            }
+
+            return true;
+        }
+        catch (FormatException)
+        {
+            MainWindow!.Log("Invalid input value");
+            return false;
         }
     }
 
     private void ExitSettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        if (MainWindow != null)
+        if (MainWindow == null)
         {
-            MainWindow._settingsOpened = false;
-            Hide();
+            return;
         }
+
+        MainWindow._settingsOpened = false;
+        Hide();
+    }
+
+    private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (MainWindow == null)
+        {
+            throw new InvalidOperationException("Main window is null");
+        }
+
+        var config = new Config(
+            VIP_PACKAGE,
+            ELEVATOR_SPEED,
+            _currentFloor,
+            _rebuildAtFloor,
+            _watchAdsFromFloor,
+            _watchBuxAds,
+            _lastRebuildTime,
+            _buildFloors,
+            _lastRaffleTime,
+            MainWindow._isBluestacks);
+
+        _configService.SaveConfig(config);
+    }
+
+    private static string GetVersionInfo()
+    {
+        return $"v{Assembly.GetExecutingAssembly().GetName()?.Version?.Major}.{Assembly.GetExecutingAssembly().GetName()?.Version?.Minor}";
+    }
+
+    private void BuildFloors_OnChecked(object sender, RoutedEventArgs e)
+    {
+        _buildFloors = true;
+    }
+
+    private void BuildFloors_OnUnchecked(object sender, RoutedEventArgs e)
+    {
+        _buildFloors = false;
     }
 
     private void CheckboxWatchBuxAds_Checked(object sender, RoutedEventArgs e)
@@ -152,27 +169,5 @@ public partial class SettingsWindow : Window
     private void CheckboxWatchBuxAds_Unchecked(object sender, RoutedEventArgs e)
     {
         _watchBuxAds = false;
-    }
-
-    private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        var config = new Config(
-            _vipPackage,
-            _elevatorSpeed,
-            _currentFloor,
-            _rebuildAtFloor,
-            _watchAdsFromFloor,
-            _watchBuxAds,
-            _lastRebuildTime,
-            cbBuildFloors.IsChecked.Value,
-            _lastRaffleTime,
-            MainWindow._isBluestacks);
-
-        _configService.SaveConfig(config);
-    }
-
-    private string GetVersionInfo()
-    {
-        return $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
     }
 }

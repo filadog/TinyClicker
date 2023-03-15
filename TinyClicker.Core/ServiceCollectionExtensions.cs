@@ -17,7 +17,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<ClickerActionsRepository>();
         collection.AddSingleton<IWindowsApiService, WindowsApiService>();
         collection.AddSingleton<IImageService, ImageService>();
+        collection.AddSingleton<IOpenCvService, OpenCvService>();
 
-        collection.AddSingleton(x => new TesseractEngine(@"./Tessdata", "pixel", EngineMode.LstmOnly));
+        collection.AddSingleton(new TesseractEngine(@"./Tessdata", "pixel", EngineMode.LstmOnly));
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
 using System.Linq;
+using Vanara.PInvoke;
 
 namespace TinyClicker.Core.Services;
 
@@ -16,12 +13,12 @@ public class WindowsApiService : IWindowsApiService
     private readonly ILogger _logger;
     private readonly IConfigService _configService;
 
-    private const string _ldPlayerProcName = "dnplayer";
-    private const string _blueStacksProcName = "HD-Player";
+    private const string LD_PLAYER_PROCNAME = "dnplayer";
+    private const string BLUESTACKS_PROCNAME = "HD-Player";
 
     private Process? _process;
-    private IntPtr _childHandle;
-    Rectangle _screenRect;
+    private nint _childHandle;
+    private Rectangle _screenRect;
 
     public WindowsApiService(IConfigService configService, ILogger logger)
     {
@@ -29,90 +26,36 @@ public class WindowsApiService : IWindowsApiService
         _logger = logger;
     }
 
-    public enum KeyCodes
+    private static Process GetEmulatorProcess()
     {
-        WM_LBUTTON = 0x01,
-        WM_RBUTTON = 0x02,
-        WM_KEYDOWN = 0x100,
-        WM_KEYUP = 0x101,
-        WM_COMMAND = 0x111,
-        WM_LBUTTONDOWN = 0x201,
-        WM_LBUTTONUP = 0x202,
-        WM_LBUTTONDBLCLK = 0x203,
-        WM_RBUTTONDOWN = 0x204,
-        WM_RBUTTONUP = 0x205,
-        WM_RBUTTONDBLCLK = 0x206,
-        VK_ESCAPE = 0x1B,
-        WM_MOUSEACTIVATE = 0x0021,
-        WM_NCHITTEST = 0x0084,
-        WM_MOUSEMOVE = 0x0200,
-        WM_SETCURSOR = 0x0020,
-        WM_ACTIVATE = 0x0006,
-        WM_NCACTIVATE = 0x0086,
-        WM_CAPTURECHANGED = 0x0215,
-        WM_SETFOCUS = 0x0007,
-        WM_KILLFOCUS = 0x0008
-    }
-
-    [DllImport("User32.dll")]
-    private static extern int FindWindow(string strClassName, string strWindowName);
-
-    [DllImport("User32.dll")]
-    private static extern int FindWindowEx(int hWndParent, int hWndChildAfter, string strClassName, string strWindowName);
-
-    [DllImport("User32.dll")]
-    private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-    [DllImport("user32.dll")]
-    private static extern int GetWindowRect(IntPtr hWnd, out Rectangle rect);
-
-    [DllImport("User32.dll")]
-    private static extern int PostMessageA(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-    private static Rectangle GetWindowRectangle(IntPtr hWnd)
-    {
-        GetWindowRect(hWnd, out Rectangle rect);
-        return rect;
-    }
-
-    private Process GetEmulatorProcess()
-    {
-        var processes = new string[] { _blueStacksProcName, _ldPlayerProcName };
+        var processes = new[] { BLUESTACKS_PROCNAME, LD_PLAYER_PROCNAME };
         var processlist = Process.GetProcesses();
-        var process = processlist.Select(x => x).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName)).FirstOrDefault();
+        var process = processlist
+            .Select(x => x)
+            .FirstOrDefault(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName));
 
-        if (process == null)
-        {
-            throw new InvalidOperationException("Emulator process not found");
-        }
-
-        return process;
-    }
-
-    public Rectangle GetWindowRectangle()
-    {
-        return GetWindowRectangle(_childHandle);
+        return process ?? throw new InvalidOperationException("Emulator process not found");
     }
 
     public void SendClick(int location)
     {
-        if (_childHandle != IntPtr.Zero)
+        if (_childHandle == nint.Zero || _process == null)
         {
-            if (_configService.Config.IsBluestacks)
-            {
-                // Bluestacks input simulation
-                SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
-                PostMessageA(_childHandle, (int)KeyCodes.WM_LBUTTONDOWN, 0x0001, location);
-                PostMessageA(_childHandle, (int)KeyCodes.WM_LBUTTONUP, 0x0001, location);
-                SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_KILLFOCUS, 0, 0);
-            }
-            else
-            {
-                // LDPlayer input simulation
-                SendMessage(_childHandle, (int)KeyCodes.WM_LBUTTONDOWN, 1, location);
-                Task.Delay(1).Wait();
-                SendMessage(_childHandle, (int)KeyCodes.WM_LBUTTONUP, 0, location);
-            }
+            return;
+        }
+
+        if (_configService.Config.IsBluestacks)
+        {
+            User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS);
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0001, location);
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONUP, 0x0001, location);
+            User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_KILLFOCUS);
+        }
+        else
+        {
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0001, location);
+            Task.Delay(1).Wait();
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONUP, 0x0001, location);
         }
     }
 
@@ -123,31 +66,28 @@ public class WindowsApiService : IWindowsApiService
 
     public void SendEscapeButton()
     {
-        if (_childHandle != IntPtr.Zero)
+        if (_childHandle == nint.Zero || _process == null)
         {
-            if (_configService.Config.IsBluestacks)
-            {
-                // Bluestacks input 
-                SendMessage(_process.MainWindowHandle, (int)KeyCodes.WM_SETFOCUS, 0, 0);
-                PostMessageA(_childHandle, (int)KeyCodes.WM_KEYDOWN, (int)KeyCodes.VK_ESCAPE, 0);
-            }
-            else
-            {
-                // LDPlayer input 
-                SendMessage(_childHandle, (int)KeyCodes.WM_KEYDOWN, (int)KeyCodes.VK_ESCAPE, 0);
-            }
+            return;
+        }
+
+        if (_configService.Config.IsBluestacks)
+        {
+            User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS, (nint)0, 0);
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_KEYDOWN, (nint)User32.VK.VK_ESCAPE);
+        }
+        else
+        {
+            User32.SendMessage(_childHandle, User32.WindowMessage.WM_KEYDOWN, User32.VK.VK_ESCAPE);
         }
     }
 
-    public IntPtr GetChildHandle(string processName)
+    public nint GetChildHandle(string processName)
     {
-        if (WindowHandleInfo.GetChildrenHandles(processName) != null)
+        var childProcesses = WindowHandleInfo.GetChildrenHandles(processName);
+        if (childProcesses.Any())
         {
-            List<IntPtr> childProcesses = WindowHandleInfo.GetChildrenHandles(processName);
-            if (childProcesses != null && childProcesses.Any())
-            {
-                return childProcesses[0];
-            }
+            return childProcesses[0];
         }
 
         _logger.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
@@ -156,14 +96,14 @@ public class WindowsApiService : IWindowsApiService
 
     public int GetRelativeCoordinates(int x, int y)
     {
-        int rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
-        int rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
+        var rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
+        var rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
 
-        float x1 = (float)x * 100 / 333 / 100;
-        float y1 = (float)y * 100 / 592 / 100;
+        var x1 = (float)x * 100 / 333 / 100;
+        var y1 = (float)y * 100 / 592 / 100;
 
-        int x2 = (int)(rectX * x1);
-        int y2 = (int)(rectY * y1);
+        var x2 = (int)(rectX * x1);
+        var y2 = (int)(rectY * y1);
 
         return MakeLParam(x2, y2);
     }
@@ -174,119 +114,39 @@ public class WindowsApiService : IWindowsApiService
         {
             _process = GetEmulatorProcess();
             _childHandle = GetChildHandle(_process.ProcessName);
-            _screenRect = GetWindowRectangle();
+
+            User32.GetWindowRect(_childHandle, out var rect);
+            var newRect = new Rectangle(rect.X, rect.Y, rect.right, rect.bottom);
+            _screenRect = newRect;
         }
 
-        var image = CaptureWindow(_childHandle);
+        var image = MakeScreenshot(_childHandle);
         return image;
     }
 
     public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen
 
-    public Image CaptureScreen()
+    private static Image MakeScreenshot(nint handle)
     {
-        return CaptureWindow(User32.GetDesktopWindow());
-    }
+        var hdcSrc = User32.GetWindowDC(handle);
 
-    public static void SaveScreenshot(Image screenshot, string filename)
-    {
-        if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
-        {
-            Directory.CreateDirectory(Environment.CurrentDirectory + @"/screenshots");
-        }
-        screenshot.Save(filename, ImageFormat.Png);
-    }
+        User32.GetWindowRect(handle, out var windowRect);
 
-    // Creates an Image object containing a screenshot of a specific window
-    public Image CaptureWindow(IntPtr handle)
-    {
-        IntPtr hdcSrc = User32.GetWindowDC(handle);
+        var width = windowRect.right - windowRect.left;
+        var height = windowRect.bottom - windowRect.top;
 
-        User32.RECT windowRect = new User32.RECT();
-        User32.GetWindowRect(handle, ref windowRect);
+        var hdcDest = Gdi32.CreateCompatibleDC(hdcSrc);
+        var hBitmap = Gdi32.CreateCompatibleBitmap(hdcSrc, width, height);
+        var hOld = Gdi32.SelectObject(hdcDest, hBitmap);
 
-        int width = windowRect.right - windowRect.left;
-        int height = windowRect.bottom - windowRect.top;
-
-        IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
-        IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc, width, height);
-        IntPtr hOld = GDI32.SelectObject(hdcDest, hBitmap);
-
-        GDI32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, GDI32.SRCCOPY);
-        GDI32.SelectObject(hdcDest, hOld);
-        GDI32.DeleteDC(hdcDest);
+        Gdi32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, Gdi32.RasterOperationMode.SRCCOPY);
+        Gdi32.SelectObject(hdcDest, hOld);
+        Gdi32.DeleteDC(hdcDest);
         User32.ReleaseDC(handle, hdcSrc);
 
-        Image img = Image.FromHbitmap(hBitmap);
-        GDI32.DeleteObject(hBitmap);
+        var image = Image.FromHbitmap(hBitmap.DangerousGetHandle());
+        Gdi32.DeleteObject(hBitmap);
 
-        return img;
-    }
-
-    // Captures a screenshot of a window and saves it to a file
-    public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
-    {
-        Image img = CaptureWindow(handle);
-        img.Save(filename, format);
-    }
-
-    private class GDI32
-    {
-        public const int SRCCOPY = 0x00CC0020;
-
-        [DllImport("gdi32.dll")]
-        public static extern bool BitBlt(
-            IntPtr hObject,
-            int nXDest,
-            int nYDest,
-            int nWidth,
-            int nHeight,
-            IntPtr hObjectSource,
-            int nXSrc,
-            int nYSrc,
-            int dwRop);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateCompatibleBitmap(
-            IntPtr hDC,
-            int nWidth,
-            int nHeight);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteDC(IntPtr hDC);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
-    }
-
-    // Helper class containing User32 API functions
-    private class User32
-    {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetDesktopWindow();
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
+        return image;
     }
 }

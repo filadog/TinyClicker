@@ -16,5 +16,5 @@ public class DependencySetupFixture
         ServiceProvider = collection.BuildServiceProvider();
     }
 
-    public ServiceProvider ServiceProvider { get; private set; }
+    public ServiceProvider ServiceProvider { get; }
 }

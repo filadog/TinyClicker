@@ -1,20 +1,18 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-using System.ComponentModel;
-using TinyClicker.Core.Logic;
 using TinyClicker.Core.Logging;
+using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
 
-namespace TinyClicker.UI;
+namespace TinyClicker.UI.Windows;
 
-public partial class MainWindow : Window, IMainWindow
+public partial class MainWindow : IMainWindow
 {
     private readonly BackgroundWorker _backgroundWorker;
     private readonly SettingsWindow _settingsWindow;
     private readonly TinyClickerApp _tinyClickerApp;
     private readonly IConfigService _configService;
-    private readonly ILogger _logger;
 
     public bool _isBluestacks = false;
     public bool _isLDPlayer = false;
@@ -31,9 +29,8 @@ public partial class MainWindow : Window, IMainWindow
         _settingsWindow = settingsWindow;
         _tinyClickerApp = tinyClickerApp;
         _configService = configService;
-        _logger = logger;
 
-        _logger.SetMainWindow(this);
+        logger.SetMainWindow(this);
 
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         InitializeComponent();
@@ -137,12 +134,14 @@ public partial class MainWindow : Window, IMainWindow
 
     private void IsBluestacksCheckboxChecked(object sender, RoutedEventArgs e)
     {
-        if (LDPlayerCheckbox != null)
+        if (LDPlayerCheckbox == null)
         {
-            LDPlayerCheckbox.IsHitTestVisible = false;
-            LDPlayerCheckbox.Focusable = false;
-            _isBluestacks = true;
+            return;
         }
+
+        LDPlayerCheckbox.IsHitTestVisible = false;
+        LDPlayerCheckbox.Focusable = false;
+        _isBluestacks = true;
     }
 
     private void IsLDPlayerCheckboxChecked(object sender, RoutedEventArgs e)

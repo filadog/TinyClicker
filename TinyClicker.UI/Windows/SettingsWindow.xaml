@@ -1,4 +1,4 @@
-﻿<Window x:Class="TinyClicker.UI.SettingsWindow"
+﻿<Window x:Class="TinyClicker.UI.Windows.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,8 +10,6 @@
         <ImageBrush ImageSource="/images/settings_window.png"/>
     </Window.Background>
 
-
-
     <Grid>
         <Button x:Name="ExitSettingsButton" Click="ExitSettingsButton_Click"  Margin="145,210,25,22"  Background="Transparent" BorderBrush="Transparent">
             <Image Width="91" Height="32" Source="/images/exit_button.png"/>
@@ -19,8 +17,6 @@
         <Button x:Name="SaveSettingsButton" Click="SaveSettingsButton_Click"  Margin="25,210,145,22"  Background="Transparent" BorderBrush="Transparent">
             <Image Width="91" Height="33" Source="/images/save_button.png"/>
         </Button>
-
-
 
         <TextBox x:Name="TextBoxCurrentFloor" HorizontalAlignment="Left" Margin="178,51,0,0" TextWrapping="Wrap" Text="42" VerticalAlignment="Top" Width="27" Height="19" IsReadOnly="False" IsReadOnlyCaretVisible="False" Opacity="0.9" TextChanged="TextBoxCurrentFloor_TextChanged"/>
         <TextBox x:Name="TextBoxFloorToRebuildAt" HorizontalAlignment="Left" Margin="178,77,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="27" Height="20" IsReadOnly="False" IsReadOnlyCaretVisible="False" Opacity="0.9" TextChanged="TextBoxFloorToRebuildAt_TextChanged"/>
@@ -34,10 +30,7 @@
         <CheckBox x:Name="CheckboxWatchBuxAds" Content="" HorizontalAlignment="Left" Margin="184,133,0,0" VerticalAlignment="Top" Width="15" Height="15" Checked="CheckboxWatchBuxAds_Checked" Unchecked="CheckboxWatchBuxAds_Unchecked"/>
         <TextBlock x:Name="VersionText" HorizontalAlignment="Left" Margin="208,26,0,0" TextWrapping="Wrap" Text="v" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" FontWeight="Bold" Opacity="0.5"/>
         <TextBlock x:Name="tbBuildFloors" HorizontalAlignment="Left" Margin="76,180,0,0" TextWrapping="Wrap" Text="Build Floors" VerticalAlignment="Top" FontFamily="Consolas" Foreground="White" FontWeight="Bold" FontSize="14" Opacity="0.8"/>
-        <CheckBox x:Name="cbBuildFloors" Content="" HorizontalAlignment="Left" Margin="184,181,0,0" VerticalAlignment="Top" Width="15" Height="15" Checked="CheckboxWatchBuxAds_Checked" Unchecked="CheckboxWatchBuxAds_Unchecked" RenderTransformOrigin="0.492,0.533" IsChecked="True"/>
-
-
-
+        <CheckBox x:Name="BuildFloors" HorizontalAlignment="Left" Margin="184,181,0,0" VerticalAlignment="Top" Width="15" Height="15" RenderTransformOrigin="0.492,0.533" IsChecked="True" Checked="BuildFloors_OnChecked" Unchecked="BuildFloors_OnUnchecked"/>
     </Grid>
 
 </Window>

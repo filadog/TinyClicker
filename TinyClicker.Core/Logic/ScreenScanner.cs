@@ -9,6 +9,7 @@ public class ScreenScanner
 {
     private readonly IConfigService _configService;
     private readonly ClickerActionsRepository _clickerActionsRepository;
+    private readonly IOpenCvService _openCvService;
     private readonly IWindowsApiService _windowsApiService;
     private readonly ILogger _logger;
 
@@ -16,24 +17,26 @@ public class ScreenScanner
         IConfigService configService,
         ClickerActionsRepository clickerActionsRepository,
         IWindowsApiService windowsApiService,
+        IOpenCvService openCvService,
         ILogger logger)
     {
         _configService = configService;
         _clickerActionsRepository = clickerActionsRepository;
         _windowsApiService = windowsApiService;
+        _openCvService = openCvService;
         _logger = logger;
     }
 
-    public Dictionary<string, int> FoundImages { get; private set; }
-    public int FloorToRebuildAt => _configService.Config.RebuildAtFloor;
-    private int FoundCount { get; set; } = 0;
+    private Dictionary<string, int> FoundImages { get; set; } = new();
+    private int FloorToRebuildAt => _configService.Config.RebuildAtFloor;
+    private int FoundCount { get; set; }
 
     public void StartIteration()
     {
-        var gameWindow = _windowsApiService.MakeScreenshot();
+        using var gameWindow = _windowsApiService.MakeScreenshot();
         var currentFloor = _configService.Config.CurrentFloor;
 
-        FoundImages = _clickerActionsRepository.TryFindFirstOnScreen(gameWindow);
+        FoundImages = _openCvService.TryFindFirstOnScreen(gameWindow);
 
         foreach (var image in FoundImages)
         {
@@ -57,7 +60,7 @@ public class ScreenScanner
         if (currentFloor == 1)
         {
             _clickerActionsRepository.PassTheTutorial();
-            _configService.SetCurrentFloor(4); // 3 is the default old value
+            _configService.SetCurrentFloor(4);
             return;
         }
 
@@ -74,16 +77,15 @@ public class ScreenScanner
             }
         }
 
-        if (_configService.Config.BuildFloors && currentFloor != 1)
+        if (_configService.Config.BuildFloors)
         {
             _clickerActionsRepository.CheckForNewFloor(currentFloor, gameWindow);
         }
 
         FoundImages.Clear();
-        gameWindow!.Dispose();
     }
 
-    public void PerformActions((string Key, int Location) item)
+    private void PerformActions((string Key, int Location) item)
     {
         switch (item.Key)
         {

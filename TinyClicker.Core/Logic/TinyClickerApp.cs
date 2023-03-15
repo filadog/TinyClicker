@@ -28,7 +28,7 @@ public class TinyClickerApp
         _backgroundWorker.RunWorkerAsync();
     }
 
-    public void RunLoop(BackgroundWorker worker)
+    private void RunLoop(BackgroundWorker worker)
     {
         while (!worker.CancellationPending)
         {
