@@ -98,14 +98,14 @@ public class ConfigService : IConfigService
         var maxRebuildLength = 24;
         if (timeSinceRebuild.Length < maxRebuildLength)
         {
-            timeSinceRebuild += new string(' ', timeSinceRebuild.Length - maxRebuildLength);
+            timeSinceRebuild += new string(' ', maxRebuildLength - timeSinceRebuild.Length);
         }
 
         var maxElevatorRides = 15;
         var rides = Config.ElevatorRides.ToString();
         if (rides.Length < maxElevatorRides)
         {
-            rides += new string(' ', rides.Length - maxElevatorRides);
+            rides += new string(' ', maxElevatorRides - rides.Length);
         }
 
         var line = $"{dateTimeNow:dd.MM.yyyy hh:mm:ss} | {timeSinceRebuild}| {rides}|\n";
