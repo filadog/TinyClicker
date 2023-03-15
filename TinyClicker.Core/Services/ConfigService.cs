@@ -87,11 +87,11 @@ public class ConfigService : IConfigService
 
         if (File.Exists(STATS_PATH))
         {
-            var header = "rebuild time        | time since last rebuild | elevator rides |\n";
+            var header = "rebuild time        | time since last rebuild | elevator rides |";
             var stats = File.ReadAllLines(STATS_PATH);
             if (!stats.Contains(header))
             {
-                File.AppendAllText(STATS_PATH, header);
+                File.AppendAllText(STATS_PATH, header + "\n");
             }
         }
 
