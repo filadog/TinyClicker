@@ -58,16 +58,14 @@ public class ImageService : IImageService
     {
         // resize image to default size
         var percentage = GetScreenDiffPercentageForBalance(gameWindow);
-
         using var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png);
 
         imageOld.Resize(percentage.x, percentage.y);
-        imageOld.Threshold(new Percentage(40));
 
         var image = BytesToImage(imageOld.ToByteArray());
         var result = CropCurrentBalance(image);
 
-        //var filename = @"./screenshots/balance.png";
+        //var filename = @"./screenshots/window.png";
         //SaveScreenshot(result, filename);
 
         return result;
@@ -104,10 +102,7 @@ public class ImageService : IImageService
             throw new ArgumentNullException(nameof(screenshot));
         }
 
-        var x = new Percentage(100 * 333 / (float)screenshot.Width);
-        var y = new Percentage(100 * 592 / (float)screenshot.Height);
-
-        return (x, y);
+        return (new Percentage(100 * 333 / (float)screenshot.Width), new Percentage(100 * 592 / (float)screenshot.Height));
     }
 
     public (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null)

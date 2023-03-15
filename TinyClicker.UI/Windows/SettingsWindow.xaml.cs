@@ -141,7 +141,8 @@ public partial class SettingsWindow
             _lastRebuildTime,
             _buildFloors,
             _lastRaffleTime,
-            MainWindow._isBluestacks);
+            MainWindow._isBluestacks,
+            0);
 
         _configService.SaveConfig(config);
     }

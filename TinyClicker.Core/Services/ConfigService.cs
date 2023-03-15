@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.IO;
+using System.Linq;
 using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Services;
@@ -66,23 +68,47 @@ public class ConfigService : IConfigService
     {
         var dateTimeNow = DateTime.Now;
         var lastRebuildTime = Config.LastRebuildTime;
-        var result = "";
+        var timeSinceRebuild = "";
         if (lastRebuildTime != DateTime.MinValue)
         {
             var diff = dateTimeNow - lastRebuildTime;
             var formatted = diff.ToString(@"hh\:mm\:ss");
             if (diff.Days >= 1)
             {
-                result = $"{diff.Days} days " + formatted;
+                timeSinceRebuild = $"{diff.Days} days " + formatted;
             }
             else
             {
-                result = formatted;
+                timeSinceRebuild = formatted;
             }
         }
 
         SaveNewRebuildTime(dateTimeNow);
-        var data = $"{dateTimeNow} - rebuilt the tower. Time elapsed since the last rebuild: {result}\n";
-        File.AppendAllText(STATS_PATH, data);
+
+        if (File.Exists(STATS_PATH))
+        {
+            var header = "rebuild time | time since last rebuild | elevator rides |\n";
+            var stats = File.ReadAllLines(STATS_PATH);
+            if (!stats.Contains(header))
+            {
+                File.AppendAllText(STATS_PATH, header);
+            }
+        }
+
+        var maxRebuildLength = 24;
+        if (timeSinceRebuild.Length < maxRebuildLength)
+        {
+            timeSinceRebuild += new string(' ', timeSinceRebuild.Length - maxRebuildLength);
+        }
+
+        var maxElevatorRides = 15;
+        var rides = Config.ElevatorRides.ToString();
+        if (rides.Length < maxElevatorRides)
+        {
+            rides += new string(' ', rides.Length - maxElevatorRides);
+        }
+
+        var line = $"{dateTimeNow:dd.MM.yyyy hh:mm:ss} | {timeSinceRebuild}| {rides}|\n";
+        File.AppendAllText(STATS_PATH, line);
     }
 }

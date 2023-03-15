@@ -159,6 +159,8 @@ public class ClickerActionsRepository
             if (!_openCvService.IsImageFound(Button.GiftChute))
             {
                 MoveUp();
+                _configService.Config.ElevatorRides++;
+                _configService.SaveConfig();
             }
         }
     }
@@ -362,6 +364,7 @@ public class ClickerActionsRepository
     {
         _logger.Log("Rebuilding the tower");
         _configService.SaveStatRebuildTime();
+        _configService.Config.ElevatorRides = 0;
 
         ClickAndWaitSec(305, 570, 1);
         ClickAndWaitMs(165, 435, 500);

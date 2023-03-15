@@ -80,4 +80,15 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
 
         Assert.Equal(expected, actualBalance);
     }
+
+    [Fact]
+    public void ParseBalanceFromImage_7455000()
+    {
+        var screenshot = TestHelper.LoadGameScreenshot("7455000");
+
+        var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
+        var expected = 7455000;
+
+        Assert.Equal(expected, actualBalance);
+    }
 }
