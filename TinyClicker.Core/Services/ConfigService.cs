@@ -95,17 +95,17 @@ public class ConfigService : IConfigService
             }
         }
 
-        var maxRebuildLength = 24;
+        const int maxRebuildLength = 24;
         if (timeSinceRebuild.Length < maxRebuildLength)
         {
             timeSinceRebuild += new string(' ', maxRebuildLength - timeSinceRebuild.Length);
         }
 
-        var maxElevatorRides = 15;
+        const int maxElevatorRidesLength = 15;
         var rides = Config.ElevatorRides.ToString();
-        if (rides.Length < maxElevatorRides)
+        if (rides.Length < maxElevatorRidesLength)
         {
-            rides += new string(' ', maxElevatorRides - rides.Length);
+            rides += new string(' ', maxElevatorRidesLength - rides.Length);
         }
 
         var line = $"{dateTimeNow:dd.MM.yyyy HH:mm:ss} | {timeSinceRebuild}| {rides}|\n";

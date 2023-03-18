@@ -37,10 +37,10 @@
 
   <ItemGroup>
     <None Update="Samples\button_names.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Samples\samples.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Tessdata\pixel.traineddata">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

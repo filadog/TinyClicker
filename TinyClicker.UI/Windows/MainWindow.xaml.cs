@@ -14,9 +14,10 @@ public partial class MainWindow : IMainWindow
     private readonly TinyClickerApp _tinyClickerApp;
     private readonly IConfigService _configService;
 
-    public bool _isBluestacks = false;
-    public bool _isLDPlayer = false;
-    public bool _settingsOpened = false;
+    private bool _isLDPlayer;
+
+    public bool IsBluestacks;
+    public bool SettingsOpened;
 
     public MainWindow(
         BackgroundWorker backgroundWorker,
@@ -38,9 +39,9 @@ public partial class MainWindow : IMainWindow
 
     private void Startup()
     {
-        if (_isLDPlayer ^ _isBluestacks)
+        if (_isLDPlayer ^ IsBluestacks)
         {
-            _configService.Config.IsBluestacks = _isBluestacks;
+            _configService.Config.IsBluestacks = IsBluestacks;
             _tinyClickerApp.StartInBackground();
 
             Log("Started!");
@@ -141,7 +142,7 @@ public partial class MainWindow : IMainWindow
 
         LDPlayerCheckbox.IsHitTestVisible = false;
         LDPlayerCheckbox.Focusable = false;
-        _isBluestacks = true;
+        IsBluestacks = true;
     }
 
     private void IsLDPlayerCheckboxChecked(object sender, RoutedEventArgs e)
@@ -155,7 +156,7 @@ public partial class MainWindow : IMainWindow
     {
         LDPlayerCheckbox.IsHitTestVisible = true;
         LDPlayerCheckbox.Focusable = true;
-        _isBluestacks = false;
+        IsBluestacks = false;
     }
 
     private void LDPlayerCheckbox_Unchecked(object sender, RoutedEventArgs e)
@@ -167,15 +168,15 @@ public partial class MainWindow : IMainWindow
 
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        if (!_settingsOpened)
+        if (!SettingsOpened)
         {
-            _settingsOpened = true;
+            SettingsOpened = true;
             _settingsWindow.Show(this);
         }
         else
         {
-            _settingsOpened = false;
-            _settingsWindow!.Hide();
+            SettingsOpened = false;
+            _settingsWindow.Hide();
         }
     }
 }

@@ -82,7 +82,7 @@ public class WindowsApiService : IWindowsApiService
         }
     }
 
-    public nint GetChildHandle(string processName)
+    private nint GetChildHandle(string processName)
     {
         var childProcesses = WindowHandleInfo.GetChildrenHandles(processName);
         if (childProcesses.Any())

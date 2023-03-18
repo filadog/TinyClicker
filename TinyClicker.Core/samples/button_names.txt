@@ -30,3 +30,4 @@ elevatorButton
 adsLostReward
 balanceCoin
 newScienceButton
+lobby

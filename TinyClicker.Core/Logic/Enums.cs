@@ -65,5 +65,8 @@ public enum GameWindow
     AdsLostReward,
 
     [Description("balanceCoin")]
-    BalanceCoin
+    BalanceCoin,
+
+    [Description("lobby")]
+    Lobby
 }

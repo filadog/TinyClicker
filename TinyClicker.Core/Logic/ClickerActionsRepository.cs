@@ -156,12 +156,16 @@ public class ClickerActionsRepository
         {
             var curFloor = _configService.Config.CurrentFloor;
             WaitMs(curFloor * 100); // Wait for the ride to finish
-            if (!_openCvService.IsImageFound(Button.GiftChute))
+
+            if (_openCvService.IsImageFound(Button.GiftChute, out location))
             {
-                MoveUp();
-                _configService.Config.ElevatorRides++;
-                _configService.SaveConfig();
+                var relativeCoordinates = _windowsApiService.GetRelativeCoordinates(location.X, location.Y);
+                ClickOnChute(relativeCoordinates);
             }
+
+            MoveUp();
+            _configService.Config.ElevatorRides++;
+            _configService.SaveConfig();
         }
     }
 
@@ -272,7 +276,7 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (currentFloor >= _configService.Config.RebuildAtFloor)
+        if (currentFloor >= _configService.Config.RebuildAtFloor && _configService.Config.RebuildAtFloor != default)
         {
             WaitMs(500);
             RebuildTower();
@@ -291,6 +295,13 @@ public class ClickerActionsRepository
             RideElevator();
         }
 
+        if (_openCvService.IsImageFound(GameWindow.Lobby))
+        {
+            _logger.Log("Found lobby window");
+            PressExitButton();
+            MoveUp();
+        }
+
         BuildNewFloor();
 
         if (_openCvService.IsImageFound(GameWindow.NewFloorNoCoinsNotification))
@@ -301,11 +312,13 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (!_openCvService.IsImageFound(Button.BackButton))
+        if (_openCvService.IsImageFound(Button.BackButton))
         {
-            using var newGameWindow = _windowsApiService.MakeScreenshot();
-            CheckForNewFloor(_configService.Config.CurrentFloor, newGameWindow);
+            return;
         }
+
+        using var newGameWindow = _windowsApiService.MakeScreenshot();
+        CheckForNewFloor(_configService.Config.CurrentFloor, newGameWindow);
     }
 
     private void BuildNewFloor()
@@ -425,7 +438,14 @@ public class ClickerActionsRepository
         ClickAndWaitMs(170, 435, 500); // Collect bux
         ClickAndWaitMs(170, 435, 500); // Continue
         ClickAndWaitMs(200, 200, 500); // Open the food store again
-        ClickAndWaitSec(200, 210, 15);// Request restock of the first item in the store
+        ClickAndWaitSec(200, 210, 5); // Request restock of the first item in the store
+
+        // Wait until the floor is restocked
+        while (!_openCvService.IsImageFound(Button.RestockButton))
+        {
+            WaitSec(1);
+        }
+
         ClickAndWaitMs(305, 190, 500); // Press restock button
         ClickAndWaitMs(20, 60, 500);   // Complete the quest
         ClickAndWaitMs(170, 435, 500); // Collect bux

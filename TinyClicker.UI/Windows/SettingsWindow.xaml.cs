@@ -72,7 +72,7 @@ public partial class SettingsWindow
 
     private void TextBoxFloorToRebuildAt_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (ValidateNumberField(TextBoxFloorToRebuildAt.Text))
+        if (ValidateNumberField(TextBoxFloorToRebuildAt))
         {
             _rebuildAtFloor = int.Parse(TextBoxFloorToRebuildAt.Text);
         }
@@ -80,7 +80,7 @@ public partial class SettingsWindow
 
     private void TextBoxWatchAdsFrom_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (ValidateNumberField(TextBoxWatchAdsFrom.Text))
+        if (ValidateNumberField(TextBoxWatchAdsFrom))
         {
             _watchAdsFromFloor = int.Parse(TextBoxWatchAdsFrom.Text);
         }
@@ -88,39 +88,35 @@ public partial class SettingsWindow
 
     private void TextBoxCurrentFloor_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (ValidateNumberField(TextBoxCurrentFloor.Text))
+        if (ValidateNumberField(TextBoxCurrentFloor))
         {
             _currentFloor = int.Parse(TextBoxCurrentFloor.Text);
         }
     }
 
-    private bool ValidateNumberField(string text)
+    private bool ValidateNumberField(TextBox textBox)
     {
-        try
+        var parsed = int.TryParse(textBox.Text, out _);
+        if (!parsed)
         {
-            var value = int.Parse(text);
-            if (value != 0)
-            {
-                _currentFloor = value;
-            }
+            MainWindow?.Log("Invalid input value");
+        }
+        else
+        {
+            MainWindow?.Log("Invalid input value");
+        }
 
-            return true;
-        }
-        catch (FormatException)
-        {
-            MainWindow!.Log("Invalid input value");
-            return false;
-        }
+        return parsed;
     }
 
     private void ExitSettingsButton_Click(object sender, RoutedEventArgs e)
     {
         if (MainWindow == null)
         {
-            return;
+            throw new InvalidOperationException("Main window is null");
         }
 
-        MainWindow._settingsOpened = false;
+        MainWindow.SettingsOpened = false;
         Hide();
     }
 
@@ -141,7 +137,7 @@ public partial class SettingsWindow
             _lastRebuildTime,
             _buildFloors,
             _lastRaffleTime,
-            MainWindow._isBluestacks,
+            MainWindow.IsBluestacks,
             0);
 
         _configService.SaveConfig(config);
