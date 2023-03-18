@@ -75,19 +75,25 @@ public class OpenCvService : IOpenCvService
 
         if (result.MaxVal >= OPEN_CV_THRESHOLD)
         {
-            if (template.Key == Button.GiftChute.GetName())
+            if (_adjustableButtons.Contains(template.Key))
             {
-                return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X + 40, result.MaxLoc.Y + 40));
+                return (template.Key, MakeAdjustedLParam(result.MaxLoc.X, result.MaxLoc.Y));
             }
-            else
-            {
-                return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
-            }
+
+            return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
         }
-        else
-        {
-            return ("", 0);
-        }
+
+        return ("", 0);
+    }
+
+    private readonly HashSet<string> _adjustableButtons = new()
+    {
+        Button.GiftChute.GetName()
+    };
+
+    private int MakeAdjustedLParam(int x, int y)
+    {
+        return _windowsApiService.MakeLParam(x + 40, y + 40);
     }
 
     public bool IsImageFound(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
@@ -112,17 +118,9 @@ public class OpenCvService : IOpenCvService
         var template = Templates[image.GetName()];
 
         var result = MatchTemplate(screen, template);
+        location = result.MaxLoc;
 
-        if (result.MaxVal >= OPEN_CV_THRESHOLD)
-        {
-            location = result.MaxLoc;
-            return true;
-        }
-        else
-        {
-            location = result.MaxLoc;
-            return false;
-        }
+        return result.MaxVal >= OPEN_CV_THRESHOLD;
     }
 
     private static (double MaxVal, Point MaxLoc) MatchTemplate(Mat screen, Mat template)
@@ -133,7 +131,7 @@ public class OpenCvService : IOpenCvService
 
         Cv2.MatchTemplate(matReference, matTemplate, result, TemplateMatchModes.CCoeffNormed);
         Cv2.Threshold(result, result, 0.7, 1.0, ThresholdTypes.Tozero);
-        Cv2.MinMaxLoc(result, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
+        Cv2.MinMaxLoc(result, out _, out var maxVal, out _, out var maxLoc);
 
         return (maxVal, maxLoc);
     }

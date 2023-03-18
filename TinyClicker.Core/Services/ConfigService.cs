@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,8 @@ namespace TinyClicker.Core.Services;
 public class ConfigService : IConfigService
 {
     private const string STATS_PATH = "./Stats.txt";
+    private const string HEADER = "rebuild time        | time since last rebuild | elevator rides |";
+
     private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
 
     public Config Config { get; private set; }
@@ -32,13 +33,13 @@ public class ConfigService : IConfigService
         SaveConfig(Config);
     }
 
-    public void SaveNewRebuildTime(DateTime rebuildTime)
+    private void SaveNewRebuildTime(DateTime rebuildTime)
     {
         Config.LastRebuildTime = rebuildTime;
         SaveConfig(Config);
     }
 
-    public Config GetConfig()
+    private Config GetConfig()
     {
         if (!File.Exists(_configPath))
         {
@@ -87,11 +88,10 @@ public class ConfigService : IConfigService
 
         if (File.Exists(STATS_PATH))
         {
-            var header = "rebuild time        | time since last rebuild | elevator rides |";
             var stats = File.ReadAllLines(STATS_PATH);
-            if (!stats.Contains(header))
+            if (!stats.Contains(HEADER))
             {
-                File.AppendAllText(STATS_PATH, header + "\n");
+                File.AppendAllText(STATS_PATH, HEADER + "\n");
             }
         }
 
@@ -108,7 +108,7 @@ public class ConfigService : IConfigService
             rides += new string(' ', maxElevatorRides - rides.Length);
         }
 
-        var line = $"{dateTimeNow:dd.MM.yyyy hh:mm:ss} | {timeSinceRebuild}| {rides}|\n";
+        var line = $"{dateTimeNow:dd.MM.yyyy HH:mm:ss} | {timeSinceRebuild}| {rides}|\n";
         File.AppendAllText(STATS_PATH, line);
     }
 }
