@@ -97,14 +97,7 @@ public partial class SettingsWindow
     private bool ValidateNumberField(TextBox textBox)
     {
         var parsed = int.TryParse(textBox.Text, out _);
-        if (!parsed)
-        {
-            MainWindow?.Log("Invalid input value");
-        }
-        else
-        {
-            MainWindow?.Log("Invalid input value");
-        }
+        MainWindow?.Log(!parsed ? "Invalid input value" : $"{textBox.Name} value set");
 
         return parsed;
     }
@@ -141,6 +134,7 @@ public partial class SettingsWindow
             0);
 
         _configService.SaveConfig(config);
+        MainWindow?.Log("Saved settings");
     }
 
     private static string GetVersionInfo()

@@ -108,7 +108,7 @@ public class WindowsApiService : IWindowsApiService
         return MakeLParam(x2, y2);
     }
 
-    public Image MakeScreenshot()
+    public Image GetGameScreenshot()
     {
         if (_childHandle == default)
         {

@@ -34,7 +34,16 @@ public class OpenCvService : IOpenCvService
     {
         Button.GameIcon.GetName(),
         Button.BalanceCoin.GetName(),
-        Button.RestockButton.GetName()
+        Button.RestockButton.GetName(),
+        GameWindow.DeliverBitizens.GetName(),
+        GameWindow.FindBitizens.GetName(),
+        GameWindow.BuildNewFloorNotification.GetName(),
+        GameWindow.HurryConstruction.GetName(),
+        GameWindow.NewFloorNoCoinsNotification.GetName(),
+        GameWindow.WatchAdPromptBux.GetName(),
+        GameWindow.WatchAdPromptCoins.GetName(),
+        GameWindow.FullyStockedBonus.GetName(),
+        GameWindow.AdsLostReward.GetName()
     };
 
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
@@ -71,7 +80,7 @@ public class OpenCvService : IOpenCvService
 
     public (string Key, int Location) TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
     {
-        var result = MatchTemplate(reference, template.Value);
+        var result = FindTemplateOnImage(reference, template.Value);
 
         if (result.MaxVal >= OPEN_CV_THRESHOLD)
         {
@@ -96,34 +105,34 @@ public class OpenCvService : IOpenCvService
         return _windowsApiService.MakeLParam(x + 40, y + 40);
     }
 
-    public bool IsImageFound(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
+    public bool FindOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
     {
-        using var gameWindow = screenshot ?? _windowsApiService.MakeScreenshot();
+        using var gameWindow = screenshot ?? _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
 
         var screen = windowBitmap.ToMat();
         var template = templates == null ? Templates[image.GetName()] : templates[image.GetName()];
 
-        var result = MatchTemplate(screen, template);
+        var result = FindTemplateOnImage(screen, template);
 
         return result.MaxVal >= OPEN_CV_THRESHOLD;
     }
 
-    public bool IsImageFound(Enum image, out Point location)
+    public bool FindOnScreen(Enum image, out Point location)
     {
-        using var gameWindow = _windowsApiService.MakeScreenshot();
+        using var gameWindow = _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
 
         var screen = windowBitmap.ToMat();
         var template = Templates[image.GetName()];
 
-        var result = MatchTemplate(screen, template);
+        var result = FindTemplateOnImage(screen, template);
         location = result.MaxLoc;
 
         return result.MaxVal >= OPEN_CV_THRESHOLD;
     }
 
-    private static (double MaxVal, Point MaxLoc) MatchTemplate(Mat screen, Mat template)
+    private static (double MaxVal, Point MaxLoc) FindTemplateOnImage(Mat screen, Mat template)
     {
         using var result = new Mat(screen.Rows - template.Rows + 1, screen.Cols - template.Cols + 1, MatType.CV_8S);
         using var matReference = screen.CvtColor(ColorConversionCodes.BGR2GRAY);

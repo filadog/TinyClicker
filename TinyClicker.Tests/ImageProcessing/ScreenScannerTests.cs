@@ -117,7 +117,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
         var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);
         var templates = openCvService.MakeTemplates(screenshot);
-        var isImageFound = openCvService.IsImageFound(item, templates, screenshot);
+        var isImageFound = openCvService.FindOnScreen(item, templates, screenshot);
 
         return isImageFound;
     }

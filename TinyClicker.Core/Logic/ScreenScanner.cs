@@ -33,7 +33,7 @@ public class ScreenScanner
 
     public void StartIteration()
     {
-        using var gameWindow = _windowsApiService.MakeScreenshot();
+        using var gameWindow = _windowsApiService.GetGameScreenshot();
         var currentFloor = _configService.Config.CurrentFloor;
 
         FoundImages = _openCvService.TryFindFirstOnScreen(gameWindow);
@@ -51,7 +51,7 @@ public class ScreenScanner
             var msg = "Found nothing x" + FoundCount;
             _logger.Log(msg);
 
-            if (FoundCount >= 20)
+            if (FoundCount >= 35) // todo multiply count by loop speed here
             {
                 _clickerActionsRepository.CloseAd();
             }

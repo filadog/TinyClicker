@@ -64,9 +64,12 @@ public enum GameWindow
     [Description("adsLostReward")]
     AdsLostReward,
 
-    [Description("balanceCoin")]
-    BalanceCoin,
-
     [Description("lobby")]
-    Lobby
+    Lobby,
+
+    [Description("hurryConstructionPrompt")]
+    HurryConstruction,
+
+    [Description("fullyStockedBonus")]
+    FullyStockedBonus
 }

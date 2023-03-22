@@ -34,8 +34,9 @@ public class TinyClickerApp
         {
             try
             {
+                // todo add custom loop delay
                 _screenScanner.StartIteration();
-                Task.Delay(1500).Wait();
+                Task.Delay(500).Wait();
             }
             catch (InvalidOperationException ex)
             {
