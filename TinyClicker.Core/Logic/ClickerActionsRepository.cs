@@ -261,6 +261,7 @@ public class ClickerActionsRepository
     {
         if (currentFloor == _configService.Config.RebuildAtFloor)
         {
+            WaitMs(500);
             RebuildTower();
             return;
         }
