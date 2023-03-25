@@ -38,7 +38,10 @@ public enum Button
     BalanceCoin,
 
     [Description("gameIcon")]
-    GameIcon
+    GameIcon,
+
+    [Description("menuButton")]
+    MenuButton
 }
 
 public enum GameWindow

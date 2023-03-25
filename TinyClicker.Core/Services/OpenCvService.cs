@@ -35,6 +35,7 @@ public class OpenCvService : IOpenCvService
         Button.GameIcon.GetName(),
         Button.BalanceCoin.GetName(),
         Button.RestockButton.GetName(),
+        Button.MenuButton.GetName(),
         GameWindow.DeliverBitizens.GetName(),
         GameWindow.FindBitizens.GetName(),
         GameWindow.BuildNewFloorNotification.GetName(),
@@ -134,7 +135,7 @@ public class OpenCvService : IOpenCvService
 
     private static (double MaxVal, Point MaxLoc) FindTemplateOnImage(Mat screen, Mat template)
     {
-        using var result = new Mat(screen.Rows - template.Rows + 1, screen.Cols - template.Cols + 1, MatType.CV_8S);
+        using var result = new Mat(screen.Rows - template.Rows + 1, screen.Cols - template.Cols + 1, MatType.CV_16S);
         using var matReference = screen.CvtColor(ColorConversionCodes.BGR2GRAY);
         using var matTemplate = template.CvtColor(ColorConversionCodes.BGR2GRAY);
 

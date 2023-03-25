@@ -145,6 +145,7 @@ public class ClickerActionsRepository
 
         if (_openCvService.FindOnScreen(Button.BackButton))
         {
+            WaitMs(300);
             PressExitButton();
         }
         else if (_openCvService.FindOnScreen(Button.Continue, out var location))
@@ -154,8 +155,10 @@ public class ClickerActionsRepository
         }
         else
         {
-            var curFloor = _configService.Config.CurrentFloor;
-            WaitMs(curFloor * 100); // Wait for the ride to finish
+            while (!_openCvService.FindOnScreen(Button.MenuButton))
+            {
+                WaitMs(500);
+            }
 
             MoveUp();
             _configService.Config.ElevatorRides++;
@@ -406,7 +409,7 @@ public class ClickerActionsRepository
         ClickAndWaitSec(21, 510, 4);  // Click on the elevator button
 
         // Daily rent check (in case it's past midnight)
-        if (_openCvService.FindOnScreen(Button.FreeBuxCollectButton, out OpenCvSharp.Point location))
+        if (_openCvService.FindOnScreen(Button.FreeBuxCollectButton, out var location))
         {
             ClickAndWaitMs(location.X, location.Y, 500); // Collect daily rent
             ClickAndWaitMs(21, 510, 4000); // Click on elevator button again
