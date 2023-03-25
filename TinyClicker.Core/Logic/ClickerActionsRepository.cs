@@ -11,20 +11,17 @@ public class ClickerActionsRepository
 {
     private readonly IConfigService _configService;
     private readonly IWindowsApiService _windowsApiService;
-    private readonly IImageService _imageService;
     private readonly IOpenCvService _openCvService;
     private readonly ILogger _logger;
 
     public ClickerActionsRepository(
         IConfigService configService,
         IWindowsApiService windowsApiService,
-        IImageService imageService,
         IOpenCvService openCvService,
         ILogger logger)
     {
         _configService = configService;
         _windowsApiService = windowsApiService;
-        _imageService = imageService;
         _openCvService = openCvService;
         _logger = logger;
 
@@ -32,7 +29,7 @@ public class ClickerActionsRepository
     }
 
     private Dictionary<int, int> FloorPrices { get; }
-    private DateTime TimeForNewFloor { get; set; } = DateTime.Now;
+    private DateTime AttemptNextFloorBuildAt { get; set; } = DateTime.Now;
 
 
     #region Clicker Actions
@@ -260,24 +257,8 @@ public class ClickerActionsRepository
         PressExitButton();
     }
 
-    public void CheckForNewFloor(int currentFloor, Image gameWindow)
+    public void CheckForNewFloor(int currentFloor, int balance)
     {
-        if (!_configService.Config.BuildFloors)
-        {
-            return;
-        }
-
-        var balance = _imageService.GetBalanceFromWindow(gameWindow);
-        if (balance == -1 || currentFloor < 4)
-        {
-            return;
-        }
-
-        if (currentFloor > _configService.Config.RebuildAtFloor)
-        {
-            return;
-        }
-
         if (currentFloor == _configService.Config.RebuildAtFloor)
         {
             RebuildTower();
@@ -292,6 +273,7 @@ public class ClickerActionsRepository
         if (_openCvService.FindOnScreen(Button.ElevatorButton))
         {
             RideElevator();
+            return;
         }
 
         if (_openCvService.FindOnScreen(GameWindow.Lobby))
@@ -299,13 +281,14 @@ public class ClickerActionsRepository
             _logger.Log("Found lobby window");
             PressExitButton();
             MoveUp();
+            return;
         }
 
         BuildNewFloor();
 
         if (_openCvService.FindOnScreen(GameWindow.NewFloorNoCoinsNotification))
         {
-            TimeForNewFloor = DateTime.Now.AddSeconds(10);
+            AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(10);
             _logger.Log("Not enough coins for a new floor");
             _windowsApiService.SendClick(230, 380); // continue
             return;
@@ -316,13 +299,12 @@ public class ClickerActionsRepository
             return;
         }
 
-        using var newGameWindow = _windowsApiService.GetGameScreenshot();
-        CheckForNewFloor(_configService.Config.CurrentFloor, newGameWindow);
+        CheckForNewFloor(_configService.Config.CurrentFloor, balance - FloorPrices[currentFloor + 1]);
     }
 
     private void BuildNewFloor()
     {
-        if (TimeForNewFloor <= DateTime.Now)
+        if (AttemptNextFloorBuildAt <= DateTime.Now)
         {
             if (_openCvService.FindOnScreen(Button.Continue))
             {
@@ -359,7 +341,7 @@ public class ClickerActionsRepository
                 }
                 else
                 {
-                    TimeForNewFloor = DateTime.Now.AddSeconds(10);
+                    AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(5);
                     _logger.Log("Not enough coins for a new floor");
                 }
 
@@ -406,7 +388,7 @@ public class ClickerActionsRepository
         ClickAndWaitMs(20, 60, 350);   // Complete quest
         ClickAndWaitMs(170, 435, 350); // Collect bux
         ClickAndWaitMs(170, 435, 1400);// Continue
-        ClickAndWaitSec(21, 510, 4);  // Click on the elevator button
+        ClickAndWaitSec(21, 510, 4);   // Click on the elevator button
 
         // Daily rent check (in case it's past midnight)
         if (_openCvService.FindOnScreen(Button.FreeBuxCollectButton, out var location))
@@ -437,7 +419,7 @@ public class ClickerActionsRepository
         ClickAndWaitMs(170, 435, 350); // Collect bux
         ClickAndWaitMs(170, 435, 350); // Continue
         ClickAndWaitMs(200, 200, 350); // Open the food store again
-        ClickAndWaitSec(200, 210, 5); // Request restock of the first item in the store
+        ClickAndWaitSec(200, 210, 5);  // Request restock of the first item in the store
 
         // Wait until the floor is restocked
         while (!_openCvService.FindOnScreen(Button.RestockButton))

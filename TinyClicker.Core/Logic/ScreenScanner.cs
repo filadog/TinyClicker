@@ -12,18 +12,21 @@ public class ScreenScanner
     private readonly IOpenCvService _openCvService;
     private readonly IWindowsApiService _windowsApiService;
     private readonly ILogger _logger;
+    private readonly IImageService _imageService;
 
     public ScreenScanner(
         IConfigService configService,
         ClickerActionsRepository clickerActionsRepository,
         IWindowsApiService windowsApiService,
         IOpenCvService openCvService,
+        IImageService imageService,
         ILogger logger)
     {
         _configService = configService;
         _clickerActionsRepository = clickerActionsRepository;
         _windowsApiService = windowsApiService;
         _openCvService = openCvService;
+        _imageService = imageService;
         _logger = logger;
     }
 
@@ -79,7 +82,18 @@ public class ScreenScanner
 
         if (_configService.Config.BuildFloors)
         {
-            _clickerActionsRepository.CheckForNewFloor(currentFloor, gameWindow);
+            var balance = _imageService.GetBalanceFromWindow(gameWindow);
+            if (balance == -1 || currentFloor < 4)
+            {
+                return;
+            }
+
+            if (currentFloor > _configService.Config.RebuildAtFloor)
+            {
+                return;
+            }
+
+            _clickerActionsRepository.CheckForNewFloor(currentFloor, balance);
         }
 
         FoundImages.Clear();
