@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
@@ -104,7 +103,6 @@ public class ClickerActionsRepository
         _windowsApiService.SendClick(location);
         WaitMs(500);
         MoveUp();
-        WaitSec(1);
     }
 
     public void Restock()
@@ -273,6 +271,7 @@ public class ClickerActionsRepository
 
         if (_openCvService.FindOnScreen(Button.ElevatorButton))
         {
+            WaitMs(300);
             RideElevator();
             return;
         }

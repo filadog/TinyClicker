@@ -54,7 +54,7 @@ public class ImageService : IImageService
         return Regex.Replace(input, "[^0-9]", "").Trim();
     }
 
-    public Bitmap GetAdjustedBalanceImage(Image gameWindow)
+    private Bitmap GetAdjustedBalanceImage(Image gameWindow)
     {
         // resize image to default size
         var percentage = GetScreenDiffPercentageForBalance(gameWindow);
@@ -62,8 +62,8 @@ public class ImageService : IImageService
 
         imageOld.Resize(percentage.x, percentage.y);
 
-        var image = BytesToImage(imageOld.ToByteArray());
-        var result = CropCurrentBalance(image);
+        using var image = BytesToImage(imageOld.ToByteArray());
+        using var result = CropCurrentBalance(image);
 
         //var filename = @"./screenshots/window.png";
         //SaveScreenshot(result, filename);
@@ -75,11 +75,11 @@ public class ImageService : IImageService
     {
         // Crop the image
         var cropRectangle = new Rectangle(20, 541, 65, 20);
-        var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
-        using (var gr = Graphics.FromImage(bitmap))
-        {
-            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
-        }
+
+        using var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
+        using var gr = Graphics.FromImage(bitmap);
+
+        gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
 
         //Invert the image
         for (int y = 0; y <= bitmap.Height - 1; y++)

@@ -1,15 +1,14 @@
 ﻿using TinyClicker.Core.Logic;
 
-namespace TinyClicker.Core.Services
-{
-    public interface IConfigService
-    {
-        Config Config { get; }
+namespace TinyClicker.Core.Services;
 
-        void AddOneFloor();
-        void SaveConfig();
-        void SaveConfig(Config config);
-        void SaveStatRebuildTime();
-        void SetCurrentFloor(int floor);
-    }
+public interface IConfigService
+{
+    Config Config { get; }
+
+    void AddOneFloor();
+    void SaveConfig();
+    void SaveConfig(Config config);
+    void SaveStatRebuildTime();
+    void SetCurrentFloor(int floor);
 }

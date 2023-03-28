@@ -69,19 +69,13 @@ public class ConfigService : IConfigService
     {
         var dateTimeNow = DateTime.Now;
         var lastRebuildTime = Config.LastRebuildTime;
-        var timeSinceRebuild = "";
+        var timeSinceRebuild = string.Empty;
+
         if (lastRebuildTime != DateTime.MinValue)
         {
             var diff = dateTimeNow - lastRebuildTime;
             var formatted = diff.ToString(@"hh\:mm\:ss");
-            if (diff.Days >= 1)
-            {
-                timeSinceRebuild = $"{diff.Days} days " + formatted;
-            }
-            else
-            {
-                timeSinceRebuild = formatted;
-            }
+            timeSinceRebuild = diff.Days >= 1 ? $"{diff.Days} days " + formatted : formatted;
         }
 
         SaveNewRebuildTime(dateTimeNow);
