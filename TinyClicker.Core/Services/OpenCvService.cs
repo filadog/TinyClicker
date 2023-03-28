@@ -79,21 +79,22 @@ public class OpenCvService : IOpenCvService
         return result;
     }
 
-    public (string Key, int Location) TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
+    private (string Key, int Location) TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
     {
         var result = FindTemplateOnImage(reference, template.Value);
 
-        if (result.MaxVal >= OPEN_CV_THRESHOLD)
+        if (result.MaxVal < OPEN_CV_THRESHOLD) 
         {
-            if (_adjustableButtons.Contains(template.Key))
-            {
-                return (template.Key, MakeAdjustedLParam(result.MaxLoc.X, result.MaxLoc.Y));
-            }
-
-            return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
+            return ("", 0);
         }
 
-        return ("", 0);
+        if (_adjustableButtons.Contains(template.Key))
+        {
+            return (template.Key, MakeAdjustedLParam(result.MaxLoc.X, result.MaxLoc.Y));
+        }
+
+        return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
+
     }
 
     private readonly HashSet<string> _adjustableButtons = new()

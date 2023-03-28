@@ -23,6 +23,7 @@ public class ImageService : IImageService
 
         var result = page.GetText().Trim();
 
+        window.Dispose();
         return StringToBalance(result);
     }
 
@@ -45,8 +46,8 @@ public class ImageService : IImageService
             result = result[..endIndex];
         }
 
-        var success = int.TryParse(TrimWithRegex(result), out var value);
-        return success ? value : -1;
+        var parsed = int.TryParse(TrimWithRegex(result), out var value);
+        return parsed ? value : -1;
     }
 
     private static string TrimWithRegex(string input)
@@ -63,23 +64,22 @@ public class ImageService : IImageService
         imageOld.Resize(percentage.x, percentage.y);
 
         using var image = BytesToImage(imageOld.ToByteArray());
-        using var result = CropCurrentBalance(image);
 
         //var filename = @"./screenshots/window.png";
         //SaveScreenshot(result, filename);
 
-        return result;
+        return CropCurrentBalance(image);
     }
 
     private static Bitmap CropCurrentBalance(Image window)
     {
         // Crop the image
         var cropRectangle = new Rectangle(20, 541, 65, 20);
-
-        using var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
-        using var gr = Graphics.FromImage(bitmap);
-
-        gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
+        var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
+        using (var gr = Graphics.FromImage(bitmap))
+        {
+            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
+        }
 
         //Invert the image
         for (int y = 0; y <= bitmap.Height - 1; y++)
