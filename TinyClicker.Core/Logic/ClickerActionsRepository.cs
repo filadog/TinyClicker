@@ -362,10 +362,11 @@ public class ClickerActionsRepository
         _configService.Config.ElevatorRides = 0;
 
         ClickAndWaitSec(305, 570, 1);
-        ClickAndWaitMs(165, 435, 500);
-        ClickAndWaitMs(165, 440, 500);
-        ClickAndWaitMs(230, 380, 500);
-        ClickAndWaitMs(230, 380, 0);
+        ClickAndWaitMs(165, 435, 200);
+        ClickAndWaitMs(165, 440, 200);
+        ClickAndWaitMs(230, 380, 200);
+        ClickAndWaitMs(230, 380, 200);
+        ClickAndWaitMs(165, 405, 200); // Click to claim easter GT bonus
 
         _configService.SetCurrentFloor(1);
     }
@@ -373,20 +374,20 @@ public class ClickerActionsRepository
     public void PassTheTutorial()
     {
         _logger.Log("Passing the tutorial");
-        ClickAndWaitMs(170, 435, 500); // Continue
+        ClickAndWaitMs(170, 435, 400); // Continue
         MoveDown();
         WaitMs(1500);
 
-        ClickAndWaitMs(195, 260, 350); // Build a new floor
-        ClickAndWaitMs(230, 380, 350); // Confirm
-        ClickAndWaitMs(20, 60, 350);   // Complete quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
-        ClickAndWaitMs(170, 435, 350); // Continue
-        ClickAndWaitMs(190, 300, 350); // Click on a new floor
-        ClickAndWaitMs(240, 150, 350); // Build a residential floor
-        ClickAndWaitMs(160, 375, 350); // Continue
-        ClickAndWaitMs(20, 60, 350);   // Complete quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
+        ClickAndWaitMs(195, 260, 200); // Build a new floor
+        ClickAndWaitMs(230, 380, 200); // Confirm
+        ClickAndWaitMs(20, 60, 200);   // Complete quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
+        ClickAndWaitMs(170, 435, 200); // Continue
+        ClickAndWaitMs(190, 300, 200); // Click on a new floor
+        ClickAndWaitMs(240, 150, 200); // Build a residential floor
+        ClickAndWaitMs(160, 375, 200); // Continue
+        ClickAndWaitMs(20, 60, 200);   // Complete quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
         ClickAndWaitMs(170, 435, 1400);// Continue
         ClickAndWaitSec(21, 510, 4);   // Click on the elevator button
 
@@ -397,28 +398,28 @@ public class ClickerActionsRepository
             ClickAndWaitMs(21, 510, 4000); // Click on elevator button again
         }
 
-        ClickAndWaitMs(230, 380, 350); // Continue
-        ClickAndWaitMs(20, 60, 350);   // Complete quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
-        ClickAndWaitMs(170, 435, 350); // Continue
-        ClickAndWaitMs(190, 200, 350); // Build a new floor
-        ClickAndWaitMs(225, 380, 350); // Confirm
-        ClickAndWaitMs(200, 200, 350); // Open the new floor
-        ClickAndWaitMs(90, 340, 350);  // Build random food floor
-        ClickAndWaitMs(170, 375, 350); // Continue
-        ClickAndWaitMs(20, 60, 350);   // Complete the quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
-        ClickAndWaitMs(170, 435, 350); // Continue
-        ClickAndWaitMs(200, 200, 350); // Open the food floor
-        ClickAndWaitMs(75, 210, 350);  // Open the hire menu
-        ClickAndWaitMs(80, 100, 350);  // Select bitizen
-        ClickAndWaitMs(230, 380, 350); // Hire him
-        ClickAndWaitMs(160, 380, 350); // Continue on dream job assignment
-        ClickAndWaitMs(300, 560, 350); // Exit the food store
-        ClickAndWaitMs(20, 60, 350);   // Complete the quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
-        ClickAndWaitMs(170, 435, 350); // Continue
-        ClickAndWaitMs(200, 200, 350); // Open the food store again
+        ClickAndWaitMs(230, 380, 200); // Continue
+        ClickAndWaitMs(20, 60, 200);   // Complete quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
+        ClickAndWaitMs(170, 435, 200); // Continue
+        ClickAndWaitMs(190, 200, 200); // Build a new floor
+        ClickAndWaitMs(225, 380, 200); // Confirm
+        ClickAndWaitMs(200, 200, 200); // Open the new floor
+        ClickAndWaitMs(90, 340, 200);  // Build random food floor
+        ClickAndWaitMs(170, 375, 200); // Continue
+        ClickAndWaitMs(20, 60, 200);   // Complete the quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
+        ClickAndWaitMs(170, 435, 200); // Continue
+        ClickAndWaitMs(200, 200, 200); // Open the food floor
+        ClickAndWaitMs(75, 210, 200);  // Open the hire menu
+        ClickAndWaitMs(80, 100, 200);  // Select bitizen
+        ClickAndWaitMs(230, 380, 200); // Hire him
+        ClickAndWaitMs(160, 380, 200); // Continue on dream job assignment
+        ClickAndWaitMs(300, 560, 200); // Exit the food store
+        ClickAndWaitMs(20, 60, 200);   // Complete the quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
+        ClickAndWaitMs(170, 435, 200); // Continue
+        ClickAndWaitMs(200, 200, 200); // Open the food store again
         ClickAndWaitSec(200, 210, 5);  // Request restock of the first item in the store
 
         // Wait until the floor is restocked
@@ -427,17 +428,17 @@ public class ClickerActionsRepository
             WaitMs(700);
         }
 
-        ClickAndWaitMs(305, 190, 350); // Press restock button
-        ClickAndWaitMs(20, 60, 350);   // Complete the quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
-        ClickAndWaitMs(170, 435, 350); // Continue
-        ClickAndWaitMs(200, 200, 350); // Open food store again
-        ClickAndWaitMs(170, 130, 350); // Click upgrade
-        ClickAndWaitMs(230, 375, 350); // Confirm upgrade
-        ClickAndWaitMs(165, 375, 350); // Continue
-        ClickAndWaitMs(300, 560, 350); // Exit the food store
-        ClickAndWaitMs(20, 60, 350);   // Complete the quest
-        ClickAndWaitMs(170, 435, 350); // Collect bux
+        ClickAndWaitMs(284, 188, 200); // Press restock button (easter fix)
+        ClickAndWaitMs(20, 60, 200);   // Complete the quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
+        ClickAndWaitMs(170, 435, 200); // Continue
+        ClickAndWaitMs(200, 200, 200); // Open food store again
+        ClickAndWaitMs(170, 130, 200); // Click upgrade
+        ClickAndWaitMs(230, 375, 200); // Confirm upgrade
+        ClickAndWaitMs(165, 375, 200); // Continue
+        ClickAndWaitMs(300, 560, 200); // Exit the food store
+        ClickAndWaitMs(20, 60, 200);   // Complete the quest
+        ClickAndWaitMs(170, 435, 200); // Collect bux
         ClickAndWaitMs(170, 435, 0);   // Collect more bux
 
         MoveUp();
