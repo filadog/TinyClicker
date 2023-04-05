@@ -40,7 +40,7 @@ By default the tower will rebuild as soon as it hits 50th floor. If you have mor
 
 TinyClicker will generate a log entry inside Stats.txt file each time it rebuilds the tower. The file will be created once the tower rebuilds in the main clicker folder.
 
-#### The program is in the phase of development and some bugs may occur.
+#### The program is in the phase of development and some bugs may occur, feel free to submit an issue in case help is required.
 
 ## Setup
 
