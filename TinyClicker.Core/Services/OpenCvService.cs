@@ -44,7 +44,8 @@ public class OpenCvService : IOpenCvService
         GameWindow.WatchAdPromptBux.GetName(),
         GameWindow.WatchAdPromptCoins.GetName(),
         GameWindow.FullyStockedBonus.GetName(),
-        GameWindow.AdsLostReward.GetName()
+        GameWindow.AdsLostReward.GetName(),
+        GameWindow.BitizenMovedIn.GetName()
     };
 
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)

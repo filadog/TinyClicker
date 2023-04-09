@@ -82,6 +82,12 @@ public class ScreenScanner
 
         if (_configService.Config.BuildFloors)
         {
+            //if (_openCvService.FindOnScreen(GameWindow.BitizenMovedIn))
+            //{
+            //    _logger.Log("New bitizen moved in");
+            //    _windowsApiService.SendClick(230, 380); // Continue
+            //}
+
             var balance = _imageService.GetBalanceFromWindow(gameWindow);
             if (balance == -1 || currentFloor < 4)
             {

@@ -74,5 +74,8 @@ public enum GameWindow
     HurryConstruction,
 
     [Description("fullyStockedBonus")]
-    FullyStockedBonus
+    FullyStockedBonus,
+
+    [Description("bitizen_moved_in")]
+    BitizenMovedIn
 }

@@ -32,3 +32,4 @@ balanceCoin
 newScienceButton
 lobby
 menuButton
+bitizen_moved_in

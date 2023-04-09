@@ -361,11 +361,11 @@ public class ClickerActionsRepository
         _configService.SaveStatRebuildTime();
         _configService.Config.ElevatorRides = 0;
 
-        ClickAndWaitSec(305, 570, 1);
-        ClickAndWaitMs(165, 435, 200);
-        ClickAndWaitMs(165, 440, 200);
-        ClickAndWaitMs(230, 380, 200);
-        ClickAndWaitMs(230, 380, 200);
+        ClickAndWaitMs(305, 570, 350);
+        ClickAndWaitMs(165, 435, 350);
+        ClickAndWaitMs(165, 440, 350);
+        ClickAndWaitMs(230, 380, 350);
+        ClickAndWaitMs(230, 380, 350);
         ClickAndWaitMs(165, 405, 200); // Click to claim easter GT bonus
 
         _configService.SetCurrentFloor(1);
