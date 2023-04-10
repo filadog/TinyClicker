@@ -54,7 +54,7 @@ public class ScreenScanner
             var msg = "Found nothing x" + FoundCount;
             _logger.Log(msg);
 
-            if (FoundCount >= 35) // todo multiply count by loop speed here
+            if (FoundCount >= 100) // todo multiply count by loop speed here
             {
                 _clickerActionsRepository.CloseAd();
             }
