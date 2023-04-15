@@ -50,7 +50,7 @@ public class OpenCvService : IOpenCvService
 
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
     {
-        if (!Templates.Any())
+        if (Templates.Count == 0)
         {
             Templates = MakeTemplates(gameScreen);
         }
@@ -140,6 +140,11 @@ public class OpenCvService : IOpenCvService
         using var result = new Mat(screen.Rows - template.Rows + 1, screen.Cols - template.Cols + 1, MatType.CV_16S);
         using var matReference = screen.CvtColor(ColorConversionCodes.BGR2GRAY);
         using var matTemplate = template.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+        if (matReference.Height < matTemplate.Height || matReference.Width < matTemplate.Width)
+        {
+            return (0, new Point());
+        }
 
         Cv2.MatchTemplate(matReference, matTemplate, result, TemplateMatchModes.CCoeffNormed);
         Cv2.Threshold(result, result, 0.7, 1.0, ThresholdTypes.Tozero);

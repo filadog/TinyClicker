@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using TinyClicker.Core.Logging;
@@ -98,9 +100,9 @@ public partial class MainWindow : IMainWindow
             TextBoxLog.Text = msg;
 
             // todo add logging enabled parameter
-            //msg += "\n";
-            //var time = DateTime.Now.ToString();
-            //File.AppendAllText(@"./log.txt", time + " " + msg);
+            msg += "\n";
+            var time = DateTime.Now.ToString();
+            File.AppendAllText(@"./log.txt", time + " " + msg);
         });
     }
 

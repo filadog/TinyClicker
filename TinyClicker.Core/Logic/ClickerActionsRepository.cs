@@ -288,7 +288,7 @@ public class ClickerActionsRepository
 
         if (_openCvService.FindOnScreen(GameWindow.NewFloorNoCoinsNotification))
         {
-            AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(10);
+            AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(3);
             _logger.Log("Not enough coins for a new floor");
             _windowsApiService.SendClick(230, 380); // continue
             return;
@@ -341,7 +341,7 @@ public class ClickerActionsRepository
                 }
                 else
                 {
-                    AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(5);
+                    AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(3);
                     _logger.Log("Not enough coins for a new floor");
                 }
 

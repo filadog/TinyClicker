@@ -41,6 +41,7 @@ public class WindowsApiService : IWindowsApiService
     {
         if (_childHandle == nint.Zero || _process == null)
         {
+            _logger.Log("BlueStacks window not found. Restart required");
             return;
         }
 
@@ -68,6 +69,7 @@ public class WindowsApiService : IWindowsApiService
     {
         if (_childHandle == nint.Zero || _process == null)
         {
+            _logger.Log("BlueStacks window not found. Restart required");
             return;
         }
 
