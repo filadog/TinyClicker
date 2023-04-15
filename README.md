@@ -11,7 +11,7 @@ TinyClicker implements image pattern matching and OCR to help you automate the g
 
 #### Platform: Windows 7 (x86/x64) or later versions
 ### Supported Emulators:
-- LDPlayer 4.x
+- LDPlayer 4.x (being deprecated, use Bluestacks if possible)
 - BlueStacks 5.x
 
 ## Features
@@ -58,6 +58,11 @@ TinyClicker will generate a log entry inside Stats.txt file each time it rebuild
 - It is necessary to swith the regular video offers gift (FREE gift that appears every 4-5 minutes) to only offer you bux, TinyClicker will collect them.
 
 - When the setup is done, press Save and Exit buttons in settings, select your emulator in the main window, launch the game and start the TinyClicker. Your settings will be saved and current floor will be automatically incremented. Next time, just select the emulator and start the Clicker.
+
+## How to update
+
+Download the [latest release from here](https://github.com/stereostas/TinyClicker/releases).\
+Extract archive contents inside existing clicker folder with replacement of all files.
 
 ## Information
 
