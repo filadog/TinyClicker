@@ -15,6 +15,7 @@ public class WindowsApiService : IWindowsApiService
 
     private const string LD_PLAYER_PROCNAME = "dnplayer";
     private const string BLUESTACKS_PROCNAME = "HD-Player";
+    private const string ERROR_MESSAGE = "Emulator window not found. Restart required";
 
     private Process? _process;
     private nint _childHandle;
@@ -34,22 +35,21 @@ public class WindowsApiService : IWindowsApiService
             .Select(x => x)
             .FirstOrDefault(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName));
 
-        return process ?? throw new InvalidOperationException("Emulator process not found");
+        return process ?? throw new InvalidOperationException(ERROR_MESSAGE);
     }
 
     public void SendClick(int location)
     {
         if (_childHandle == nint.Zero || _process == null)
         {
-            _logger.Log("BlueStacks window not found. Restart required");
-            return;
+            throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
         if (_configService.Config.IsBluestacks)
         {
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS);
-            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0001, location);
-            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONUP, 0x0001, location);
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0000, location);
+            User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONUP, 0x0000, location);
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_KILLFOCUS);
         }
         else
@@ -69,8 +69,7 @@ public class WindowsApiService : IWindowsApiService
     {
         if (_childHandle == nint.Zero || _process == null)
         {
-            _logger.Log("BlueStacks window not found. Restart required");
-            return;
+            throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
         if (_configService.Config.IsBluestacks)
@@ -92,8 +91,7 @@ public class WindowsApiService : IWindowsApiService
             return childProcesses[0];
         }
 
-        _logger.Log("Emulator process not found - TinyClicker function is not possible. Launch emulator and restart the app.");
-        throw new InvalidOperationException("Emulator child handle not found");
+        throw new InvalidOperationException(ERROR_MESSAGE);
     }
 
     public int GetRelativeCoordinates(int x, int y)

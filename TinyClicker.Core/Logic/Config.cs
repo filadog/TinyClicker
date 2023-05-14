@@ -15,8 +15,9 @@ public class Config
     public DateTime LastRaffleTime { get; set; }
     public bool IsBluestacks { get; set; }
     public int ElevatorRides { get; set; }
+    public int FloorCostDecrease { get; set; }
 
-    public Config() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0) { }
+    public Config() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0, 0) { }
     public Config(
         bool vip,
         float elevatorSpeed,
@@ -28,7 +29,8 @@ public class Config
         bool buildFloors,
         DateTime lastRaffleTime,
         bool isBluestacks,
-        int elevatorRides)
+        int elevatorRides,
+        int floorCostDecrease)
     {
         VipPackage = vip;
         ElevatorSpeed = elevatorSpeed;
@@ -41,5 +43,6 @@ public class Config
         LastRaffleTime = lastRaffleTime;
         IsBluestacks = isBluestacks;
         ElevatorRides = elevatorRides;
+        FloorCostDecrease = floorCostDecrease;
     }
 }

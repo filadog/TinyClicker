@@ -257,7 +257,7 @@ public class ClickerActionsRepository
 
     public void CheckForNewFloor(int currentFloor, int balance)
     {
-        if (currentFloor == _configService.Config.RebuildAtFloor)
+        if (currentFloor >= _configService.Config.RebuildAtFloor)
         {
             WaitMs(500);
             RebuildTower();
@@ -535,10 +535,12 @@ public class ClickerActionsRepository
     private Dictionary<int, int> CalculateFloorPrices()
     {
         var result = new Dictionary<int, int>();
+        var floorCostDecrease = _configService.Config.FloorCostDecrease;
 
         for (int i = 1; i <= 9; i++)
         {
-            result.Add(i, 5000);
+            var floorPrice = 5000 - (5000 * floorCostDecrease / 100);
+            result.Add(i, floorPrice);
         }
 
         for (int i = 10; i <= _configService.Config.RebuildAtFloor + 1; i++)
@@ -550,7 +552,8 @@ public class ClickerActionsRepository
                 floorCost += 500;
             }
 
-            result.Add(i, (int)floorCost);
+            var floorPrice = floorCost - (floorCost * floorCostDecrease / 100);
+            result.Add(i, (int)floorPrice);
         }
 
         return result;

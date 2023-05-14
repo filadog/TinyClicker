@@ -24,6 +24,7 @@ public partial class SettingsWindow
     private DateTime _lastRebuildTime;
     private bool _buildFloors;
     private DateTime _lastRaffleTime;
+    private int _floorCostDecrease;
 
     public SettingsWindow(IConfigService configService)
     {
@@ -50,6 +51,7 @@ public partial class SettingsWindow
         CheckboxWatchBuxAds.IsChecked = _configService.Config.WatchBuxAds;
         CheckboxVipPackage.IsChecked = _configService.Config.VipPackage;
         BuildFloors.IsChecked = _configService.Config.BuildFloors;
+        FloorCostDecreaseTextBox.Text = _configService.Config.FloorCostDecrease.ToString();
 
         _currentFloor = _configService.Config.CurrentFloor;
         _rebuildAtFloor = _configService.Config.RebuildAtFloor;
@@ -131,7 +133,8 @@ public partial class SettingsWindow
             _buildFloors,
             _lastRaffleTime,
             MainWindow.IsBluestacks,
-            0);
+            0,
+            _floorCostDecrease);
 
         _configService.SaveConfig(config);
         MainWindow?.Log("Saved settings");
@@ -160,5 +163,21 @@ public partial class SettingsWindow
     private void CheckboxWatchBuxAds_Unchecked(object sender, RoutedEventArgs e)
     {
         _watchBuxAds = false;
+    }
+
+    private void FloorCostDecreaseTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var parsed = int.TryParse(FloorCostDecreaseTextBox.Text, out int value);
+
+        if (!parsed || ( value < 0 || value > 10))
+        {
+            MainWindow!.Log("Value should be between 0 and 10");
+            return;
+        }
+        else
+        {
+            MainWindow!.Log($"{FloorCostDecreaseTextBox.Name} value set");
+            _floorCostDecrease = value;
+        }
     }
 }
