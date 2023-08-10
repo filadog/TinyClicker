@@ -10,6 +10,7 @@ public class TinyClickerApp
     private readonly ScreenScanner _screenScanner;
     private readonly BackgroundWorker _backgroundWorker;
     private readonly ILogger _logger;
+
     public TinyClickerApp(BackgroundWorker backgroundWorker, ScreenScanner screenScanner, ILogger logger)
     {
         _backgroundWorker = backgroundWorker;

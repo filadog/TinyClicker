@@ -19,7 +19,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindElevatorButtonOnScreen()
     {
-        var itemName = Button.ElevatorButton.GetName();
+        var itemName = Button.ElevatorButton.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -28,7 +28,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindFreeBuxButtonOnScreen()
     {
-        var itemName = Button.FreeBuxButton.GetName();
+        var itemName = Button.FreeBuxGiftButton.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -37,7 +37,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindFreeBuxCollectButtonOnScreen()
     {
-        var itemName = Button.FreeBuxCollectButton.GetName();
+        var itemName = Button.FreeBuxCollectButton.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -46,7 +46,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindQuestButtonOnScreen()
     {
-        var itemName = Button.QuestButton.GetName();
+        var itemName = Button.QuestButton.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -55,7 +55,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindBackButtonOnScreen()
     {
-        var itemName = Button.BackButton.GetName();
+        var itemName = Button.BackButton.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -64,7 +64,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindGiftChuteOnScreen()
     {
-        var itemName = Button.GiftChute.GetName();
+        var itemName = Button.GiftChute.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);
@@ -103,7 +103,7 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
 
     private bool IsItemOnScreen(Enum item)
     {
-        var itemName = item.GetName();
+        var itemName = item.GetDescription();
 
         var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);

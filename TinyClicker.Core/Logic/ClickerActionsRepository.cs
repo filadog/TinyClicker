@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
@@ -30,19 +31,26 @@ public class ClickerActionsRepository
     private Dictionary<int, int> FloorPrices { get; }
     private DateTime AttemptNextFloorBuildAt { get; set; } = DateTime.Now;
 
-
-    #region Clicker Actions
-
     public void CancelHurryConstruction()
     {
         _logger.Log("Exiting the construction menu");
         ClickAndWaitSec(100, 375, 1); // Cancel action
     }
 
-    public void CollectFreeBux(int location)
+    public void CollectFreeBux(int lParam)
     {
         _logger.Log("Collecting free bux");
-        _windowsApiService.SendClick(location);
+
+        var location = GetLocationFromLParam(lParam);
+        _windowsApiService.SendClick(location.X + 20, location.Y + 20);
+        WaitMs(300);
+
+        if (_openCvService.FindOnScreen(Button.FreeBuxGiftButton, out var collectLocation))
+        {
+            _windowsApiService.SendClick(collectLocation.X + 20, collectLocation.Y + 20);
+            WaitMs(300);
+            _windowsApiService.SendClick(225, 375); // Collect bux
+        }
     }
 
     public void ClickOnChute(int location)
@@ -361,12 +369,12 @@ public class ClickerActionsRepository
         _configService.SaveStatRebuildTime();
         _configService.Config.ElevatorRides = 0;
 
-        ClickAndWaitMs(305, 570, 350);
-        ClickAndWaitMs(165, 435, 350);
-        ClickAndWaitMs(165, 440, 350);
-        ClickAndWaitMs(230, 380, 350);
-        ClickAndWaitMs(230, 380, 350);
-        ClickAndWaitMs(165, 405, 200); // Click to claim easter GT bonus
+        ClickAndWaitMs(305, 570, 350); // menu
+        ClickAndWaitMs(165, 435, 350); // rebuild menu
+        ClickAndWaitMs(165, 440, 350); // rebuild button
+        ClickAndWaitMs(230, 380, 350); // confirm rebuild
+        ClickAndWaitMs(160, 440, 350); // continue button
+        //ClickAndWaitMs(165, 405, 200); // click to claim easter GT bonus
 
         _configService.SetCurrentFloor(1);
     }
@@ -374,9 +382,13 @@ public class ClickerActionsRepository
     public void PassTheTutorial()
     {
         _logger.Log("Passing the tutorial");
-        ClickAndWaitMs(170, 435, 400); // Continue
+        if (_openCvService.FindOnScreen(Button.Continue))
+        {
+            ClickAndWaitMs(170, 435, 400); // Continue
+        }
+
         MoveDown();
-        WaitMs(1500);
+        WaitMs(1000);
 
         ClickAndWaitMs(195, 260, 200); // Build a new floor
         ClickAndWaitMs(230, 380, 200); // Confirm
@@ -472,7 +484,7 @@ public class ClickerActionsRepository
 
     private void MoveDown()
     {
-        _windowsApiService.SendClick(230, 580);
+        _windowsApiService.SendClick(230, 537);
     }
 
     public void PressExitButton()
@@ -505,9 +517,7 @@ public class ClickerActionsRepository
         _configService.SaveConfig();
     }
 
-    #endregion
-
-    #region Utility Methods
+    private Point GetLocationFromLParam(int lParam) => new Point((short)lParam, lParam >> 16);
 
     private static void WaitSec(int seconds)
     {
@@ -558,6 +568,4 @@ public class ClickerActionsRepository
 
         return result;
     }
-
-    #endregion
 }

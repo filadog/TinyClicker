@@ -23,7 +23,7 @@ public enum Button
     ElevatorButton,
 
     [Description("freeBuxButton")]
-    FreeBuxButton,
+    FreeBuxGiftButton,
 
     [Description("freeBuxCollectButton")]
     FreeBuxCollectButton,
@@ -41,7 +41,19 @@ public enum Button
     GameIcon,
 
     [Description("menuButton")]
-    MenuButton
+    MenuButton,
+
+    [Description("new_tasks_button")]
+    TasksButton,
+
+    [Description("new_gifts_button")]
+    GiftsButton,
+
+    [Description("new_tower_management_button")]
+    TowerManagementButton,
+
+    [Description("new_calendar_button")]
+    CalendarButton
 }
 
 public enum GameWindow

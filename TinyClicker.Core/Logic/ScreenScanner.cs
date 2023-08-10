@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using TinyClicker.Core;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
 
@@ -98,16 +100,9 @@ public class ScreenScanner
     {
         switch (item.Key)
         {
-            case "closeAd":
-            case "closeAd_2":
-            case "closeAd_3":
-            case "closeAd_4":
-            case "closeAd_5":
-            case "closeAd_6":
-            case "closeAd_7":
-            case "closeAd_8":
-            case "closeAd_9": _clickerActionsRepository.CloseAd(); break;
-            case "freeBuxCollectButton": _clickerActionsRepository.CollectFreeBux(item.Location); break;
+            case "closeAd" or "closeAd_2" or "closeAd_3" or "closeAd_4" or "closeAd_5" 
+                or "closeAd_6" or "closeAd_7" or "closeAd_8" or "closeAd_9":_clickerActionsRepository.CloseAd(); break;
+            case "new_gifts_button": _clickerActionsRepository.CollectFreeBux(item.Location); break;
             case "roofCustomizationWindow": _clickerActionsRepository.ExitRoofCustomizationMenu(); break;
             case "hurryConstructionPrompt": _clickerActionsRepository.CancelHurryConstruction(); break;
             case "continueButton": _clickerActionsRepository.PressContinue(item.Location); break;
@@ -119,8 +114,7 @@ public class ScreenScanner
             case "elevatorButton": _clickerActionsRepository.RideElevator(); break;
             case "questButton": _clickerActionsRepository.PressQuestButton(item.Location); break;
             case "completedQuestButton": _clickerActionsRepository.CompleteQuest(item.Location); break;
-            case "watchAdPromptCoins":
-            case "watchAdPromptBux": _clickerActionsRepository.TryWatchAds(); break;
+            case "watchAdPromptCoins" or "watchAdPromptBux":_clickerActionsRepository.TryWatchAds(); break;
             case "findBitizens": _clickerActionsRepository.FindBitizens(); break;
             case "deliverBitizens": _clickerActionsRepository.DeliverBitizens(); break;
             case "newFloorMenu": _clickerActionsRepository.CloseNewFloorMenu(); break;

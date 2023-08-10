@@ -32,20 +32,23 @@ public class OpenCvService : IOpenCvService
 
     private readonly HashSet<string> _skipButtons = new()
     {
-        Button.GameIcon.GetName(),
-        Button.BalanceCoin.GetName(),
-        Button.RestockButton.GetName(),
-        Button.MenuButton.GetName(),
-        GameWindow.DeliverBitizens.GetName(),
-        GameWindow.FindBitizens.GetName(),
-        GameWindow.BuildNewFloorNotification.GetName(),
-        GameWindow.HurryConstruction.GetName(),
-        GameWindow.NewFloorNoCoinsNotification.GetName(),
-        GameWindow.WatchAdPromptBux.GetName(),
-        GameWindow.WatchAdPromptCoins.GetName(),
-        GameWindow.FullyStockedBonus.GetName(),
-        GameWindow.AdsLostReward.GetName(),
-        GameWindow.BitizenMovedIn.GetName()
+        Button.GameIcon.GetDescription(),
+        Button.BalanceCoin.GetDescription(),
+        Button.RestockButton.GetDescription(),
+        Button.MenuButton.GetDescription(),
+        Button.CalendarButton.GetDescription(),
+        Button.TasksButton.GetDescription(),
+        Button.FreeBuxGiftButton.GetDescription(),
+        GameWindow.DeliverBitizens.GetDescription(),
+        GameWindow.FindBitizens.GetDescription(),
+        GameWindow.BuildNewFloorNotification.GetDescription(),
+        GameWindow.HurryConstruction.GetDescription(),
+        GameWindow.NewFloorNoCoinsNotification.GetDescription(),
+        GameWindow.WatchAdPromptBux.GetDescription(),
+        GameWindow.WatchAdPromptCoins.GetDescription(),
+        GameWindow.FullyStockedBonus.GetDescription(),
+        GameWindow.AdsLostReward.GetDescription(),
+        GameWindow.BitizenMovedIn.GetDescription()
     };
 
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
@@ -95,12 +98,11 @@ public class OpenCvService : IOpenCvService
         }
 
         return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
-
     }
 
     private readonly HashSet<string> _adjustableButtons = new()
     {
-        Button.GiftChute.GetName()
+        Button.GiftChute.GetDescription()
     };
 
     private int MakeAdjustedLParam(int x, int y)
@@ -114,7 +116,7 @@ public class OpenCvService : IOpenCvService
         using var windowBitmap = new Bitmap(gameWindow);
 
         var screen = windowBitmap.ToMat();
-        var template = templates == null ? Templates[image.GetName()] : templates[image.GetName()];
+        var template = templates == null ? Templates[image.GetDescription()] : templates[image.GetDescription()];
 
         var result = FindTemplateOnImage(screen, template);
 
@@ -127,7 +129,7 @@ public class OpenCvService : IOpenCvService
         using var windowBitmap = new Bitmap(gameWindow);
 
         var screen = windowBitmap.ToMat();
-        var template = Templates[image.GetName()];
+        var template = Templates[image.GetDescription()];
 
         var result = FindTemplateOnImage(screen, template);
         location = result.MaxLoc;

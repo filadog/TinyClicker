@@ -9,11 +9,11 @@ public static class EnumExtensions
 {
     private static readonly ConcurrentDictionary<string, string> _displayNameCache = new();
 
-    public static string GetName(this Enum value)
+    public static string GetDescription(this Enum value)
     {
         var key = $"{value.GetType().FullName}.{value}";
 
-        var displayName = _displayNameCache.GetOrAdd(key, x =>
+        return _displayNameCache.GetOrAdd(key, x =>
         {
             var name = (DescriptionAttribute[])value
                 .GetType()
@@ -23,7 +23,5 @@ public static class EnumExtensions
 
             return name.Length > 0 ? name[0].Description : value.ToString();
         });
-
-        return displayName;
     }
 }
