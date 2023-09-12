@@ -17,7 +17,7 @@ public class ScreenScanner
     private readonly IImageService _imageService;
 
     private Dictionary<string, Action<int>> _clickerActionsMap;
-    private Dictionary<string, int> _foundImages = new();
+    private Dictionary<string, int> _lastFoundImages = new();
     private int _foundCount;
 
     public ScreenScanner(
@@ -44,11 +44,11 @@ public class ScreenScanner
         using var gameWindow = _windowsApiService.GetGameScreenshot();
         var currentFloor = _configService.Config.CurrentFloor;
 
-        _foundImages = _openCvService.TryFindFirstOnScreen(gameWindow);
+        _lastFoundImages = _openCvService.TryFindFirstOnScreen(gameWindow);
 
-        foreach (var image in _foundImages)
+        foreach (var image in _lastFoundImages)
         {
-            if (_foundImages.Any())
+            if (_lastFoundImages.Any())
             {
                 var msg = "Found " + image.Key;
                 _logger.Log(msg);
@@ -59,11 +59,10 @@ public class ScreenScanner
             }
         }
 
-        if (_foundImages.Count == 0)
+        if (_lastFoundImages.Count == 0)
         {
             _foundCount++;
-            var msg = "Found nothing x" + _foundCount;
-            _logger.Log(msg);
+            _logger.Log("Found nothing x" + _foundCount.ToString());
 
             if (_foundCount >= 100) // todo multiply count by loop speed here
             {
@@ -80,10 +79,10 @@ public class ScreenScanner
 
         if (currentFloor != FloorToRebuildAt)
         {
-            if (_foundImages.Any())
+            if (_lastFoundImages.Any())
             {
-                var image = _foundImages.First();
-                PerformActions((image.Key, image.Value));
+                var image = _lastFoundImages.First();
+                PerformAction((image.Key, image.Value));
             }
             else
             {
@@ -102,10 +101,10 @@ public class ScreenScanner
             _clickerActionsRepository.CheckForNewFloor(currentFloor, balance);
         }
 
-        _foundImages.Clear();
+        _lastFoundImages.Clear();
     }
 
-    private void PerformActions((string Key, int Location) item)
+    private void PerformAction((string Key, int Location) item)
     {
         var found = _clickerActionsMap.TryGetValue(item.Key, out var action);
         if (found && action != null)

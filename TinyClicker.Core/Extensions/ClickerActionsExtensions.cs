@@ -7,7 +7,7 @@ using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Extensions;
 
-public static class ClickerActionRepositoryExtensions
+public static class ClickerActionsExtensions
 {
     public static Dictionary<string, Action<int>> GetActionsMap(this ClickerActionsRepository actions)
     {
