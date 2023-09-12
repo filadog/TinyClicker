@@ -11,6 +11,7 @@ namespace TinyClicker.Core.Services;
 public class ImageService : IImageService
 {
     private readonly TesseractEngine _tesseractEngine;
+
     public ImageService(TesseractEngine tesseractEngine)
     {
         _tesseractEngine = tesseractEngine;

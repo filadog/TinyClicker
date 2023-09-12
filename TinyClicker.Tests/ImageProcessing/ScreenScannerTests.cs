@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using TinyClicker.Core;
+using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
 using Xunit;

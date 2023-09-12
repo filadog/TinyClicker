@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TinyClicker.Core;
+using TinyClicker.Core.Extensions;
 using TinyClicker.UI;
 
 namespace TinyClicker.Tests;
