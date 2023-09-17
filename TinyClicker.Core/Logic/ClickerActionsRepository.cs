@@ -45,7 +45,7 @@ public class ClickerActionsRepository
         _windowsApiService.SendClick(location.X + 20, location.Y + 20);
         WaitMs(300);
 
-        if (_openCvService.FindOnScreen(Button.FreeBuxGiftButton, out var collectLocation))
+        if (_openCvService.TryFindOnScreen(Button.FreeBuxGiftButton, out var collectLocation))
         {
             _windowsApiService.SendClick(collectLocation.X + 20, collectLocation.Y + 20);
             WaitMs(300);
@@ -58,13 +58,13 @@ public class ClickerActionsRepository
         _logger.Log("Clicking on the parachute");
         _windowsApiService.SendClick(location);
         WaitMs(500);
-        if (_openCvService.FindOnScreen(GameWindow.WatchAdPromptCoins) && _configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
+        if (_openCvService.IsImageOnScreen(GameWindow.WatchAdPromptCoins) && _configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
         {
             TryWatchAds();
         }
         else if (_configService.Config.WatchBuxAds && _configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
         {
-            if (_openCvService.FindOnScreen(GameWindow.WatchAdPromptBux))
+            if (_openCvService.IsImageOnScreen(GameWindow.WatchAdPromptBux))
             {
                 TryWatchAds();
             }
@@ -121,7 +121,7 @@ public class ClickerActionsRepository
         ClickAndWaitMs(100, 480, 500); // Stock all
         ClickAndWaitMs(225, 375, 500); 
 
-        if (_openCvService.FindOnScreen(Button.FullyStockedBonus))
+        if (_openCvService.IsImageOnScreen(Button.FullyStockedBonus))
         {
             ClickAndWaitSec(165, 375, 1); // Close the bonus tooltip
             MoveUp();
@@ -146,19 +146,19 @@ public class ClickerActionsRepository
         _logger.Log("Riding the elevator");
         ClickAndWaitSec(21, 510, 1); // Move up
 
-        if (_openCvService.FindOnScreen(Button.BackButton))
+        if (_openCvService.IsImageOnScreen(Button.BackButton))
         {
             WaitMs(300);
             PressExitButton();
         }
-        else if (_openCvService.FindOnScreen(Button.Continue, out var location))
+        else if (_openCvService.TryFindOnScreen(Button.Continue, out var location))
         {
             // Click continue in case a new bitizen moved in
             _windowsApiService.SendClick(location.X, location.Y); 
         }
         else
         {
-            while (!_openCvService.FindOnScreen(Button.MenuButton))
+            while (!_openCvService.IsImageOnScreen(Button.MenuButton))
             {
                 WaitMs(500);
             }
@@ -175,11 +175,11 @@ public class ClickerActionsRepository
         _windowsApiService.SendClick(location);
         WaitMs(500);
 
-        if (_openCvService.FindOnScreen(GameWindow.DeliverBitizens))
+        if (_openCvService.IsImageOnScreen(GameWindow.DeliverBitizens))
         {
             DeliverBitizens();
         }
-        else if (_openCvService.FindOnScreen(GameWindow.FindBitizens))
+        else if (_openCvService.IsImageOnScreen(GameWindow.FindBitizens))
         {
             FindBitizens();
         }
@@ -213,7 +213,7 @@ public class ClickerActionsRepository
     public void CheckForLostAdsReward()
     {
         WaitMs(500);
-        if (_openCvService.FindOnScreen(GameWindow.AdsLostReward))
+        if (_openCvService.IsImageOnScreen(GameWindow.AdsLostReward))
         {
             _windowsApiService.SendClick(240, 344); // Click "Keep watching"
             WaitSec(15);
@@ -226,7 +226,7 @@ public class ClickerActionsRepository
 
     public void CheckForExitButton()
     {
-        if (_openCvService.FindOnScreen(Button.BackButton))
+        if (_openCvService.IsImageOnScreen(Button.BackButton))
         {
             PressExitButton();
         }
@@ -277,14 +277,14 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (_openCvService.FindOnScreen(Button.ElevatorButton))
+        if (_openCvService.IsImageOnScreen(Button.ElevatorButton))
         {
             WaitMs(300);
             RideElevator();
             return;
         }
 
-        if (_openCvService.FindOnScreen(GameWindow.Lobby))
+        if (_openCvService.IsImageOnScreen(GameWindow.Lobby))
         {
             _logger.Log("Found lobby window");
             PressExitButton();
@@ -294,7 +294,7 @@ public class ClickerActionsRepository
 
         BuildNewFloor();
 
-        if (_openCvService.FindOnScreen(GameWindow.NewFloorNoCoinsNotification))
+        if (_openCvService.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
         {
             AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(3);
             _logger.Log("Not enough coins for a new floor");
@@ -302,7 +302,7 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (_openCvService.FindOnScreen(Button.BackButton))
+        if (_openCvService.IsImageOnScreen(Button.BackButton))
         {
             return;
         }
@@ -314,13 +314,13 @@ public class ClickerActionsRepository
     {
         if (AttemptNextFloorBuildAt <= DateTime.Now)
         {
-            if (_openCvService.FindOnScreen(Button.Continue))
+            if (_openCvService.IsImageOnScreen(Button.Continue))
             {
                 _windowsApiService.SendClick(230, 380); // Continue
                 return;
             }
 
-            if (_openCvService.FindOnScreen(Button.BackButton))
+            if (_openCvService.IsImageOnScreen(Button.BackButton))
             {
                 PressExitButton();
                 _logger.Log("Clicking Back button while building");
@@ -332,17 +332,17 @@ public class ClickerActionsRepository
             ClickAndWaitMs(22, 10, 300); // Move up
             ClickAndWaitMs(300, 360, 400); // Click on a new floor
 
-            if (_openCvService.FindOnScreen(Button.Continue))
+            if (_openCvService.IsImageOnScreen(Button.Continue))
             {
                 _windowsApiService.SendClick(160, 380); // No thanks
                 _logger.Log("Clicking Continue button while building");
             }
-            else if (_openCvService.FindOnScreen(GameWindow.BuildNewFloorNotification))
+            else if (_openCvService.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
             {
                 _windowsApiService.SendClick(230, 320); // Confirm
                 WaitMs(400);
 
-                if (!_openCvService.FindOnScreen(GameWindow.NewFloorNoCoinsNotification))
+                if (!_openCvService.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
                 {
                     _configService.AddOneFloor();
                     _logger.Log("Built a new floor");
@@ -382,7 +382,7 @@ public class ClickerActionsRepository
     public void PassTheTutorial()
     {
         _logger.Log("Passing the tutorial");
-        if (_openCvService.FindOnScreen(Button.Continue))
+        if (_openCvService.IsImageOnScreen(Button.Continue))
         {
             ClickAndWaitMs(170, 435, 400); // Continue
         }
@@ -404,7 +404,7 @@ public class ClickerActionsRepository
         ClickAndWaitSec(21, 510, 4);   // Click on the elevator button
 
         // Daily rent check (in case it's past midnight)
-        if (_openCvService.FindOnScreen(Button.FreeBuxCollectButton, out var location))
+        if (_openCvService.TryFindOnScreen(Button.FreeBuxCollectButton, out var location))
         {
             ClickAndWaitMs(location.X, location.Y, 500); // Collect daily rent
             ClickAndWaitMs(21, 510, 4000); // Click on elevator button again
@@ -435,7 +435,7 @@ public class ClickerActionsRepository
         ClickAndWaitSec(200, 210, 5);  // Request restock of the first item in the store
 
         // Wait until the floor is restocked
-        while (!_openCvService.FindOnScreen(Button.RestockButton))
+        while (!_openCvService.IsImageOnScreen(Button.RestockButton))
         {
             WaitMs(700);
         }
@@ -502,7 +502,7 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (_openCvService.FindOnScreen(Button.Continue))
+        if (_openCvService.IsImageOnScreen(Button.Continue))
         {
             _windowsApiService.SendClick(160, 380); // Continue
         }

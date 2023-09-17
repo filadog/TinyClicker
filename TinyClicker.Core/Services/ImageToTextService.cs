@@ -8,11 +8,11 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace TinyClicker.Core.Services;
 
-public class ImageService : IImageService
+public class ImageToTextService : IImageToTextService
 {
     private readonly TesseractEngine _tesseractEngine;
 
-    public ImageService(TesseractEngine tesseractEngine)
+    public ImageToTextService(TesseractEngine tesseractEngine)
     {
         _tesseractEngine = tesseractEngine;
     }

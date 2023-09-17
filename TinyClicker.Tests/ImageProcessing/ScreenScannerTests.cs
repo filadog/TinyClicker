@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
+using TinyClicker.Core;
 using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
@@ -107,8 +108,8 @@ public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
 
         var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);
-        var templates = openCvService.MakeTemplates(screenshot);
-        var isImageFound = openCvService.FindOnScreen(item, templates, screenshot);
+        var templates = openCvService.MakeTemplatesFromSamples(screenshot);
+        var isImageFound = openCvService.IsImageOnScreen(item, templates, screenshot);
 
         return isImageFound;
     }

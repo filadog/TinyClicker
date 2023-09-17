@@ -7,12 +7,12 @@ namespace TinyClicker.Tests.ImageProcessing;
 public class ImageToTextTests : IClassFixture<DependencySetupFixture>
 {
     private readonly ServiceProvider _serviceProvider;
-    private readonly IImageService _imageService;
+    private readonly IImageToTextService _imageService;
 
     public ImageToTextTests(DependencySetupFixture fixture)
     {
         _serviceProvider = fixture.ServiceProvider;
-        _imageService = _serviceProvider.GetRequiredService<IImageService>();
+        _imageService = _serviceProvider.GetRequiredService<IImageToTextService>();
     }
 
     [Fact]

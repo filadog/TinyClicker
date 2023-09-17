@@ -14,7 +14,7 @@ public class ScreenScanner
     private readonly IOpenCvService _openCvService;
     private readonly IWindowsApiService _windowsApiService;
     private readonly ILogger _logger;
-    private readonly IImageService _imageService;
+    private readonly IImageToTextService _imageService;
 
     private Dictionary<string, Action<int>> _clickerActionsMap;
     private Dictionary<string, int> _lastFoundImages = new();
@@ -25,7 +25,7 @@ public class ScreenScanner
         ClickerActionsRepository clickerActionsRepository,
         IWindowsApiService windowsApiService,
         IOpenCvService openCvService,
-        IImageService imageService,
+        IImageToTextService imageService,
         ILogger logger)
     {
         _configService = configService;

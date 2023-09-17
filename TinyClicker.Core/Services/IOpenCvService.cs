@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using OpenCvSharp;
+using Point = OpenCvSharp.Point;
 
 namespace TinyClicker.Core.Services;
 
 public interface IOpenCvService
 {
     Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen);
-    bool FindOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null);
-    bool FindOnScreen(Enum image, out OpenCvSharp.Point location);
-    Dictionary<string, Mat> MakeTemplates(Image screenshot);
+    bool IsImageOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null);
+    bool TryFindOnScreen(Enum image, out Point location);
+    Dictionary<string, Mat> MakeTemplatesFromSamples(Image screenshot);
 }

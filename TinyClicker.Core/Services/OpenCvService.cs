@@ -16,14 +16,14 @@ namespace TinyClicker.Core.Services;
 public class OpenCvService : IOpenCvService
 {
     private readonly IWindowsApiService _windowsApiService;
-    private readonly IImageService _imageService;
+    private readonly IImageToTextService _imageService;
 
     private const double OPEN_CV_THRESHOLD = 0.78;
     private const string SAMPLES_PATH = "./Samples/samples.dat";
-    private const string BUTTON_NAMES_PATH = "./Samples/button_names.txt";
+    private const string SAMPLE_NAMES_PATH = "./Samples/button_names.txt";
 
 
-    public OpenCvService(IWindowsApiService windowsApiService, IImageService imageService)
+    public OpenCvService(IWindowsApiService windowsApiService, IImageToTextService imageService)
     {
         _windowsApiService = windowsApiService;
         _imageService = imageService;
@@ -52,11 +52,16 @@ public class OpenCvService : IOpenCvService
         GameWindow.BitizenMovedIn.GetDescription()
     };
 
+    private readonly HashSet<string> _adjustableButtons = new()
+    {
+        Button.GiftChute.GetDescription()
+    };
+
     public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
     {
         if (Templates.Count == 0)
         {
-            Templates = MakeTemplates(gameScreen);
+            Templates = MakeTemplatesFromSamples(gameScreen);
         }
 
         using var screenBitmap = new Bitmap(gameScreen);
@@ -71,9 +76,10 @@ public class OpenCvService : IOpenCvService
             }
 
             var item = TryFindSingle(template, screenMat);
-            if (string.IsNullOrEmpty(item.Key))
+            Task.Delay(15).Wait(); // Smooth the CPU peak load
+
+            if (item == default)
             {
-                Task.Delay(15).Wait(); // Smooth the CPU peak load
                 continue;
             }
 
@@ -90,7 +96,7 @@ public class OpenCvService : IOpenCvService
 
         if (result.MaxVal < OPEN_CV_THRESHOLD) 
         {
-            return ("", 0);
+            return default;
         }
 
         if (_adjustableButtons.Contains(template.Key))
@@ -101,17 +107,12 @@ public class OpenCvService : IOpenCvService
         return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
     }
 
-    private readonly HashSet<string> _adjustableButtons = new()
-    {
-        Button.GiftChute.GetDescription()
-    };
-
     private int MakeAdjustedLParam(int x, int y)
     {
         return _windowsApiService.MakeLParam(x + 40, y + 40);
     }
 
-    public bool FindOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
+    public bool IsImageOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
     {
         using var gameWindow = screenshot ?? _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
@@ -124,7 +125,7 @@ public class OpenCvService : IOpenCvService
         return result.MaxVal >= OPEN_CV_THRESHOLD;
     }
 
-    public bool FindOnScreen(Enum image, out Point location)
+    public bool TryFindOnScreen(Enum image, out Point location)
     {
         using var gameWindow = _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
@@ -156,9 +157,9 @@ public class OpenCvService : IOpenCvService
         return (maxVal, maxLoc);
     }
 
-    private static byte[][] LoadButtonData()
+    private static byte[][] LoadSampleData()
     {
-        var buttons = Array.Empty<byte[]>();
+        var samples = Array.Empty<byte[]>();
         using var file = new FileStream(SAMPLES_PATH, FileMode.Open, FileAccess.Read);
 
         var sizeInt = sizeof(int);
@@ -181,33 +182,33 @@ public class OpenCvService : IOpenCvService
                 break;
             }
 
-            Array.Resize(ref buttons, buttons.Length + 1);
-            buttons[^1] = data;
+            Array.Resize(ref samples, samples.Length + 1);
+            samples[^1] = data;
         }
 
-        return buttons;
+        return samples;
     }
 
-    private static Dictionary<string, Image> GetSamples()
+    private static Dictionary<string, Image> LoadSampleImages()
     {
         var dict = new Dictionary<string, Image>();
-        var buttonNames = File.ReadAllLines(BUTTON_NAMES_PATH);
-        var buttonData = LoadButtonData();
+        var sampleNames = File.ReadAllLines(SAMPLE_NAMES_PATH);
+        var sampleData = LoadSampleData();
 
-        for (int i = 0; i < buttonNames.Length; i++)
+        for (int i = 0; i < sampleNames.Length; i++)
         {
-            var sample = buttonData[i];
+            var sample = sampleData[i];
             using var ms = new MemoryStream(sample);
             Image.FromStream(ms);
-            dict.Add(buttonNames[i], Image.FromStream(ms));
+            dict.Add(sampleNames[i], Image.FromStream(ms));
         }
 
         return dict;
     }
 
-    public Dictionary<string, Mat> MakeTemplates(Image screenshot)
+    public Dictionary<string, Mat> MakeTemplatesFromSamples(Image screenshot)
     {
-        var images = GetSamples();
+        var images = LoadSampleImages();
         var percentage = _imageService.GetScreenDiffPercentageForTemplates(screenshot);
 
         var mats = new Dictionary<string, Mat>();
