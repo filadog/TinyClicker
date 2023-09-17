@@ -1,6 +1,6 @@
 ## TinyClicker
 
-[English](https://github.com/filadog/TinyClicker/README-ENGLISH.md)
+[English](https://github.com/filadog/TinyClicker/blob/master/README-ENGLISH.md)
 
 Простой и минималистичный автокликер для мобильной игры Tiny Tower, созданный для любителей и коллекционеров золотых билетов.\
 Кликер использует распознавание текста и изображений для полной автоматизации постройки и перестройки вашего небоскреба.
