@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -9,20 +9,20 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>6</WarningLevel>
+    <WarningLevel>7</WarningLevel>
     <DebugType>embedded</DebugType>
     <NoWarn />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningLevel>6</WarningLevel>
+    <WarningLevel>7</WarningLevel>
     <DebugType>embedded</DebugType>
     <NoWarn />
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.188-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -33,6 +33,7 @@
     <PackageReference Include="Tesseract.Drawing" Version="5.2.0" />
     <PackageReference Include="Vanara.PInvoke.Gdi32" Version="3.4.17" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.17" />
+    <PackageReference Include="xunit" Version="2.6.1" />
   </ItemGroup>
 
   <ItemGroup>
