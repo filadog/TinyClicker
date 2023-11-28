@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
-using System.Linq;
 using Vanara.PInvoke;
 
 namespace TinyClicker.Core.Services;
@@ -120,8 +120,7 @@ public class WindowsApiService : IWindowsApiService
             _screenRect = newRect;
         }
 
-        var image = MakeScreenshot(_childHandle);
-        return image;
+        return MakeScreenshot(_childHandle);
     }
 
     public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen

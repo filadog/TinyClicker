@@ -1,15 +1,13 @@
-﻿using OpenCvSharp;
+﻿using ImageMagick;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using OpenCvSharp.Extensions;
-using TinyClicker.Core.Logic;
-using ImageMagick;
 using System.IO;
+using System.Threading.Tasks;
+using TinyClicker.Core.Logic;
 using Point = OpenCvSharp.Point;
-using TinyClicker.Core.Extensions;
 
 namespace TinyClicker.Core.Services;
 
@@ -94,7 +92,7 @@ public class OpenCvService : IOpenCvService
     {
         var result = FindTemplateOnImage(reference, template.Value);
 
-        if (result.MaxVal < OPEN_CV_THRESHOLD) 
+        if (result.MaxVal < OPEN_CV_THRESHOLD)
         {
             return default;
         }

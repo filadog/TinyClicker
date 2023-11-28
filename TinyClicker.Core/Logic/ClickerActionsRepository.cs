@@ -119,7 +119,7 @@ public class ClickerActionsRepository
         MoveDown();
         WaitMs(500);
         ClickAndWaitMs(100, 480, 500); // Stock all
-        ClickAndWaitMs(225, 375, 500); 
+        ClickAndWaitMs(225, 375, 500);
 
         if (_openCvService.IsImageOnScreen(Button.FullyStockedBonus))
         {
@@ -154,7 +154,7 @@ public class ClickerActionsRepository
         else if (_openCvService.TryFindOnScreen(Button.Continue, out var location))
         {
             // Click continue in case a new bitizen moved in
-            _windowsApiService.SendClick(location.X, location.Y); 
+            _windowsApiService.SendClick(location.X, location.Y);
         }
         else
         {

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text.Json;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Services;
