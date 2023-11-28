@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logic;
 using Point = OpenCvSharp.Point;
@@ -16,10 +17,10 @@ public class OpenCvService : IOpenCvService
     private readonly IWindowsApiService _windowsApiService;
     private readonly IImageToTextService _imageService;
 
-    private const double OPEN_CV_THRESHOLD = 0.78;
+    private const double OPEN_CV_THRESHOLD_LOW = 0.78;
+    private const double OPEN_CV_THRESHOLD_HIGH = 0.9;
     private const string SAMPLES_PATH = "./Samples/samples.dat";
     private const string SAMPLE_NAMES_PATH = "./Samples/button_names.txt";
-
 
     public OpenCvService(IWindowsApiService windowsApiService, IImageToTextService imageService)
     {
@@ -27,7 +28,7 @@ public class OpenCvService : IOpenCvService
         _imageService = imageService;
     }
 
-    private Dictionary<string, Mat> Templates { get; set; } = new();
+    private Dictionary<string, Mat>? Templates { get; set; }
 
     private readonly HashSet<string> _skipButtons = new()
     {
@@ -50,59 +51,60 @@ public class OpenCvService : IOpenCvService
         GameWindow.BitizenMovedIn.GetDescription()
     };
 
+    private readonly HashSet<string> _highThresholdButtons = new()
+    {
+        Button.GiftsButton.GetDescription()
+    };
+
     private readonly HashSet<string> _adjustableButtons = new()
     {
         Button.GiftChute.GetDescription()
     };
 
-    public Dictionary<string, int> TryFindFirstOnScreen(Image gameScreen)
+    public bool TryFindFirstImageOnScreen(Image gameScreen, out (string ItemName, int Location) result)
     {
-        if (Templates.Count == 0)
-        {
-            Templates = MakeTemplatesFromSamples(gameScreen);
-        }
+        Templates ??= MakeTemplatesFromSamples(gameScreen);
 
         using var screenBitmap = new Bitmap(gameScreen);
         using var screenMat = screenBitmap.ToMat();
 
-        var result = new Dictionary<string, int>();
-        foreach (var template in Templates)
+        foreach (var template in Templates.Where(x => !_skipButtons.Contains(x.Key)))
         {
-            if (_skipButtons.Contains(template.Key))
+            if (TryFindSingle(template, screenMat, out var scanResult))
             {
-                continue;
+                Task.Delay(15).Wait(); // Smooth the CPU peak load
+                result = (scanResult.Key, scanResult.Location);
+                return true;
             }
-
-            var item = TryFindSingle(template, screenMat);
-            Task.Delay(15).Wait(); // Smooth the CPU peak load
-
-            if (item == default)
-            {
-                continue;
-            }
-
-            result.Add(item.Key, item.Location);
-            break;
         }
 
-        return result;
+        result = default;
+        return false;
     }
 
-    private (string Key, int Location) TryFindSingle(KeyValuePair<string, Mat> template, Mat reference)
+    private bool TryFindSingle(KeyValuePair<string, Mat> template, Mat reference, out (string Key, int Location) result)
     {
-        var result = FindTemplateOnImage(reference, template.Value);
+        var scanResult = FindTemplateOnImage(reference, template.Value);
+        var threshold = _highThresholdButtons.Contains(template.Key)
+            ? OPEN_CV_THRESHOLD_HIGH
+            : OPEN_CV_THRESHOLD_LOW;
 
-        if (result.MaxVal < OPEN_CV_THRESHOLD)
+        if (scanResult.MaxVal < threshold)
         {
-            return default;
+            result = default;
+            return false;
         }
 
         if (_adjustableButtons.Contains(template.Key))
         {
-            return (template.Key, MakeAdjustedLParam(result.MaxLoc.X, result.MaxLoc.Y));
+            result = (template.Key, MakeAdjustedLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y));
+        }
+        else
+        {
+            result = (template.Key, _windowsApiService.MakeLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y + 10));
         }
 
-        return (template.Key, _windowsApiService.MakeLParam(result.MaxLoc.X, result.MaxLoc.Y + 10));
+        return true;
     }
 
     private int MakeAdjustedLParam(int x, int y)
@@ -119,8 +121,11 @@ public class OpenCvService : IOpenCvService
         var template = templates == null ? Templates[image.GetDescription()] : templates[image.GetDescription()];
 
         var result = FindTemplateOnImage(screen, template);
+        var threshold = _highThresholdButtons.Contains(image.GetDescription())
+            ? OPEN_CV_THRESHOLD_HIGH
+            : OPEN_CV_THRESHOLD_LOW;
 
-        return result.MaxVal >= OPEN_CV_THRESHOLD;
+        return result.MaxVal >= threshold;
     }
 
     public bool TryFindOnScreen(Enum image, out Point location)
@@ -134,7 +139,11 @@ public class OpenCvService : IOpenCvService
         var result = FindTemplateOnImage(screen, template);
         location = result.MaxLoc;
 
-        return result.MaxVal >= OPEN_CV_THRESHOLD;
+        var threshold = _highThresholdButtons.Contains(image.GetDescription())
+            ? OPEN_CV_THRESHOLD_HIGH
+            : OPEN_CV_THRESHOLD_LOW;
+
+        return result.MaxVal >= threshold;
     }
 
     private static (double MaxVal, Point MaxLoc) FindTemplateOnImage(Mat screen, Mat template)

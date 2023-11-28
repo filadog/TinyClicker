@@ -13,17 +13,18 @@ public static class ClickerActionsExtensions
     {
         var map = new Dictionary<string, Action<int>>();
 
-        map.Add("closeAd", x => actions.CloseAd());
-        map.Add("closeAd_1", x => actions.CloseAd());
-        map.Add("closeAd_2", x => actions.CloseAd());
-        map.Add("closeAd_3", x => actions.CloseAd());
-        map.Add("closeAd_4", x => actions.CloseAd());
-        map.Add("closeAd_5", x => actions.CloseAd());
-        map.Add("closeAd_6", x => actions.CloseAd());
-        map.Add("closeAd_7", x => actions.CloseAd());
-        map.Add("closeAd_8", x => actions.CloseAd());
-        map.Add("closeAd_9", x => actions.CloseAd());
+        map.Add("closeAd", x => actions.TryCloseAd());
+        map.Add("closeAd_1", x => actions.TryCloseAd());
+        map.Add("closeAd_2", x => actions.TryCloseAd());
+        map.Add("closeAd_3", x => actions.TryCloseAd());
+        map.Add("closeAd_4", x => actions.TryCloseAd());
+        map.Add("closeAd_5", x => actions.TryCloseAd());
+        map.Add("closeAd_6", x => actions.TryCloseAd());
+        map.Add("closeAd_7", x => actions.TryCloseAd());
+        map.Add("closeAd_8", x => actions.TryCloseAd());
+        map.Add("closeAd_9", x => actions.TryCloseAd());
 
+        map.Add("freeBuxCollectButton", x => actions.ClickAndWaitMs(x, 300));
         map.Add("new_gifts_button", x => actions.CollectFreeBux(x));
         map.Add("roofCustomizationWindow", x => actions.ExitRoofCustomizationMenu());
         map.Add("hurryConstructionPrompt", x => actions.CancelHurryConstruction());

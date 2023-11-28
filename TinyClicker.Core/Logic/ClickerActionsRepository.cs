@@ -75,7 +75,7 @@ public class ClickerActionsRepository
         }
     }
 
-    public void CloseAd()
+    public void TryCloseAd()
     {
         _logger.Log("Closing the advertisement");
 
@@ -263,6 +263,12 @@ public class ClickerActionsRepository
         PressExitButton();
     }
 
+    public void ClickAndWaitMs(int location, int waitTimeMs)
+    {
+        _windowsApiService.SendClick(location);
+        WaitMs(waitTimeMs);
+    }
+
     public void CheckForNewFloor(int currentFloor, int balance)
     {
         if (currentFloor >= _configService.Config.RebuildAtFloor)
@@ -373,10 +379,10 @@ public class ClickerActionsRepository
         ClickAndWaitMs(165, 435, 350); // rebuild menu
         ClickAndWaitMs(165, 440, 350); // rebuild button
         ClickAndWaitMs(230, 380, 350); // confirm rebuild
-        ClickAndWaitMs(160, 440, 350); // continue button
+        ClickAndWaitMs(230, 380, 600); // yes, skip tutorial (finally)
         //ClickAndWaitMs(165, 405, 200); // click to claim easter GT bonus
 
-        _configService.SetCurrentFloor(1);
+        _configService.SetCurrentFloor(4);
     }
 
     public void PassTheTutorial()
@@ -493,7 +499,7 @@ public class ClickerActionsRepository
         _windowsApiService.SendClick(305, 565);
     }
 
-    public void PlayRaffle()
+    public void TryPlayRaffle()
     {
         var lastRaffleTime = _configService.Config.LastRaffleTime;
         var dateTimeNow = DateTime.Now;

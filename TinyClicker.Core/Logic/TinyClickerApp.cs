@@ -7,14 +7,17 @@ namespace TinyClicker.Core.Logic;
 
 public class TinyClickerApp
 {
-    private readonly ScreenScanner _screenScanner;
+    private readonly MainLoop _mainLoop;
     private readonly BackgroundWorker _backgroundWorker;
     private readonly ILogger _logger;
 
-    public TinyClickerApp(BackgroundWorker backgroundWorker, ScreenScanner screenScanner, ILogger logger)
+    public TinyClickerApp(
+        BackgroundWorker backgroundWorker,
+        MainLoop mainLoop,
+        ILogger logger)
     {
         _backgroundWorker = backgroundWorker;
-        _screenScanner = screenScanner;
+        _mainLoop = mainLoop;
         _logger = logger;
     }
 
@@ -36,7 +39,7 @@ public class TinyClickerApp
             try
             {
                 // todo add custom loop delay
-                _screenScanner.StartIteration();
+                _mainLoop.Start();
                 Task.Delay(500).Wait();
             }
             catch (InvalidOperationException ex)

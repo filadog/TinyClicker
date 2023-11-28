@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<BackgroundWorker>();
         collection.AddSingleton<IConfigService, ConfigService>();
         collection.AddSingleton<TinyClickerApp>();
-        collection.AddSingleton<ScreenScanner>();
+        collection.AddSingleton<MainLoop>();
         collection.AddSingleton<ClickerActionsRepository>();
         collection.AddSingleton<IWindowsApiService, WindowsApiService>();
         collection.AddSingleton<IImageToTextService, ImageToTextService>();

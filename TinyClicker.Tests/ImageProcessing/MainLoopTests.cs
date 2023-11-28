@@ -9,10 +9,10 @@ using Xunit;
 
 namespace TinyClicker.Tests.ImageProcessing;
 
-public class ScreenScannerTests : IClassFixture<DependencySetupFixture>
+public class MainLoopTests : IClassFixture<DependencySetupFixture>
 {
     private readonly ServiceProvider _serviceProvider;
-    public ScreenScannerTests(DependencySetupFixture fixture)
+    public MainLoopTests(DependencySetupFixture fixture)
     {
         _serviceProvider = fixture.ServiceProvider;
     }
