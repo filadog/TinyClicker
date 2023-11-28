@@ -103,4 +103,10 @@
 		<ProjectReference Include="..\TinyClicker.Core\TinyClicker.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="app.manifest">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

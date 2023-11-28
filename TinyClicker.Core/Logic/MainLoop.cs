@@ -59,7 +59,6 @@ public class MainLoop
                 _clickerActionsRepository.TryCloseAd();
             }
         }
-        //new_gifts_button, 
 
         if (currentFloor != FloorToRebuildAt)
         {
