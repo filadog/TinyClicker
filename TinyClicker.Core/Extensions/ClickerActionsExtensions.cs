@@ -29,6 +29,7 @@ public static class ClickerActionsExtensions
         map.Add("roofCustomizationWindow", x => actions.ExitRoofCustomizationMenu());
         map.Add("hurryConstructionPrompt", x => actions.CancelHurryConstruction());
         map.Add("continueButton", x => actions.PressContinue(x));
+        map.Add("awesome_button", x => actions.PressContinue(x));
         map.Add("foundCoinsChuteNotification", x => actions.CloseChuteNotification());
         map.Add("restockButton", x => actions.Restock());
         map.Add("freeBuxButton", x => actions.PressFreeBuxButton());

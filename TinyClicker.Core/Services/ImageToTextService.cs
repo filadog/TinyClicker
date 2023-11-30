@@ -11,6 +11,7 @@ namespace TinyClicker.Core.Services;
 public class ImageToTextService : IImageToTextService
 {
     private readonly TesseractEngine _tesseractEngine;
+    private static Rectangle _cropRectangle = new(20, 541, 65, 20);
 
     public ImageToTextService(TesseractEngine tesseractEngine)
     {
@@ -19,16 +20,15 @@ public class ImageToTextService : IImageToTextService
 
     public int GetBalanceFromWindow(Image window)
     {
-        using var sourceImage = GetAdjustedBalanceImage(window);
-        using var page = _tesseractEngine.Process(sourceImage, PageSegMode.SingleLine);
+        using var balanceImage = CropBalanceImage(window);
+        using var balancePage = _tesseractEngine.Process(balanceImage, PageSegMode.SingleLine);
 
-        var result = page.GetText().Trim();
+        var balance = balancePage.GetText().Trim();
 
-        window.Dispose();
-        return StringToBalance(result);
+        return ParseBalanceFromString(balance);
     }
 
-    private static int StringToBalance(string result)
+    private static int ParseBalanceFromString(string result)
     {
         if (result.Contains('M'))
         {
@@ -47,8 +47,7 @@ public class ImageToTextService : IImageToTextService
             result = result[..endIndex];
         }
 
-        var parsed = int.TryParse(TrimWithRegex(result), out var value);
-        return parsed ? value : -1;
+        return int.TryParse(TrimWithRegex(result), out var value) ? value : -1;
     }
 
     private static string TrimWithRegex(string input)
@@ -56,9 +55,9 @@ public class ImageToTextService : IImageToTextService
         return Regex.Replace(input, "[^0-9]", "").Trim();
     }
 
-    private Bitmap GetAdjustedBalanceImage(Image gameWindow)
+    private Bitmap CropBalanceImage(Image gameWindow)
     {
-        // resize image to default size
+        // Resize image to default size
         var percentage = GetScreenDiffPercentageForBalance(gameWindow);
         using var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png);
 
@@ -66,8 +65,8 @@ public class ImageToTextService : IImageToTextService
 
         using var image = BytesToImage(imageOld.ToByteArray());
 
-        //var filename = @"./screenshots/window.png";
-        //SaveScreenshot(result, filename);
+        var filename = @"./screenshots/window.png";
+        SaveDebugScreenshot(image, filename);
 
         return CropCurrentBalance(image);
     }
@@ -75,14 +74,13 @@ public class ImageToTextService : IImageToTextService
     private static Bitmap CropCurrentBalance(Image window)
     {
         // Crop the image
-        var cropRectangle = new Rectangle(20, 541, 65, 20);
-        var bitmap = new Bitmap(cropRectangle.Width, cropRectangle.Height);
-        using (var gr = Graphics.FromImage(bitmap))
+        var bitmap = new Bitmap(_cropRectangle.Width, _cropRectangle.Height);
+        using (var graphics = Graphics.FromImage(bitmap))
         {
-            gr.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), cropRectangle, GraphicsUnit.Pixel);
+            graphics.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), _cropRectangle, GraphicsUnit.Pixel);
         }
 
-        //Invert the image
+        // Invert the image
         for (int y = 0; y <= bitmap.Height - 1; y++)
         {
             for (int x = 0; x <= bitmap.Width - 1; x++)
@@ -133,7 +131,7 @@ public class ImageToTextService : IImageToTextService
         return Image.FromStream(ms);
     }
 
-    private static void SaveScreenshot(Image screenshot, string filename)
+    private static void SaveDebugScreenshot(Image screenshot, string filename)
     {
         if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
         {

@@ -39,6 +39,7 @@ public class OpenCvService : IOpenCvService
         Button.CalendarButton.GetDescription(),
         Button.TasksButton.GetDescription(),
         Button.FreeBuxGiftButton.GetDescription(),
+        Button.TowerManagementButton.GetDescription(),
         GameWindow.DeliverBitizens.GetDescription(),
         GameWindow.FindBitizens.GetDescription(),
         GameWindow.BuildNewFloorNotification.GetDescription(),

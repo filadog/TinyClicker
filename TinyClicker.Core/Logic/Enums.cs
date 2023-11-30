@@ -53,7 +53,10 @@ public enum Button
     TowerManagementButton,
 
     [Description("new_calendar_button")]
-    CalendarButton
+    CalendarButton,
+
+    [Description("awesome_button")]
+    AwesomeButton
 }
 
 public enum GameWindow
