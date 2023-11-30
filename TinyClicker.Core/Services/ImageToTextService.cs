@@ -65,8 +65,8 @@ public class ImageToTextService : IImageToTextService
 
         using var image = BytesToImage(imageOld.ToByteArray());
 
-        var filename = @"./screenshots/window.png";
-        SaveDebugScreenshot(image, filename);
+        //var filename = @"./screenshots/window.png";
+        //SaveDebugScreenshot(image, filename);
 
         return CropCurrentBalance(image);
     }
