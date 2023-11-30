@@ -4,7 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="290" Width="265" ResizeMode="NoResize" Visibility="Visible" ShowActivated="False" WindowStyle="None" AllowsTransparency="True" MouseDown="SettingsWindow_MouseDown">
+        Title="SettingsWindow" 
+        Height="290" 
+        Width="265" 
+        ResizeMode="NoResize" 
+        Visibility="Visible" 
+        ShowActivated="False" 
+        WindowStyle="None" 
+        AllowsTransparency="True" 
+        MouseDown="SettingsWindow_MouseDown">
 
     <Window.Background>
         <ImageBrush ImageSource="/images/settings_window.png"/>

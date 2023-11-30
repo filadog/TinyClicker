@@ -2,6 +2,7 @@ freeBuxCollectButton
 watchAdPromptBux
 watchAdPromptCoins
 continueButton
+awesome_button
 newFloorNoCoinsNotification
 backButton
 findBitizens
@@ -37,4 +38,3 @@ new_tasks_button
 new_gifts_button
 new_tower_management_button
 new_calendar_button
-awesome_button
