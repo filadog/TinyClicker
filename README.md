@@ -1,5 +1,6 @@
 ## TinyClicker
-#### Game version: v.4.29.0-354 - 29.11.2023
+#### Game version: v.4.30.0-359 - _01.12.2023_
+
 
 ### [English](#tinyclicker---english)
 
