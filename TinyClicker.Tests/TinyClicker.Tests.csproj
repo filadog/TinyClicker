@@ -38,6 +38,9 @@
     <None Update="Screenshots\1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Screenshots\1868M.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Screenshots\441825.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

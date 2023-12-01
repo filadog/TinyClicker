@@ -47,7 +47,7 @@ public class ClickerActionsRepository
 
         if (_openCvService.TryFindOnScreen(Button.FreeBuxGiftButton, out var collectLocation))
         {
-            _windowsApiService.SendClick(collectLocation.X + 20, collectLocation.Y + 20);
+            _windowsApiService.SendClick(collectLocation.X + 40, collectLocation.Y + 40);
             WaitMs(300);
             _windowsApiService.SendClick(225, 375); // Collect bux
         }

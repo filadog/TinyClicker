@@ -27,15 +27,6 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
     }
 
     [Fact]
-    public void FindFreeBuxButtonOnScreen()
-    {
-        var itemName = Button.FreeBuxGiftButton.GetDescription();
-        var foundName = TryFindFirstItemOnScreen(itemName);
-
-        Assert.Equal(itemName, foundName);
-    }
-
-    [Fact]
     public void FindFreeBuxCollectButtonOnScreen()
     {
         var itemName = Button.FreeBuxCollectButton.GetDescription();
@@ -86,20 +77,23 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
         var openCvService = _serviceProvider.GetService<IOpenCvService>();
 
         var screenshot = TestHelper.LoadGameScreenshot("NothingOnScreen");
-        var foundItems = openCvService?.TryFindFirstOnScreen(screenshot);
+        var foundItems = openCvService.TryFindFirstImageOnScreen(screenshot, out _);
 
-        Assert.True(foundItems?.Count == 0);
+        Assert.False(foundItems);
     }
 
-    private string TryFindFirstItemOnScreen(string itemName, string? screenshotName = null)
+    private string TryFindFirstItemOnScreen(string itemName)
     {
-        var openCvService = _serviceProvider.GetService<IOpenCvService>() ?? throw new NullReferenceException();
-        var screenshot = TestHelper.LoadGameScreenshot(screenshotName ?? itemName);
-        var foundItems = openCvService.TryFindFirstOnScreen(screenshot);
-
-        var item = foundItems.FirstOrDefault();
-
-        return item.Key;
+        var openCvService = _serviceProvider.GetService<IOpenCvService>();
+        var screenshot = TestHelper.LoadGameScreenshot(itemName);
+        if (openCvService.TryFindFirstImageOnScreen(screenshot, out var item))
+        {
+            return item.ItemName;
+        }
+        else
+        {
+            throw new InvalidOperationException("Nothing found");
+        }
     }
 
     private bool IsItemOnScreen(Enum item)

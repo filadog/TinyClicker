@@ -23,6 +23,9 @@ public class ImageToTextService : IImageToTextService
         using var balanceImage = CropBalanceImage(window);
         using var balancePage = _tesseractEngine.Process(balanceImage, PageSegMode.SingleLine);
 
+        //var filename = @"./screenshots/croppedWindow.png";
+        //SaveDebugScreenshot(balanceImage, filename);
+
         var balance = balancePage.GetText().Trim();
 
         return ParseBalanceFromString(balance);
@@ -62,6 +65,8 @@ public class ImageToTextService : IImageToTextService
         using var imageOld = new MagickImage(ImageToBytes(gameWindow), MagickFormat.Png);
 
         imageOld.Resize(percentage.x, percentage.y);
+        imageOld.WhiteThreshold(new Percentage(50));
+        imageOld.Threshold(new Percentage(60));
 
         using var image = BytesToImage(imageOld.ToByteArray());
 

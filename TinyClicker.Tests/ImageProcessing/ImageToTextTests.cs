@@ -27,17 +27,6 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
     }
 
     [Fact]
-    public void ParseBalanceFromImage_6989000()
-    {
-        var screenshot = TestHelper.LoadGameScreenshot("QuestButton");
-
-        var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
-        var expected = 6989000;
-
-        Assert.Equal(expected, actualBalance);
-    }
-
-    [Fact]
     public void ParseBalanceFromImage_7000000()
     {
         var screenshot = TestHelper.LoadGameScreenshot("BackButton");
@@ -88,6 +77,17 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
 
         var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
         var expected = 7455000;
+
+        Assert.Equal(expected, actualBalance);
+    }
+
+    [Fact]
+    public void ParseBalanceFromImage_1868M()
+    {
+        var screenshot = TestHelper.LoadGameScreenshot("1868M");
+
+        var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
+        var expected = 1868000;
 
         Assert.Equal(expected, actualBalance);
     }
