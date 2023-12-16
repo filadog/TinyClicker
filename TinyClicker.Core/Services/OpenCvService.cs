@@ -140,7 +140,6 @@ public class OpenCvService : IOpenCvService
             mats.Add(image.Key, template);
         }
 
-        images.Clear();
         return mats;
     }
 
@@ -229,7 +228,6 @@ public class OpenCvService : IOpenCvService
         {
             var sample = sampleData[i];
             using var ms = new MemoryStream(sample);
-            Image.FromStream(ms);
             samples.Add(sampleNames[i], Image.FromStream(ms));
         }
 

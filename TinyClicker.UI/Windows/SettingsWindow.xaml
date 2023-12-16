@@ -11,8 +11,7 @@
         Visibility="Visible"
         ShowActivated="False"
         WindowStyle="None"
-        AllowsTransparency="True"
-        MouseDown="SettingsWindow_MouseDown">
+        AllowsTransparency="True">
 
     <Window.Background>
         <ImageBrush ImageSource="/images/settings_window.png" />
@@ -20,7 +19,7 @@
 
     <Grid>
         <Button
-            x:Name="ExitSettingsButton"
+            x:Name="ButtonExitSettings"
             Margin="145,235,25,22"
             Background="Transparent"
             BorderBrush="Transparent">
@@ -29,7 +28,7 @@
         </Button>
 
         <Button
-            x:Name="SaveSettingsButton"
+            x:Name="ButtonSaveSettings"
             Margin="25,235,145,22"
             Background="Transparent"
             BorderBrush="Transparent">
@@ -47,8 +46,7 @@
             Width="27" Height="19"
             IsReadOnly="False"
             IsReadOnlyCaretVisible="False"
-            Opacity="0.9"
-            TextChanged="TextBoxCurrentFloor_TextChanged" />
+            Opacity="0.9" />
 
         <TextBox
             x:Name="TextBoxFloorToRebuildAt"
@@ -60,8 +58,7 @@
             Width="27" Height="20"
             IsReadOnly="False"
             IsReadOnlyCaretVisible="False"
-            Opacity="0.9"
-            TextChanged="TextBoxFloorToRebuildAt_TextChanged" />
+            Opacity="0.9" />
 
         <TextBlock
             HorizontalAlignment="Left"
@@ -89,7 +86,7 @@
 
         <TextBlock
             HorizontalAlignment="Left"
-            Margin="85,157,0,0"
+            Margin="86,157,0,0"
             TextWrapping="Wrap"
             Text="VIP package:"
             VerticalAlignment="Top"
@@ -131,8 +128,7 @@
             Width="27" Height="18"
             IsReadOnly="False"
             IsReadOnlyCaretVisible="False"
-            Opacity="0.9"
-            TextChanged="TextBoxWatchAdsFrom_TextChanged" />
+            Opacity="0.9" />
 
         <TextBlock
             HorizontalAlignment="Left"
@@ -147,18 +143,16 @@
             Opacity="0.8" />
 
         <CheckBox
-            x:Name="CheckboxWatchBuxAds"
+            x:Name="CheckBoxWatchBuxAds"
             Content=""
             HorizontalAlignment="Left"
             Margin="184,133,0,0"
             VerticalAlignment="Top"
             Width="15"
-            Height="15"
-            Checked="CheckboxWatchBuxAds_Checked"
-            Unchecked="CheckboxWatchBuxAds_Unchecked" />
+            Height="15" />
 
         <TextBlock
-            x:Name="VersionText"
+            x:Name="TextBlockVersionText"
             HorizontalAlignment="Left"
             Margin="208,26,0,0"
             TextWrapping="Wrap"
@@ -170,10 +164,11 @@
             Opacity="0.5" />
 
         <TextBlock
+            x:Name="TextBlockBuildFloors"
             HorizontalAlignment="Left"
-            Margin="85,182,0,0"
+            Margin="80,182,0,0"
             TextWrapping="Wrap"
-            Text="Build Floors"
+            Text="Build Floors:"
             VerticalAlignment="Top"
             FontFamily="Consolas"
             Foreground="White"
@@ -182,20 +177,18 @@
             Opacity="0.8" />
 
         <CheckBox
-            x:Name="BuildFloors"
+            x:Name="CheckBoxBuildFloors"
             HorizontalAlignment="Left"
             Margin="184,181,0,0"
             VerticalAlignment="Top"
             Width="15"
             Height="15"
             RenderTransformOrigin="0.492,0.533"
-            IsChecked="True"
-            Checked="BuildFloors_OnChecked"
-            Unchecked="BuildFloors_OnUnchecked" />
+            IsChecked="True" />
 
         <TextBlock
             HorizontalAlignment="Right"
-            Margin="0,203,100,0"
+            Margin="0,204,93,0"
             TextWrapping="Wrap"
             Text="Floor Cost Decrease %:"
             VerticalAlignment="Top"
@@ -203,19 +196,19 @@
             Foreground="White"
             FontWeight="Bold"
             FontSize="12"
-            Opacity="0.8" Width="147" />
+            Opacity="0.8"
+            Width="151" />
 
         <TextBox
-            x:Name="FloorCostDecreaseTextBox"
+            x:Name="TextBoxFloorCostDecrease"
             HorizontalAlignment="Left"
-            Margin="177,201,0,0"
+            Margin="178,202,0,0"
             TextWrapping="Wrap"
             Text="0"
             VerticalAlignment="Top"
             Width="27" Height="18"
             IsReadOnly="False"
             IsReadOnlyCaretVisible="False"
-            Opacity="0.9"
-            TextChanged="FloorCostDecreaseTextBox_TextChanged" />
+            Opacity="0.9" />
     </Grid>
 </Window>
