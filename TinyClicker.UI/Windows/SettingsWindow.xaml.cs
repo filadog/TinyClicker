@@ -175,7 +175,7 @@ public partial class SettingsWindow
     {
         var parsed = int.TryParse(FloorCostDecreaseTextBox.Text, out var value);
 
-        if (!parsed || ( value < 0 || value > 10))
+        if (!parsed || (value < 0 || value > 10))
         {
             MainWindow!.Log("Value should be between 0 and 10");
         }

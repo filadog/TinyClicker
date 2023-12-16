@@ -8,8 +8,8 @@ namespace TinyClicker.Core.Logic;
 
 public class MainLoop
 {
-    private readonly IConfigService _configService;
     private readonly ClickerActionsRepository _clickerActionsRepository;
+    private readonly IConfigService _configService;
     private readonly IOpenCvService _openCvService;
     private readonly IWindowsApiService _windowsApiService;
     private readonly ILogger _logger;
@@ -26,8 +26,8 @@ public class MainLoop
         IImageToTextService imageService,
         ILogger logger)
     {
-        _configService = configService;
         _clickerActionsRepository = clickerActionsRepository;
+        _configService = configService;
         _windowsApiService = windowsApiService;
         _openCvService = openCvService;
         _imageService = imageService;

@@ -22,11 +22,11 @@
         <ImageBrush 
             x:Key="SettingsButtonHover" 
             ImageSource="/images/settings_button_hover.png"/>
-        
+
         <ImageBrush 
             x:Key="SettingsButtonNormal" 
             ImageSource="/images/settings_button.png"/>
-        
+
         <Style 
             x:Key="FocusVisual">
             <Setter 
@@ -43,65 +43,65 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <SolidColorBrush 
             x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
-        
+
         <SolidColorBrush 
             x:Key="Button.Static.Border" Color="#FF707070"/>
 
         <SolidColorBrush 
             x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-        
+
         <Style 
             x:Key="SettingsButtonStyle" 
             TargetType="{x:Type Button}">
-            
+
             <Setter 
                 Property="FocusVisualStyle" 
                 Value="{StaticResource FocusVisual}"/>
-            
+
             <Setter 
                 Property="Background" 
                 Value="{StaticResource Button.Static.Background}"/>
-            
+
             <Setter 
                 Property="BorderBrush" 
                 Value="{StaticResource Button.Static.Border}"/>
-            
+
             <Setter 
                 Property="Foreground" 
                 Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            
+
             <Setter 
                 Property="BorderThickness" 
                 Value="1"/>
-            
+
             <Setter 
                 Property="HorizontalContentAlignment" 
                 Value="Center"/>
-            
+
             <Setter 
                 Property="VerticalContentAlignment" 
                 Value="Center"/>
-            
+
             <Setter 
                 Property="Padding" 
                 Value="1"/>
-            
+
             <Setter 
                 Property="Template">
                 <Setter.Value>
                     <ControlTemplate 
                         TargetType="{x:Type Button}">
-                        
+
                         <Border 
                             x:Name="border" 
                             Background="{TemplateBinding Background}" 
                             BorderBrush="{TemplateBinding BorderBrush}" 
                             BorderThickness="{TemplateBinding BorderThickness}" 
                             SnapsToDevicePixels="true">
-                            
+
                             <ContentPresenter 
                                 x:Name="contentPresenter" 
                                 Focusable="False" 
@@ -111,7 +111,7 @@
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
-                        
+
                         <ControlTemplate.Triggers>
                             <Trigger 
                                 Property="IsDefaulted" 
@@ -121,7 +121,7 @@
                                     TargetName="border" 
                                     Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                             </Trigger>
-                            
+
                             <Trigger 
                                 Property="IsMouseOver" 
                                 Value="true">
@@ -130,7 +130,7 @@
                                     TargetName="border" 
                                     Value="{StaticResource SettingsButtonHover}"/>
                             </Trigger>
-                            
+
                             <Trigger 
                                 Property="IsPressed" 
                                 Value="true">
@@ -143,7 +143,7 @@
                                     TargetName="border" 
                                     Value="{StaticResource SettingsButtonHover}"/>
                             </Trigger>
-                            
+
                             <Trigger 
                                 Property="IsEnabled" 
                                 Value="false">
@@ -191,7 +191,7 @@
             Background="Transparent" 
             BorderBrush="Transparent" 
             Visibility="Hidden">
-            
+
             <Image 
                 Width="100" 
                 Height="36" 
@@ -206,7 +206,7 @@
             VerticalAlignment="Top" 
             Background="Transparent" 
             BorderBrush="Transparent">
-            
+
             <Image 
                 Width="100" 
                 Height="36" 
@@ -225,7 +225,7 @@
             IsReadOnly="True" 
             IsReadOnlyCaretVisible="False" 
             Opacity="0.9" />
-        
+
         <Image 
             x:Name="StartedImage" 
             HorizontalAlignment="Left" 
@@ -235,7 +235,7 @@
             Width="100" 
             Source="/images/started_button.png"
             Visibility="Hidden"/>
-        
+
         <CheckBox 
             x:Name="BlueStacksCheckbox" 
             Content="BlueStacks 5" 
@@ -251,7 +251,7 @@
             Foreground="#FFCACADE" 
             FontWeight="Bold" 
             BorderBrush="#FF707070"/>
-        
+
         <CheckBox 
             x:Name="LDPlayerCheckbox" 
             Content="LDPlayer 4" 
@@ -278,7 +278,7 @@
             Height="35" 
             Width="36" 
             BorderBrush="#00707070">
-            
+
             <Button.Background>
                 <ImageBrush 
                     ImageSource="/images/settings_button.png"/>
