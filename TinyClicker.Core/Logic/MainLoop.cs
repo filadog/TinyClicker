@@ -51,7 +51,7 @@ public class MainLoop
         else
         {
             _notFoundCount++;
-            _logger.Log("Found nothing x" + _notFoundCount.ToString());
+            _logger.Log("Found nothing x" + _notFoundCount);
 
             if (_notFoundCount >= 100) // todo multiply count by loop speed here
             {

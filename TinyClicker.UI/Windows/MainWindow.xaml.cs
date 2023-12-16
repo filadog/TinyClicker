@@ -37,6 +37,20 @@ public partial class MainWindow : IMainWindow
         InitializeComponent();
     }
 
+    public void Log(string msg)
+    {
+        Dispatcher.Invoke(
+            () =>
+            {
+                TextBoxLog.Text = msg;
+
+                // todo add logging enabled parameter
+                //msg += "\n";
+                //var time = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+                //File.AppendAllText(@"./log.txt", time + " " + msg);
+            });
+    }
+
     private void Startup()
     {
         if (_isLDPlayer ^ IsBluestacks)
@@ -86,22 +100,10 @@ public partial class MainWindow : IMainWindow
     {
         SettingsButton.IsEnabled = false;
     }
+
     private void EnableSettingsButton()
     {
         SettingsButton.IsEnabled = true;
-    }
-
-    public void Log(string msg)
-    {
-        Dispatcher.Invoke(() =>
-        {
-            TextBoxLog.Text = msg;
-
-            // todo add logging enabled parameter
-            //msg += "\n";
-            //var time = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-            //File.AppendAllText(@"./log.txt", time + " " + msg);
-        });
     }
 
     private void HideCheckboxes()
@@ -131,7 +133,6 @@ public partial class MainWindow : IMainWindow
         ExitButton.Visibility = Visibility.Hidden;
         StopButton.Visibility = Visibility.Visible;
     }
-
 
     private void IsBluestacksCheckboxChecked(object sender, RoutedEventArgs e)
     {

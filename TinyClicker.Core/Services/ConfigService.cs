@@ -13,13 +13,13 @@ public class ConfigService : IConfigService
 
     private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
 
-    public Config Config { get; private set; }
-
     public ConfigService()
     {
         Config = GetConfig();
         SaveConfig(Config);
     }
+
+    public Config Config { get; private set; }
 
     public void AddOneFloor()
     {
@@ -31,25 +31,6 @@ public class ConfigService : IConfigService
     {
         Config.CurrentFloor = floor;
         SaveConfig(Config);
-    }
-
-    private void SaveNewRebuildTime(DateTime rebuildTime)
-    {
-        Config.LastRebuildTime = rebuildTime;
-        SaveConfig(Config);
-    }
-
-    private Config GetConfig()
-    {
-        if (!File.Exists(_configPath))
-        {
-            return new Config();
-        }
-
-        var json = File.ReadAllText(_configPath);
-        var result = JsonSerializer.Deserialize<Config>(json);
-
-        return result ?? throw new InvalidOperationException("Invalid configuration file");
     }
 
     public void SaveConfig(Config config)
@@ -104,5 +85,24 @@ public class ConfigService : IConfigService
 
         var line = $"{dateTimeNow:dd.MM.yyyy HH:mm:ss} | {timeSinceRebuild}| {rides}|\n";
         File.AppendAllText(STATS_PATH, line);
+    }
+
+    private void SaveNewRebuildTime(DateTime rebuildTime)
+    {
+        Config.LastRebuildTime = rebuildTime;
+        SaveConfig(Config);
+    }
+
+    private Config GetConfig()
+    {
+        if (!File.Exists(_configPath))
+        {
+            return new Config();
+        }
+
+        var json = File.ReadAllText(_configPath);
+        var result = JsonSerializer.Deserialize<Config>(json);
+
+        return result ?? throw new InvalidOperationException("Invalid configuration file");
     }
 }

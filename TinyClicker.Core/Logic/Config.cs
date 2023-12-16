@@ -4,20 +4,10 @@ namespace TinyClicker.Core.Logic;
 
 public class Config
 {
-    public bool VipPackage { get; init; }
-    public float ElevatorSpeed { get; init; }
-    public int CurrentFloor { get; set; }
-    public DateTime LastRebuildTime { get; set; }
-    public int RebuildAtFloor { get; init; }
-    public int WatchAdsFromFloor { get; init; }
-    public bool WatchBuxAds { get; init; }
-    public bool BuildFloors { get; init; }
-    public DateTime LastRaffleTime { get; set; }
-    public bool IsBluestacks { get; set; }
-    public int ElevatorRides { get; set; }
-    public int FloorCostDecrease { get; init; }
+    public Config() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0, 0)
+    {
+    }
 
-    public Config() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0, 0) { }
     public Config(
         bool vip,
         float elevatorSpeed,
@@ -45,4 +35,17 @@ public class Config
         ElevatorRides = elevatorRides;
         FloorCostDecrease = floorCostDecrease;
     }
+
+    public bool VipPackage { get; init; }
+    public float ElevatorSpeed { get; init; }
+    public int CurrentFloor { get; set; }
+    public DateTime LastRebuildTime { get; set; }
+    public int RebuildAtFloor { get; init; }
+    public int WatchAdsFromFloor { get; init; }
+    public bool WatchBuxAds { get; init; }
+    public bool BuildFloors { get; init; }
+    public DateTime LastRaffleTime { get; set; }
+    public bool IsBluestacks { get; set; }
+    public int ElevatorRides { get; set; }
+    public int FloorCostDecrease { get; init; }
 }

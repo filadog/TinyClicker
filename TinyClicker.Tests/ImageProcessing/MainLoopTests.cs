@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;

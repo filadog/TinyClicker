@@ -10,12 +10,10 @@ namespace TinyClicker.UI.Windows;
 
 public partial class SettingsWindow
 {
-    private MainWindow? MainWindow { get; set; }
-
-    private readonly IConfigService _configService;
-
     private const float ELEVATOR_SPEED = 10f;
     private const bool VIP_PACKAGE = true;
+
+    private readonly IConfigService _configService;
 
     private int _currentFloor;
     private int _rebuildAtFloor;
@@ -30,6 +28,8 @@ public partial class SettingsWindow
     {
         _configService = configService;
     }
+
+    private MainWindow? MainWindow { get; set; }
 
     public void Show(MainWindow mainWindow)
     {
@@ -175,7 +175,7 @@ public partial class SettingsWindow
     {
         var parsed = int.TryParse(FloorCostDecreaseTextBox.Text, out var value);
 
-        if (!parsed || (value < 0 || value > 10))
+        if (!parsed || value < 0 || value > 10)
         {
             MainWindow!.Log("Value should be between 0 and 10");
         }

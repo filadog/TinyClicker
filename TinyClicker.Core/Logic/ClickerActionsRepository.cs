@@ -1,7 +1,7 @@
-﻿using OpenCvSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpenCvSharp;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
 
@@ -327,7 +327,7 @@ public class ClickerActionsRepository
 
             _logger.Log("Building new floor");
 
-            ClickAndWaitMs(22, 10, 300); // Move up
+            ClickAndWaitMs(22, 10, 300);   // Move up
             ClickAndWaitMs(300, 360, 400); // Click on a new floor
 
             if (_openCvService.IsImageOnScreen(GameButton.Continue))
@@ -389,24 +389,24 @@ public class ClickerActionsRepository
         MoveDown();
         WaitMs(1000);
 
-        ClickAndWaitMs(195, 260, 200); // Build a new floor
-        ClickAndWaitMs(230, 380, 200); // Confirm
-        ClickAndWaitMs(20, 60, 200);   // Complete quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 200); // Continue
-        ClickAndWaitMs(190, 300, 200); // Click on a new floor
-        ClickAndWaitMs(240, 150, 200); // Build a residential floor
-        ClickAndWaitMs(160, 375, 200); // Continue
-        ClickAndWaitMs(20, 60, 200);   // Complete quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 1400);// Continue
-        ClickAndWaitSec(21, 510, 4);   // Click on the elevator button
+        ClickAndWaitMs(195, 260, 200);  // Build a new floor
+        ClickAndWaitMs(230, 380, 200);  // Confirm
+        ClickAndWaitMs(20, 60, 200);    // Complete quest
+        ClickAndWaitMs(170, 435, 200);  // Collect bux
+        ClickAndWaitMs(170, 435, 200);  // Continue
+        ClickAndWaitMs(190, 300, 200);  // Click on a new floor
+        ClickAndWaitMs(240, 150, 200);  // Build a residential floor
+        ClickAndWaitMs(160, 375, 200);  // Continue
+        ClickAndWaitMs(20, 60, 200);    // Complete quest
+        ClickAndWaitMs(170, 435, 200);  // Collect bux
+        ClickAndWaitMs(170, 435, 1400); // Continue
+        ClickAndWaitSec(21, 510, 4);    // Click on the elevator button
 
         // Daily rent check (in case it's past midnight)
         if (_openCvService.TryFindOnScreen(GameButton.CollectFreeBux, out var location))
         {
             ClickAndWaitMs(location.X, location.Y, 500); // Collect daily rent
-            ClickAndWaitMs(21, 510, 4000); // Click on elevator button again
+            ClickAndWaitMs(21, 510, 4000);               // Click on elevator button again
         }
 
         ClickAndWaitMs(230, 380, 200); // Continue
@@ -500,15 +500,18 @@ public class ClickerActionsRepository
 
         _logger.Log("Playing the raffle");
         WaitMs(500);
-        ClickAndWaitMs(300, 570, 500); // Open menu
-        ClickAndWaitMs(275, 440, 2000); // Open raffle
+        ClickAndWaitMs(300, 570, 500);          // Open menu
+        ClickAndWaitMs(275, 440, 2000);         // Open raffle
         _windowsApiService.SendClick(160, 345); // Enter raffle
 
         _configService.Config.LastRaffleTime = dateTimeNow;
         _configService.SaveConfig();
     }
 
-    private Point GetLocationFromLParam(int lParam) => new((short)lParam, lParam >> 16);
+    private static Point GetLocationFromLParam(int lParam)
+    {
+        return new Point((short)lParam, lParam >> 16);
+    }
 
     private static void WaitSec(int seconds)
     {
@@ -538,13 +541,13 @@ public class ClickerActionsRepository
         var result = new Dictionary<int, int>();
         var floorCostDecrease = _configService.Config.FloorCostDecrease;
 
-        for (int i = 1; i <= 9; i++)
+        for (var i = 1; i <= 9; i++)
         {
-            var floorPrice = 5000 - (5000 * floorCostDecrease / 100);
+            var floorPrice = 5000 - 5000 * floorCostDecrease / 100;
             result.Add(i, floorPrice);
         }
 
-        for (int i = 10; i <= _configService.Config.RebuildAtFloor + 1; i++)
+        for (var i = 10; i <= _configService.Config.RebuildAtFloor + 1; i++)
         {
             var floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
 
@@ -553,7 +556,7 @@ public class ClickerActionsRepository
                 floorCost += 500;
             }
 
-            var floorPrice = floorCost - (floorCost * floorCostDecrease / 100);
+            var floorPrice = floorCost - floorCost * floorCostDecrease / 100;
             result.Add(i, (int)floorPrice);
         }
 

@@ -3,6 +3,7 @@
 public class Logger : ILogger
 {
     private IMainWindow? _mainWindow;
+
     public void SetMainWindow(IMainWindow mainWindow)
     {
         _mainWindow = mainWindow;

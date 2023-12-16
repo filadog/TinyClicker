@@ -9,11 +9,11 @@ namespace TinyClicker.Core.Services;
 
 public class WindowsApiService : IWindowsApiService
 {
-    private readonly IConfigService _configService;
-
     private const string LD_PLAYER_PROCESS = "dnplayer";
     private const string BLUESTACKS_PROCESS = "HD-Player";
     private const string ERROR_MESSAGE = "Emulator window not found. Restart required";
+
+    private readonly IConfigService _configService;
 
     private Process? _process;
     private nint _childHandle;
@@ -22,17 +22,6 @@ public class WindowsApiService : IWindowsApiService
     public WindowsApiService(IConfigService configService)
     {
         _configService = configService;
-    }
-
-    private static Process GetEmulatorProcess()
-    {
-        var processes = new[] { BLUESTACKS_PROCESS, LD_PLAYER_PROCESS };
-        var processlist = Process.GetProcesses();
-        var process = processlist
-            .Select(x => x)
-            .FirstOrDefault(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName));
-
-        return process ?? throw new InvalidOperationException(ERROR_MESSAGE);
     }
 
     public void SendClick(int location)
@@ -60,6 +49,40 @@ public class WindowsApiService : IWindowsApiService
     public void SendClick(int x, int y)
     {
         SendClick(GetRelativeCoordinates(x, y));
+    }
+
+    public Image GetGameScreenshot()
+    {
+        if (_childHandle != default)
+        {
+            MakeScreenshot(_childHandle);
+        }
+
+        _process = GetEmulatorProcess();
+        _childHandle = GetChildHandle(_process.ProcessName);
+
+        User32.GetWindowRect(_childHandle, out var rect);
+        var newRect = new Rectangle(rect.X, rect.Y, rect.right, rect.bottom);
+        _screenRect = newRect;
+
+        return MakeScreenshot(_childHandle);
+    }
+
+    public int MakeLParam(int x, int y)
+    {
+        // generate coordinates within the game screen
+        return (y << 16) | (x & 0xFFFF);
+    }
+
+    private static Process GetEmulatorProcess()
+    {
+        var processes = new[] { BLUESTACKS_PROCESS, LD_PLAYER_PROCESS };
+        var processlist = Process.GetProcesses();
+        var process = processlist
+            .Select(x => x)
+            .FirstOrDefault(x => !string.IsNullOrEmpty(x.MainWindowTitle) && processes.Contains(x.ProcessName));
+
+        return process ?? throw new InvalidOperationException(ERROR_MESSAGE);
     }
 
     // ReSharper disable once UnusedMember.Global
@@ -105,25 +128,6 @@ public class WindowsApiService : IWindowsApiService
 
         return MakeLParam(x2, y2);
     }
-
-    public Image GetGameScreenshot()
-    {
-        if (_childHandle != default)
-        {
-            MakeScreenshot(_childHandle);
-        }
-
-        _process = GetEmulatorProcess();
-        _childHandle = GetChildHandle(_process.ProcessName);
-
-        User32.GetWindowRect(_childHandle, out var rect);
-        var newRect = new Rectangle(rect.X, rect.Y, rect.right, rect.bottom);
-        _screenRect = newRect;
-
-        return MakeScreenshot(_childHandle);
-    }
-
-    public int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF; // Generate coordinates within the game screen
 
     private static Image MakeScreenshot(nint handle)
     {

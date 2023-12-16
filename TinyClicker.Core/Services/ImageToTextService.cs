@@ -1,8 +1,8 @@
-﻿using ImageMagick;
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using ImageMagick;
 using Tesseract;
 using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
@@ -29,6 +29,33 @@ public class ImageToTextService : IImageToTextService
         var balance = balancePage.GetText().Trim();
 
         return ParseBalanceFromString(balance);
+    }
+
+    public (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null)
+    {
+        if (screenshot == null)
+        {
+            throw new ArgumentNullException(nameof(screenshot));
+        }
+
+        var x = new Percentage((float)screenshot.Width * 100 / 333);
+        var y = new Percentage((float)screenshot.Height * 100 / 592);
+
+        return (x, y);
+    }
+
+    public byte[] ImageToBytes(Image image)
+    {
+        var imageConverter = new ImageConverter();
+        var result = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
+
+        return result ?? throw new InvalidOperationException("Cannot convert samples to images");
+    }
+
+    public Image BytesToImage(byte[] bytes)
+    {
+        using var ms = new MemoryStream(bytes);
+        return Image.FromStream(ms);
     }
 
     private static int ParseBalanceFromString(string result)
@@ -107,33 +134,6 @@ public class ImageToTextService : IImageToTextService
         }
 
         return (new Percentage(100 * 333 / (float)screenshot.Width), new Percentage(100 * 592 / (float)screenshot.Height));
-    }
-
-    public (Percentage x, Percentage y) GetScreenDiffPercentageForTemplates(Image? screenshot = null)
-    {
-        if (screenshot == null)
-        {
-            throw new ArgumentNullException(nameof(screenshot));
-        }
-
-        var x = new Percentage((float)screenshot.Width * 100 / 333);
-        var y = new Percentage((float)screenshot.Height * 100 / 592);
-
-        return (x, y);
-    }
-
-    public byte[] ImageToBytes(Image image)
-    {
-        var imageConverter = new ImageConverter();
-        var result = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
-
-        return result ?? throw new InvalidOperationException("Cannot convert samples to images");
-    }
-
-    public Image BytesToImage(byte[] bytes)
-    {
-        using var ms = new MemoryStream(bytes);
-        return Image.FromStream(ms);
     }
 
     // ReSharper disable once UnusedMember.Local

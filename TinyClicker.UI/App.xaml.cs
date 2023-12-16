@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Windows;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logging;
 
@@ -9,8 +9,8 @@ public partial class App
 {
     private readonly ServiceProvider _serviceProvider;
 
-	public App()
-	{
+    public App()
+    {
         var services = new ServiceCollection();
 
         services.AddCoreServices();

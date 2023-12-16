@@ -1,5 +1,5 @@
-﻿using ImageMagick;
-using System.Drawing;
+﻿using System.Drawing;
+using ImageMagick;
 
 namespace TinyClicker.Core.Services;
 
