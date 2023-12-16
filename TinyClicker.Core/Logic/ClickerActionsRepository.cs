@@ -34,7 +34,7 @@ public class ClickerActionsRepository
     public void CancelHurryConstructionWithBux()
     {
         _logger.Log("Exiting the construction menu");
-        ClickAndWaitSec(100, 375, 1); // Cancel action
+        ClickAndWaitSec(100, 375, 1); // cancel action
     }
 
     public void CollectFreeBux(int lParam)
@@ -49,7 +49,7 @@ public class ClickerActionsRepository
         {
             _windowsApiService.SendClick(collectLocation.X + 40, collectLocation.Y + 40);
             WaitMs(300);
-            _windowsApiService.SendClick(225, 375); // Collect bux
+            _windowsApiService.SendClick(225, 375); // collect bux
         }
     }
 
@@ -71,7 +71,7 @@ public class ClickerActionsRepository
         }
         else
         {
-            _windowsApiService.SendClick(155, 380); // Decline the video offer
+            _windowsApiService.SendClick(155, 380); // decline the video offer
         }
     }
 
@@ -94,7 +94,7 @@ public class ClickerActionsRepository
     public void CloseChuteNotification()
     {
         _logger.Log("Closing the parachute notification");
-        _windowsApiService.SendClick(165, 375); // Close the notification
+        _windowsApiService.SendClick(165, 375); // close the notification
     }
 
     public void ExitRoofCustomizationMenu()
@@ -118,12 +118,12 @@ public class ClickerActionsRepository
         _logger.Log("Restocking");
         MoveDown();
         WaitMs(500);
-        ClickAndWaitMs(100, 480, 500); // Stock all
+        ClickAndWaitMs(100, 480, 500); // stock all
         ClickAndWaitMs(225, 375, 500);
 
         if (_openCvService.IsImageOnScreen(GameButton.FullyStockedBonus))
         {
-            ClickAndWaitSec(165, 375, 1); // Close the bonus tooltip
+            ClickAndWaitSec(165, 375, 1); // close the bonus tooltip
             MoveUp();
             WaitSec(1);
         }
@@ -185,22 +185,22 @@ public class ClickerActionsRepository
         }
         else
         {
-            ClickAndWaitMs(90, 440, 500); // Skip the quest
-            ClickAndWaitMs(230, 380, 0);  // Confirm
+            ClickAndWaitMs(90, 440, 500); // skip the quest
+            ClickAndWaitMs(230, 380, 0);  // confirm
         }
     }
 
     public void FindBitizens()
     {
         _logger.Log("Skipping the quest");
-        ClickAndWaitMs(95, 445, 500); // Skip the quest
-        ClickAndWaitMs(225, 380, 0);  // Confirm skip
+        ClickAndWaitMs(95, 445, 500); // skip the quest
+        ClickAndWaitMs(225, 380, 0);  // confirm skip
     }
 
     public void DeliverBitizens()
     {
         _logger.Log("Delivering bitizens");
-        _windowsApiService.SendClick(230, 440); // Continue
+        _windowsApiService.SendClick(230, 440); // continue
     }
 
     public void OpenTheGame(int location)
@@ -215,7 +215,7 @@ public class ClickerActionsRepository
         WaitMs(500);
         if (_openCvService.IsImageOnScreen(GameWindow.AdsLostRewardNotification))
         {
-            _windowsApiService.SendClick(240, 344); // Click "Keep watching"
+            _windowsApiService.SendClick(240, 344); // click "keep watching"
             WaitSec(15);
         }
         else
@@ -314,7 +314,7 @@ public class ClickerActionsRepository
         {
             if (_openCvService.IsImageOnScreen(GameButton.Continue))
             {
-                _windowsApiService.SendClick(230, 380); // Continue
+                _windowsApiService.SendClick(230, 380); // continue
                 return;
             }
 
@@ -327,17 +327,17 @@ public class ClickerActionsRepository
 
             _logger.Log("Building new floor");
 
-            ClickAndWaitMs(22, 10, 300);   // Move up
-            ClickAndWaitMs(300, 360, 400); // Click on a new floor
+            ClickAndWaitMs(22, 10, 300);   // move up
+            ClickAndWaitMs(300, 360, 400); // click on a new floor
 
             if (_openCvService.IsImageOnScreen(GameButton.Continue))
             {
-                _windowsApiService.SendClick(160, 380); // No thanks
+                _windowsApiService.SendClick(160, 380); // no, thanks
                 _logger.Log("Clicking Continue button while building");
             }
             else if (_openCvService.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
             {
-                _windowsApiService.SendClick(230, 320); // Confirm
+                _windowsApiService.SendClick(230, 320); // confirm
                 WaitMs(400);
 
                 if (!_openCvService.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
@@ -351,7 +351,7 @@ public class ClickerActionsRepository
                     _logger.Log("Not enough coins for a new floor");
                 }
 
-                _windowsApiService.SendClick(22, 10); // Move up
+                _windowsApiService.SendClick(22, 10); // move up
             }
         }
         else
@@ -389,68 +389,68 @@ public class ClickerActionsRepository
         MoveDown();
         WaitMs(1000);
 
-        ClickAndWaitMs(195, 260, 200);  // Build a new floor
-        ClickAndWaitMs(230, 380, 200);  // Confirm
-        ClickAndWaitMs(20, 60, 200);    // Complete quest
-        ClickAndWaitMs(170, 435, 200);  // Collect bux
-        ClickAndWaitMs(170, 435, 200);  // Continue
-        ClickAndWaitMs(190, 300, 200);  // Click on a new floor
-        ClickAndWaitMs(240, 150, 200);  // Build a residential floor
-        ClickAndWaitMs(160, 375, 200);  // Continue
-        ClickAndWaitMs(20, 60, 200);    // Complete quest
-        ClickAndWaitMs(170, 435, 200);  // Collect bux
-        ClickAndWaitMs(170, 435, 1400); // Continue
-        ClickAndWaitSec(21, 510, 4);    // Click on the elevator button
+        ClickAndWaitMs(195, 260, 200);  // build a new floor
+        ClickAndWaitMs(230, 380, 200);  // confirm
+        ClickAndWaitMs(20, 60, 200);    // complete quest
+        ClickAndWaitMs(170, 435, 200);  // collect bux
+        ClickAndWaitMs(170, 435, 200);  // continue
+        ClickAndWaitMs(190, 300, 200);  // click on a new floor
+        ClickAndWaitMs(240, 150, 200);  // build a residential floor
+        ClickAndWaitMs(160, 375, 200);  // continue
+        ClickAndWaitMs(20, 60, 200);    // complete quest
+        ClickAndWaitMs(170, 435, 200);  // collect bux
+        ClickAndWaitMs(170, 435, 1400); // continue
+        ClickAndWaitSec(21, 510, 4);    // click on the elevator button
 
-        // Daily rent check (in case it's past midnight)
+        // daily rent check (in case it's past midnight)
         if (_openCvService.TryFindOnScreen(GameButton.CollectFreeBux, out var location))
         {
-            ClickAndWaitMs(location.X, location.Y, 500); // Collect daily rent
-            ClickAndWaitMs(21, 510, 4000);               // Click on elevator button again
+            ClickAndWaitMs(location.X, location.Y, 500); // collect daily rent
+            ClickAndWaitMs(21, 510, 4000);               // click on elevator button again
         }
 
-        ClickAndWaitMs(230, 380, 200); // Continue
-        ClickAndWaitMs(20, 60, 200);   // Complete quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 200); // Continue
-        ClickAndWaitMs(190, 200, 200); // Build a new floor
-        ClickAndWaitMs(225, 380, 200); // Confirm
-        ClickAndWaitMs(200, 200, 200); // Open the new floor
-        ClickAndWaitMs(90, 340, 200);  // Build random food floor
-        ClickAndWaitMs(170, 375, 200); // Continue
-        ClickAndWaitMs(20, 60, 200);   // Complete the quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 200); // Continue
-        ClickAndWaitMs(200, 200, 200); // Open the food floor
-        ClickAndWaitMs(75, 210, 200);  // Open the hire menu
-        ClickAndWaitMs(80, 100, 200);  // Select bitizen
-        ClickAndWaitMs(230, 380, 200); // Hire him
-        ClickAndWaitMs(160, 380, 200); // Continue on dream job assignment
-        ClickAndWaitMs(300, 560, 200); // Exit the food store
-        ClickAndWaitMs(20, 60, 200);   // Complete the quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 200); // Continue
-        ClickAndWaitMs(200, 200, 200); // Open the food store again
-        ClickAndWaitSec(200, 210, 5);  // Request restock of the first item in the store
+        ClickAndWaitMs(230, 380, 200); // continue
+        ClickAndWaitMs(20, 60, 200);   // complete quest
+        ClickAndWaitMs(170, 435, 200); // collect bux
+        ClickAndWaitMs(170, 435, 200); // continue
+        ClickAndWaitMs(190, 200, 200); // build a new floor
+        ClickAndWaitMs(225, 380, 200); // confirm
+        ClickAndWaitMs(200, 200, 200); // open the new floor
+        ClickAndWaitMs(90, 340, 200);  // build random food floor
+        ClickAndWaitMs(170, 375, 200); // continue
+        ClickAndWaitMs(20, 60, 200);   // complete the quest
+        ClickAndWaitMs(170, 435, 200); // collect bux
+        ClickAndWaitMs(170, 435, 200); // continue
+        ClickAndWaitMs(200, 200, 200); // open the food floor
+        ClickAndWaitMs(75, 210, 200);  // open the hire menu
+        ClickAndWaitMs(80, 100, 200);  // select bitizen
+        ClickAndWaitMs(230, 380, 200); // hire him
+        ClickAndWaitMs(160, 380, 200); // continue on dream job assignment
+        ClickAndWaitMs(300, 560, 200); // exit the food store
+        ClickAndWaitMs(20, 60, 200);   // complete the quest
+        ClickAndWaitMs(170, 435, 200); // collect bux
+        ClickAndWaitMs(170, 435, 200); // continue
+        ClickAndWaitMs(200, 200, 200); // open the food store again
+        ClickAndWaitSec(200, 210, 5);  // request restock of the first item in the store
 
-        // Wait until the floor is restocked
+        // wait until the floor is restocked
         while (!_openCvService.IsImageOnScreen(GameButton.Restock))
         {
             WaitMs(700);
         }
 
-        ClickAndWaitMs(284, 188, 200); // Press restock button (easter fix)
-        ClickAndWaitMs(20, 60, 200);   // Complete the quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 200); // Continue
-        ClickAndWaitMs(200, 200, 200); // Open food store again
-        ClickAndWaitMs(170, 130, 200); // Click upgrade
-        ClickAndWaitMs(230, 375, 200); // Confirm upgrade
-        ClickAndWaitMs(165, 375, 200); // Continue
-        ClickAndWaitMs(300, 560, 200); // Exit the food store
-        ClickAndWaitMs(20, 60, 200);   // Complete the quest
-        ClickAndWaitMs(170, 435, 200); // Collect bux
-        ClickAndWaitMs(170, 435, 0);   // Collect more bux
+        ClickAndWaitMs(284, 188, 200); // press restock button (easter fix)
+        ClickAndWaitMs(20, 60, 200);   // complete the quest
+        ClickAndWaitMs(170, 435, 200); // collect bux
+        ClickAndWaitMs(170, 435, 200); // continue
+        ClickAndWaitMs(200, 200, 200); // open food store again
+        ClickAndWaitMs(170, 130, 200); // click upgrade
+        ClickAndWaitMs(230, 375, 200); // confirm upgrade
+        ClickAndWaitMs(165, 375, 200); // continue
+        ClickAndWaitMs(300, 560, 200); // exit the food store
+        ClickAndWaitMs(20, 60, 200);   // complete the quest
+        ClickAndWaitMs(170, 435, 200); // collect bux
+        ClickAndWaitMs(170, 435, 0);   // collect more bux
 
         MoveUp();
     }
@@ -464,7 +464,7 @@ public class ClickerActionsRepository
         }
         else
         {
-            _windowsApiService.SendClick(105, 380); // Decline the video offer
+            _windowsApiService.SendClick(105, 380); // decline the video offer
         }
     }
 
@@ -495,14 +495,14 @@ public class ClickerActionsRepository
 
         if (_openCvService.IsImageOnScreen(GameButton.Continue))
         {
-            _windowsApiService.SendClick(160, 380); // Continue
+            _windowsApiService.SendClick(160, 380); // continue
         }
 
         _logger.Log("Playing the raffle");
         WaitMs(500);
-        ClickAndWaitMs(300, 570, 500);          // Open menu
-        ClickAndWaitMs(275, 440, 2000);         // Open raffle
-        _windowsApiService.SendClick(160, 345); // Enter raffle
+        ClickAndWaitMs(300, 570, 500);          // open menu
+        ClickAndWaitMs(275, 440, 2000);         // open raffle
+        _windowsApiService.SendClick(160, 345); // enter raffle
 
         _configService.Config.LastRaffleTime = dateTimeNow;
         _configService.SaveConfig();
@@ -543,20 +543,20 @@ public class ClickerActionsRepository
 
         for (var i = 1; i <= 9; i++)
         {
-            var floorPrice = 5000 - 5000 * floorCostDecrease / 100;
+            var floorPrice = 5000 - (5000 * floorCostDecrease / 100);
             result.Add(i, floorPrice);
         }
 
         for (var i = 10; i <= _configService.Config.RebuildAtFloor + 1; i++)
         {
-            var floorCost = 1000 * 1 * (0.5f * (i * i) + 8 * i - 117);
+            var floorCost = 1000 * 1 * ((0.5f * (i * i)) + (8 * i) - 117);
 
             if (i % 2 != 0)
             {
                 floorCost += 500;
             }
 
-            var floorPrice = floorCost - floorCost * floorCostDecrease / 100;
+            var floorPrice = floorCost - (floorCost * floorCostDecrease / 100);
             result.Add(i, (int)floorPrice);
         }
 

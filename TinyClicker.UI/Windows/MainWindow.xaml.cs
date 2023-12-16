@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using TinyClicker.Core.Logging;
@@ -109,13 +109,13 @@ public partial class MainWindow : IMainWindow
     private void HideCheckboxes()
     {
         BlueStacksCheckbox.IsEnabled = false;
-        LDPlayerCheckbox.IsEnabled = false;
+        LdPlayerCheckbox.IsEnabled = false;
     }
 
     private void ShowCheckboxes()
     {
         BlueStacksCheckbox.IsEnabled = true;
-        LDPlayerCheckbox.IsEnabled = true;
+        LdPlayerCheckbox.IsEnabled = true;
     }
 
     private void ShowExitButton()
@@ -136,13 +136,13 @@ public partial class MainWindow : IMainWindow
 
     private void IsBluestacksCheckboxChecked(object sender, RoutedEventArgs e)
     {
-        if (LDPlayerCheckbox == null)
+        if (LdPlayerCheckbox == null)
         {
             return;
         }
 
-        LDPlayerCheckbox.IsHitTestVisible = false;
-        LDPlayerCheckbox.Focusable = false;
+        LdPlayerCheckbox.IsHitTestVisible = false;
+        LdPlayerCheckbox.Focusable = false;
         IsBluestacks = true;
     }
 
@@ -155,8 +155,8 @@ public partial class MainWindow : IMainWindow
 
     private void BlueStacksCheckbox_Unchecked(object sender, RoutedEventArgs e)
     {
-        LDPlayerCheckbox.IsHitTestVisible = true;
-        LDPlayerCheckbox.Focusable = true;
+        LdPlayerCheckbox.IsHitTestVisible = true;
+        LdPlayerCheckbox.Focusable = true;
         IsBluestacks = false;
     }
 

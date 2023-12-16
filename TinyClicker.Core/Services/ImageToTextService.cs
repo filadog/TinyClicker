@@ -47,7 +47,7 @@ public class ImageToTextService : IImageToTextService
     public byte[] ImageToBytes(Image image)
     {
         var imageConverter = new ImageConverter();
-        var result = (byte[])imageConverter.ConvertTo(image, typeof(byte[]));
+        var result = imageConverter.ConvertTo(image, typeof(byte[])) as byte[];
 
         return result ?? throw new InvalidOperationException("Cannot convert samples to images");
     }

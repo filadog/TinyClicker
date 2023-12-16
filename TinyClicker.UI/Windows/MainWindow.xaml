@@ -253,7 +253,7 @@
             BorderBrush="#FF707070" />
 
         <CheckBox
-            x:Name="LDPlayerCheckbox"
+            x:Name="LdPlayerCheckbox"
             Content="LDPlayer 4"
             Checked="IsLDPlayerCheckboxChecked"
             Unchecked="LDPlayerCheckbox_Unchecked"
