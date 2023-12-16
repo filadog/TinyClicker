@@ -6,13 +6,12 @@ namespace TinyClicker.Tests.ImageProcessing;
 
 public class ImageToTextTests : IClassFixture<DependencySetupFixture>
 {
-    private readonly ServiceProvider _serviceProvider;
     private readonly IImageToTextService _imageService;
 
     public ImageToTextTests(DependencySetupFixture fixture)
     {
-        _serviceProvider = fixture.ServiceProvider;
-        _imageService = _serviceProvider.GetRequiredService<IImageToTextService>();
+        var serviceProvider = fixture.ServiceProvider;
+        _imageService = serviceProvider.GetRequiredService<IImageToTextService>();
     }
 
     [Fact]
@@ -21,7 +20,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
         var screenshot = TestHelper.LoadGameScreenshot("ElevatorButton");
 
         var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
-        var expected = 17890000;
+        const int expected = 17890000;
 
         Assert.Equal(expected, actualBalance);
     }
@@ -32,7 +31,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
         var screenshot = TestHelper.LoadGameScreenshot("BackButton");
 
         var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
-        var expected = 7000000;
+        const int expected = 7000000;
 
         Assert.Equal(expected, actualBalance);
     }
@@ -43,7 +42,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
         var screenshot = TestHelper.LoadGameScreenshot("47751");
 
         var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
-        var expected = 47751;
+        const int expected = 47751;
 
         Assert.Equal(expected, actualBalance);
     }
@@ -54,7 +53,7 @@ public class ImageToTextTests : IClassFixture<DependencySetupFixture>
         var screenshot = TestHelper.LoadGameScreenshot("441825");
 
         var actualBalance = _imageService.GetBalanceFromWindow(screenshot);
-        var expected = 441825;
+        const int expected = 441825;
 
         Assert.Equal(expected, actualBalance);
     }

@@ -24,7 +24,7 @@ public class TinyClickerApp
     public void StartInBackground()
     {
         _backgroundWorker.WorkerSupportsCancellation = true;
-        _backgroundWorker.DoWork += (s, e) =>
+        _backgroundWorker.DoWork += (_, _) =>
         {
             RunLoop(_backgroundWorker);
         };

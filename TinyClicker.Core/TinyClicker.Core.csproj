@@ -21,19 +21,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.5.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.188-beta">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="OpenCvSharp4.Extensions" Version="4.8.0.20230708" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.8.0.20230708" />
     <PackageReference Include="Tesseract" Version="5.2.0" />
     <PackageReference Include="Tesseract.Drawing" Version="5.2.0" />
     <PackageReference Include="Vanara.PInvoke.Gdi32" Version="3.4.17" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.17" />
-    <PackageReference Include="xunit" Version="2.6.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -45,6 +45,9 @@ public partial class SettingsWindow
 
     private void InitFields()
     {
+        ExitSettingsButton.Click += ExitSettingsButton_Click;
+        SaveSettingsButton.Click += SaveSettingsButton_Click;
+
         TextBoxCurrentFloor.Text = _configService.Config.CurrentFloor.ToString();
         TextBoxFloorToRebuildAt.Text = _configService.Config.RebuildAtFloor.ToString();
         TextBoxWatchAdsFrom.Text = _configService.Config.WatchAdsFromFloor.ToString();
@@ -142,7 +145,10 @@ public partial class SettingsWindow
 
     private static string GetVersionInfo()
     {
-        return $"v{Assembly.GetExecutingAssembly().GetName()?.Version?.Major}.{Assembly.GetExecutingAssembly().GetName()?.Version?.Minor}";
+        var assembly = Assembly.GetExecutingAssembly();
+        var version = assembly.GetName().Version;
+
+        return $"v{version?.Major}.{version?.Minor}";
     }
 
     private void BuildFloors_OnChecked(object sender, RoutedEventArgs e)
@@ -167,12 +173,11 @@ public partial class SettingsWindow
 
     private void FloorCostDecreaseTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        var parsed = int.TryParse(FloorCostDecreaseTextBox.Text, out int value);
+        var parsed = int.TryParse(FloorCostDecreaseTextBox.Text, out var value);
 
         if (!parsed || ( value < 0 || value > 10))
         {
             MainWindow!.Log("Value should be between 0 and 10");
-            return;
         }
         else
         {

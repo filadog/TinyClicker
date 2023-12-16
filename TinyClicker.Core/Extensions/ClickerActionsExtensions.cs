@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Extensions;
@@ -13,41 +10,47 @@ public static class ClickerActionsExtensions
     {
         var map = new Dictionary<string, Action<int>>();
 
-        map.Add("closeAd", x => actions.TryCloseAd());
-        map.Add("closeAd_1", x => actions.TryCloseAd());
-        map.Add("closeAd_2", x => actions.TryCloseAd());
-        map.Add("closeAd_3", x => actions.TryCloseAd());
-        map.Add("closeAd_4", x => actions.TryCloseAd());
-        map.Add("closeAd_5", x => actions.TryCloseAd());
-        map.Add("closeAd_6", x => actions.TryCloseAd());
-        map.Add("closeAd_7", x => actions.TryCloseAd());
-        map.Add("closeAd_8", x => actions.TryCloseAd());
-        map.Add("closeAd_9", x => actions.TryCloseAd());
+        map.Add("closeAd", _ => actions.TryCloseAd());
+        map.Add("closeAd_1", _ => actions.TryCloseAd());
+        map.Add("closeAd_2", _ => actions.TryCloseAd());
+        map.Add("closeAd_3", _ => actions.TryCloseAd());
+        map.Add("closeAd_4", _ => actions.TryCloseAd());
+        map.Add("closeAd_5", _ => actions.TryCloseAd());
+        map.Add("closeAd_6", _ => actions.TryCloseAd());
+        map.Add("closeAd_7", _ => actions.TryCloseAd());
+        map.Add("closeAd_8", _ => actions.TryCloseAd());
+        map.Add("closeAd_9", _ => actions.TryCloseAd());
 
-        map.Add("freeBuxCollectButton", x => actions.ClickAndWaitMs(x, 300));
-        map.Add("new_gifts_button", x => actions.CollectFreeBux(x));
-        map.Add("roofCustomizationWindow", x => actions.ExitRoofCustomizationMenu());
-        map.Add("hurryConstructionPrompt", x => actions.CancelHurryConstruction());
-        map.Add("continueButton", x => actions.PressContinue(x));
-        map.Add("awesome_button", x => actions.PressContinue(x));
-        map.Add("foundCoinsChuteNotification", x => actions.CloseChuteNotification());
-        map.Add("restockButton", x => actions.Restock());
-        map.Add("freeBuxButton", x => actions.PressFreeBuxButton());
-        map.Add("giftChute", x => actions.ClickOnChute(x));
-        map.Add("backButton", x => actions.PressExitButton());
-        map.Add("elevatorButton", x => actions.RideElevator());
-        map.Add("questButton", x => actions.PressQuestButton(x));
-        map.Add("completedQuestButton", x => actions.CompleteQuest(x));
-        map.Add("watchAdPromptCoins", x => actions.TryWatchAds());
-        map.Add("watchAdPromptBux", x => actions.TryWatchAds());
-        map.Add("findBitizens", x => actions.FindBitizens());
-        map.Add("deliverBitizens", x => actions.DeliverBitizens());
-        map.Add("newFloorMenu", x => actions.CloseNewFloorMenu());
-        map.Add("buildNewFloorNotification", x => actions.CloseBuildNewFloorNotification());
-        map.Add("gameIcon", x => actions.OpenTheGame(x));
-        map.Add("adsLostReward", x => actions.CheckForLostAdsReward());
-        map.Add("newScienceButton", x => actions.CollectNewScience(x));
+        map.AddMapping(GameButton.Continue, actions.PressContinue);
+        map.AddMapping(GameButton.Awesome, actions.PressContinue);
+        map.AddMapping(GameButton.Back, _ => actions.PressExitButton());
+        map.AddMapping(GameButton.Gift, actions.CollectFreeBux);
+        map.AddMapping(GameButton.Restock, _ => actions.Restock());
+        map.AddMapping(GameButton.CollectFreeBux, x => actions.ClickAndWaitMs(x, 300));
+        map.AddMapping(GameButton.NewScience, actions.CollectNewScience);
+        map.AddMapping(GameButton.FreeBuxGift, _ => actions.PressFreeBuxButton());
+        map.AddMapping(GameButton.ParachuteGift, actions.ClickOnChute);
+        map.AddMapping(GameButton.RideElevator, _ => actions.RideElevator());
+        map.AddMapping(GameButton.GameIcon, actions.OpenTheGame);
+        map.AddMapping(GameButton.NewQuest, actions.PressQuestButton);
+        map.AddMapping(GameButton.CompletedQuest, actions.CompleteQuest);
+
+        map.AddMapping(GameWindow.RoofCustomization, _ => actions.ExitRoofCustomizationMenu());
+        map.AddMapping(GameWindow.HurryConstructionWithBux, _ => actions.CancelHurryConstructionWithBux());
+        map.AddMapping(GameWindow.FoundCoinsOnParachuteClick, _ => actions.CloseChuteNotification());
+        map.AddMapping(GameWindow.WatchCoinsAdsPrompt, _ => actions.TryWatchAds());
+        map.AddMapping(GameWindow.WatchBuxAdsPrompt, _ => actions.TryWatchAds());
+        map.AddMapping(GameWindow.FindBitizensQuestPrompt, _ => actions.FindBitizens());
+        map.AddMapping(GameWindow.DeliverBitizensQuestPrompt, _ => actions.DeliverBitizens());
+        map.AddMapping(GameWindow.NewFloorMenu, _ => actions.CloseNewFloorMenu());
+        map.AddMapping(GameWindow.BuildNewFloorNotification, _ => actions.CloseBuildNewFloorPrompt());
+        map.AddMapping(GameWindow.AdsLostRewardNotification, _ => actions.CheckIfAdsRewardWillBeLost());
 
         return map;
+    }
+
+    private static void AddMapping(this IDictionary<string, Action<int>> dictionary, Enum gameElement, Action<int> action)
+    {
+        dictionary.Add(gameElement.GetDescription(), action);
     }
 }

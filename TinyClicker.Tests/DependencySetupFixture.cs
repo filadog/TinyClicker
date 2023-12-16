@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TinyClicker.Core;
 using TinyClicker.Core.Extensions;
 using TinyClicker.UI;
 
 namespace TinyClicker.Tests;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class DependencySetupFixture
 {
     public DependencySetupFixture()

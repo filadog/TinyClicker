@@ -2,7 +2,7 @@ freeBuxCollectButton
 watchAdPromptBux
 watchAdPromptCoins
 continueButton
-awesome_button
+awesomeButton
 newFloorNoCoinsNotification
 backButton
 findBitizens
@@ -33,8 +33,8 @@ balanceCoin
 newScienceButton
 lobby
 menuButton
-bitizen_moved_in
-new_tasks_button
-new_gifts_button
-new_tower_management_button
-new_calendar_button
+bitizenMovedIn
+newTasksButton
+newGiftsButton
+newTowerManagementButton
+newCalendarButton

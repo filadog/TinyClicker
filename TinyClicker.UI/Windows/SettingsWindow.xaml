@@ -21,7 +21,6 @@
     <Grid>
         <Button 
             x:Name="ExitSettingsButton" 
-            Click="ExitSettingsButton_Click"  
             Margin="145,235,25,22"  
             Background="Transparent" 
             BorderBrush="Transparent">
@@ -31,7 +30,6 @@
 
         <Button 
             x:Name="SaveSettingsButton" 
-            Click="SaveSettingsButton_Click"  
             Margin="25,235,145,22"  
             Background="Transparent" 
             BorderBrush="Transparent">
@@ -172,7 +170,6 @@
             Opacity="0.5"/>
 
         <TextBlock 
-            x:Name="tbBuildFloors" 
             HorizontalAlignment="Left" 
             Margin="85,182,0,0" 
             TextWrapping="Wrap" 
@@ -197,7 +194,6 @@
             Unchecked="BuildFloors_OnUnchecked"/>
 
         <TextBlock 
-            x:Name="FloorCostDecreaseTextBlock" 
             HorizontalAlignment="Right" 
             Margin="0,203,100,0" 
             TextWrapping="Wrap" 

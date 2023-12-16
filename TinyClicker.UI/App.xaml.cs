@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using TinyClicker.Core;
+using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logging;
 
 namespace TinyClicker.UI;
 
-public partial class App : Application
+public partial class App
 {
     private readonly ServiceProvider _serviceProvider;
 

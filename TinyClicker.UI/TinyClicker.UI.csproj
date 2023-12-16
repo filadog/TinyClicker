@@ -43,11 +43,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageReference Include="xunit" Version="2.6.2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\TinyClicker.Core\TinyClicker.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Page Include="App.xaml" />
+		<Page Update="Windows\MainWindow.xaml" />
+		<Page Update="Windows\SettingsWindow.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -91,22 +96,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Update="Windows\MainWindow.xaml">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Page>
-		<Page Update="Windows\SettingsWindow.xaml">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Page>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\TinyClicker.Core\TinyClicker.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="app.manifest">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+		<None Update="app.manifest">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

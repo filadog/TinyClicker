@@ -11,7 +11,7 @@ namespace TinyClicker.Core.Services;
 public class ImageToTextService : IImageToTextService
 {
     private readonly TesseractEngine _tesseractEngine;
-    private static Rectangle _cropRectangle = new(20, 541, 65, 20);
+    private readonly Rectangle _cropRectangle = new(20, 541, 65, 20);
 
     public ImageToTextService(TesseractEngine tesseractEngine)
     {
@@ -76,19 +76,19 @@ public class ImageToTextService : IImageToTextService
         return CropCurrentBalance(image);
     }
 
-    private static Bitmap CropCurrentBalance(Image window)
+    private Bitmap CropCurrentBalance(Image window)
     {
-        // Crop the image
+        // crop the image
         var bitmap = new Bitmap(_cropRectangle.Width, _cropRectangle.Height);
         using (var graphics = Graphics.FromImage(bitmap))
         {
             graphics.DrawImage(window, new Rectangle(0, 0, bitmap.Width, bitmap.Height), _cropRectangle, GraphicsUnit.Pixel);
         }
 
-        // Invert the image
-        for (int y = 0; y <= bitmap.Height - 1; y++)
+        // invert the image
+        for (var y = 0; y <= bitmap.Height - 1; y++)
         {
-            for (int x = 0; x <= bitmap.Width - 1; x++)
+            for (var x = 0; x <= bitmap.Width - 1; x++)
             {
                 var color = bitmap.GetPixel(x, y);
                 color = Color.FromArgb(255, 255 - color.R, 255 - color.G, 255 - color.B);
@@ -136,11 +136,12 @@ public class ImageToTextService : IImageToTextService
         return Image.FromStream(ms);
     }
 
+    // ReSharper disable once UnusedMember.Local
     private static void SaveDebugScreenshot(Image screenshot, string filename)
     {
-        if (!Directory.Exists(Environment.CurrentDirectory + @"/screenshots"))
+        if (!Directory.Exists(Environment.CurrentDirectory + "/screenshots"))
         {
-            Directory.CreateDirectory(Environment.CurrentDirectory + @"/screenshots");
+            Directory.CreateDirectory(Environment.CurrentDirectory + "/screenshots");
         }
 
         screenshot.Save(filename, ImageFormat.Png);

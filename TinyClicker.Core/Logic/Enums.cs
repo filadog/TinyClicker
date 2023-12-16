@@ -2,13 +2,13 @@
 
 namespace TinyClicker.Core.Logic;
 
-public enum Button
+public enum GameButton
 {
     [Description("continueButton")]
     Continue,
 
     [Description("backButton")]
-    BackButton,
+    Back,
 
     [Description("newScienceButton")]
     NewScience,
@@ -17,22 +17,22 @@ public enum Button
     FullyStockedBonus,
 
     [Description("giftChute")]
-    GiftChute,
+    ParachuteGift,
 
     [Description("elevatorButton")]
-    ElevatorButton,
+    RideElevator,
 
     [Description("freeBuxButton")]
-    FreeBuxGiftButton,
+    FreeBuxGift,
 
     [Description("freeBuxCollectButton")]
-    FreeBuxCollectButton,
+    CollectFreeBux,
 
     [Description("questButton")]
-    QuestButton,
+    NewQuest,
 
     [Description("restockButton")]
-    RestockButton,
+    Restock,
 
     [Description("balanceCoin")]
     BalanceCoin,
@@ -43,20 +43,23 @@ public enum Button
     [Description("menuButton")]
     MenuButton,
 
-    [Description("new_tasks_button")]
+    [Description("newTasksButton")]
     TasksButton,
 
-    [Description("new_gifts_button")]
-    GiftsButton,
+    [Description("newGiftsButton")]
+    Gift,
 
-    [Description("new_tower_management_button")]
+    [Description("newTowerManagementButton")]
     TowerManagementButton,
 
-    [Description("new_calendar_button")]
+    [Description("newCalendarButton")]
     CalendarButton,
 
-    [Description("awesome_button")]
-    AwesomeButton
+    [Description("awesomeButton")]
+    Awesome,
+
+    [Description("completedQuestButton")]
+    CompletedQuest
 }
 
 public enum GameWindow
@@ -68,29 +71,38 @@ public enum GameWindow
     NewFloorNoCoinsNotification,
 
     [Description("watchAdPromptCoins")]
-    WatchAdPromptCoins,
+    WatchCoinsAdsPrompt,
 
     [Description("watchAdPromptBux")]
-    WatchAdPromptBux,
+    WatchBuxAdsPrompt,
 
     [Description("deliverBitizens")]
-    DeliverBitizens,
+    DeliverBitizensQuestPrompt,
 
     [Description("findBitizens")]
-    FindBitizens,
+    FindBitizensQuestPrompt,
 
     [Description("adsLostReward")]
-    AdsLostReward,
+    AdsLostRewardNotification,
 
     [Description("lobby")]
     Lobby,
 
     [Description("hurryConstructionPrompt")]
-    HurryConstruction,
+    HurryConstructionWithBux,
+
+    [Description("roofCustomizationWindow")]
+    RoofCustomization,
+
+    [Description("foundCoinsChuteNotification")]
+    FoundCoinsOnParachuteClick,
 
     [Description("fullyStockedBonus")]
     FullyStockedBonus,
 
-    [Description("bitizen_moved_in")]
-    BitizenMovedIn
+    [Description("bitizenMovedIn")]
+    BitizenMovedIn,
+
+    [Description("newFloorMenu")]
+    NewFloorMenu
 }

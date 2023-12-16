@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using Tesseract;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
 
-namespace TinyClicker.Core;
+namespace TinyClicker.Core.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -19,6 +19,6 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IImageToTextService, ImageToTextService>();
         collection.AddSingleton<IOpenCvService, OpenCvService>();
 
-        collection.AddSingleton(new TesseractEngine(@"./Tessdata", "pixel", EngineMode.LstmOnly));
+        collection.AddSingleton(new TesseractEngine("./Tessdata", "pixel", EngineMode.LstmOnly));
     }
 }

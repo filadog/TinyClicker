@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Reflection;
 
-namespace TinyClicker.Core;
+namespace TinyClicker.Core.Extensions;
 
 public static class EnumExtensions
 {
-    private static readonly ConcurrentDictionary<string, string> _displayNameCache = new();
-
     public static string GetDescription(this Enum value)
     {
-        var key = $"{value.GetType().FullName}.{value}";
+        var description = value.GetAttributeOfType<DescriptionAttribute>();
+        return description == null ? string.Empty : description.Description;
+    }
 
-        return _displayNameCache.GetOrAdd(key, x =>
-        {
-            var name = (DescriptionAttribute[])value
-                .GetType()
-                .GetTypeInfo()
-                .GetField(value.ToString())
-                .GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-            return name.Length > 0 ? name[0].Description : value.ToString();
-        });
+    private static T? GetAttributeOfType<T>(this Enum enumVal) where T : Attribute
+    {
+        var type = enumVal.GetType();
+        var memInfo = type.GetMember(enumVal.ToString());
+        var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
+        return attributes.Length > 0 ? (T)attributes[0] : null;
     }
 }

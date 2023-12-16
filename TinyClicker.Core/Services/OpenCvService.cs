@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logic;
 using Point = OpenCvSharp.Point;
 
@@ -32,34 +33,34 @@ public class OpenCvService : IOpenCvService
 
     private readonly HashSet<string> _skipButtons = new()
     {
-        Button.GameIcon.GetDescription(),
-        Button.BalanceCoin.GetDescription(),
-        Button.RestockButton.GetDescription(),
-        Button.MenuButton.GetDescription(),
-        Button.CalendarButton.GetDescription(),
-        Button.TasksButton.GetDescription(),
-        Button.FreeBuxGiftButton.GetDescription(),
-        Button.TowerManagementButton.GetDescription(),
-        GameWindow.DeliverBitizens.GetDescription(),
-        GameWindow.FindBitizens.GetDescription(),
+        GameButton.GameIcon.GetDescription(),
+        GameButton.BalanceCoin.GetDescription(),
+        GameButton.Restock.GetDescription(),
+        GameButton.MenuButton.GetDescription(),
+        GameButton.CalendarButton.GetDescription(),
+        GameButton.TasksButton.GetDescription(),
+        GameButton.FreeBuxGift.GetDescription(),
+        GameButton.TowerManagementButton.GetDescription(),
+        GameWindow.DeliverBitizensQuestPrompt.GetDescription(),
+        GameWindow.FindBitizensQuestPrompt.GetDescription(),
         GameWindow.BuildNewFloorNotification.GetDescription(),
-        GameWindow.HurryConstruction.GetDescription(),
+        GameWindow.HurryConstructionWithBux.GetDescription(),
         GameWindow.NewFloorNoCoinsNotification.GetDescription(),
-        GameWindow.WatchAdPromptBux.GetDescription(),
-        GameWindow.WatchAdPromptCoins.GetDescription(),
+        GameWindow.WatchBuxAdsPrompt.GetDescription(),
+        GameWindow.WatchCoinsAdsPrompt.GetDescription(),
         GameWindow.FullyStockedBonus.GetDescription(),
-        GameWindow.AdsLostReward.GetDescription(),
+        GameWindow.AdsLostRewardNotification.GetDescription(),
         GameWindow.BitizenMovedIn.GetDescription()
     };
 
     private readonly HashSet<string> _highThresholdButtons = new()
     {
-        Button.GiftsButton.GetDescription()
+        GameButton.Gift.GetDescription()
     };
 
     private readonly HashSet<string> _adjustableButtons = new()
     {
-        Button.GiftChute.GetDescription()
+        GameButton.ParachuteGift.GetDescription()
     };
 
     public bool TryFindFirstImageOnScreen(Image gameScreen, out (string ItemName, int Location) result)
@@ -96,14 +97,9 @@ public class OpenCvService : IOpenCvService
             return false;
         }
 
-        if (_adjustableButtons.Contains(template.Key))
-        {
-            result = (template.Key, MakeAdjustedLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y));
-        }
-        else
-        {
-            result = (template.Key, _windowsApiService.MakeLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y + 10));
-        }
+        result = _adjustableButtons.Contains(template.Key) 
+            ? (template.Key, MakeAdjustedLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y)) 
+            : (template.Key, _windowsApiService.MakeLParam(scanResult.MaxLoc.X, scanResult.MaxLoc.Y + 10));
 
         return true;
     }
@@ -117,7 +113,9 @@ public class OpenCvService : IOpenCvService
     {
         using var gameWindow = screenshot ?? _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
-
+        
+        Templates ??= MakeTemplatesFromSamples(gameWindow); 
+            
         var screen = windowBitmap.ToMat();
         var template = templates == null ? Templates[image.GetDescription()] : templates[image.GetDescription()];
 
@@ -133,6 +131,8 @@ public class OpenCvService : IOpenCvService
     {
         using var gameWindow = _windowsApiService.GetGameScreenshot();
         using var windowBitmap = new Bitmap(gameWindow);
+        
+        Templates ??= MakeTemplatesFromSamples(gameWindow); 
 
         var screen = windowBitmap.ToMat();
         var template = Templates[image.GetDescription()];
@@ -170,7 +170,7 @@ public class OpenCvService : IOpenCvService
         var samples = Array.Empty<byte[]>();
         using var file = new FileStream(SAMPLES_PATH, FileMode.Open, FileAccess.Read);
 
-        var sizeInt = sizeof(int);
+        const int sizeInt = sizeof(int);
         var sizeRow = new byte[sizeInt];
 
         while (true)
@@ -203,7 +203,7 @@ public class OpenCvService : IOpenCvService
         var sampleNames = File.ReadAllLines(SAMPLE_NAMES_PATH);
         var sampleData = LoadSampleData();
 
-        for (int i = 0; i < sampleNames.Length; i++)
+        for (var i = 0; i < sampleNames.Length; i++)
         {
             var sample = sampleData[i];
             using var ms = new MemoryStream(sample);

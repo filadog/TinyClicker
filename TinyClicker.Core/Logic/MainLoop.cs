@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
@@ -16,7 +15,7 @@ public class MainLoop
     private readonly ILogger _logger;
     private readonly IImageToTextService _imageService;
 
-    private Dictionary<string, Action<int>> _clickerActionsMap;
+    private readonly Dictionary<string, Action<int>> _clickerActionsMap;
     private int _notFoundCount;
 
     public MainLoop(
@@ -72,16 +71,18 @@ public class MainLoop
             }
         }
 
-        if (_configService.Config.BuildFloors)
+        if (!_configService.Config.BuildFloors)
         {
-            var balance = _imageService.GetBalanceFromWindow(gameWindow);
-            if (balance == -1 || currentFloor < 4)
-            {
-                return;
-            }
-
-            _clickerActionsRepository.CheckForNewFloor(currentFloor, balance);
+            return;
         }
+
+        var balance = _imageService.GetBalanceFromWindow(gameWindow);
+        if (balance == -1 || currentFloor < 4)
+        {
+            return;
+        }
+
+        _clickerActionsRepository.CheckForNewFloor(currentFloor, balance);
     }
 
     private void PerformAction((string Key, int Location) item)

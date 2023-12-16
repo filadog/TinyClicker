@@ -3,33 +3,30 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using TinyClicker.Core.Logging;
 using Vanara.PInvoke;
 
 namespace TinyClicker.Core.Services;
 
 public class WindowsApiService : IWindowsApiService
 {
-    private readonly ILogger _logger;
     private readonly IConfigService _configService;
 
-    private const string LD_PLAYER_PROCNAME = "dnplayer";
-    private const string BLUESTACKS_PROCNAME = "HD-Player";
+    private const string LD_PLAYER_PROCESS = "dnplayer";
+    private const string BLUESTACKS_PROCESS = "HD-Player";
     private const string ERROR_MESSAGE = "Emulator window not found. Restart required";
 
     private Process? _process;
     private nint _childHandle;
     private Rectangle _screenRect;
 
-    public WindowsApiService(IConfigService configService, ILogger logger)
+    public WindowsApiService(IConfigService configService)
     {
         _configService = configService;
-        _logger = logger;
     }
 
     private static Process GetEmulatorProcess()
     {
-        var processes = new[] { BLUESTACKS_PROCNAME, LD_PLAYER_PROCNAME };
+        var processes = new[] { BLUESTACKS_PROCESS, LD_PLAYER_PROCESS };
         var processlist = Process.GetProcesses();
         var process = processlist
             .Select(x => x)
@@ -65,6 +62,7 @@ public class WindowsApiService : IWindowsApiService
         SendClick(GetRelativeCoordinates(x, y));
     }
 
+    // ReSharper disable once UnusedMember.Global
     public void SendEscapeButton()
     {
         if (_childHandle == nint.Zero || _process == null)
@@ -83,7 +81,7 @@ public class WindowsApiService : IWindowsApiService
         }
     }
 
-    private nint GetChildHandle(string processName)
+    private static nint GetChildHandle(string processName)
     {
         var childProcesses = WindowHandleInfo.GetChildrenHandles(processName);
         if (childProcesses.Any())
@@ -94,7 +92,7 @@ public class WindowsApiService : IWindowsApiService
         throw new InvalidOperationException(ERROR_MESSAGE);
     }
 
-    public int GetRelativeCoordinates(int x, int y)
+    private int GetRelativeCoordinates(int x, int y)
     {
         var rectX = Math.Abs(_screenRect.Width - _screenRect.Left);
         var rectY = Math.Abs(_screenRect.Height - _screenRect.Top);
@@ -110,15 +108,17 @@ public class WindowsApiService : IWindowsApiService
 
     public Image GetGameScreenshot()
     {
-        if (_childHandle == default)
+        if (_childHandle != default)
         {
-            _process = GetEmulatorProcess();
-            _childHandle = GetChildHandle(_process.ProcessName);
-
-            User32.GetWindowRect(_childHandle, out var rect);
-            var newRect = new Rectangle(rect.X, rect.Y, rect.right, rect.bottom);
-            _screenRect = newRect;
+            MakeScreenshot(_childHandle);
         }
+
+        _process = GetEmulatorProcess();
+        _childHandle = GetChildHandle(_process.ProcessName);
+
+        User32.GetWindowRect(_childHandle, out var rect);
+        var newRect = new Rectangle(rect.X, rect.Y, rect.right, rect.bottom);
+        _screenRect = newRect;
 
         return MakeScreenshot(_childHandle);
     }

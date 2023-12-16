@@ -8,6 +8,4 @@ public interface IWindowsApiService
     Image GetGameScreenshot();
     void SendClick(int location);
     void SendClick(int x, int y);
-    void SendEscapeButton();
-    int GetRelativeCoordinates(int x, int y);
 }
