@@ -12,7 +12,7 @@ public partial class MainWindow : IMainWindow
     private readonly BackgroundWorker _backgroundWorker;
     private readonly SettingsWindow _settingsWindow;
     private readonly TinyClickerApp _tinyClickerApp;
-    private readonly IConfigService _configService;
+    private readonly IUserConfiguration _userConfiguration;
 
     private bool _isLDPlayer;
 
@@ -23,13 +23,13 @@ public partial class MainWindow : IMainWindow
         BackgroundWorker backgroundWorker,
         SettingsWindow settingsWindow,
         TinyClickerApp tinyClickerApp,
-        IConfigService configService,
+        IUserConfiguration userConfiguration,
         ILogger logger)
     {
         _backgroundWorker = backgroundWorker;
         _settingsWindow = settingsWindow;
         _tinyClickerApp = tinyClickerApp;
-        _configService = configService;
+        _userConfiguration = userConfiguration;
 
         logger.SetMainWindow(this);
 
@@ -55,7 +55,7 @@ public partial class MainWindow : IMainWindow
     {
         if (_isLDPlayer ^ IsBluestacks)
         {
-            _configService.Config.IsBluestacks = IsBluestacks;
+            _userConfiguration.Configuration.IsBluestacks = IsBluestacks;
             _tinyClickerApp.StartInBackground();
 
             Log("Started!");

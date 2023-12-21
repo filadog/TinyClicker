@@ -6,7 +6,7 @@ using Point = OpenCvSharp.Point;
 
 namespace TinyClicker.Core.Services;
 
-public interface IOpenCvService
+public interface IImageFinder
 {
     bool TryFindFirstImageOnScreen(Image gameScreen, out (string ItemName, int Location) result);
     bool IsImageOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenCvSharp;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
 
@@ -9,20 +8,20 @@ namespace TinyClicker.Core.Logic;
 
 public class ClickerActionsRepository
 {
-    private readonly IConfigService _configService;
+    private readonly IUserConfiguration _userConfiguration;
     private readonly IWindowsApiService _windowsApiService;
-    private readonly IOpenCvService _openCvService;
+    private readonly IImageFinder _imageFinder;
     private readonly ILogger _logger;
 
     public ClickerActionsRepository(
-        IConfigService configService,
+        IUserConfiguration userConfiguration,
         IWindowsApiService windowsApiService,
-        IOpenCvService openCvService,
+        IImageFinder imageFinder,
         ILogger logger)
     {
-        _configService = configService;
+        _userConfiguration = userConfiguration;
         _windowsApiService = windowsApiService;
-        _openCvService = openCvService;
+        _imageFinder = imageFinder;
         _logger = logger;
 
         FloorPrices = CalculateFloorPrices();
@@ -37,34 +36,34 @@ public class ClickerActionsRepository
         ClickAndWaitSec(100, 375, 1); // cancel action
     }
 
-    public void CollectFreeBux(int lParam)
+    public void CollectFreeBux(int location)
     {
         _logger.Log("Collecting free bux");
+        ClickAndWaitMs(location, 300);
 
-        var location = GetLocationFromLParam(lParam);
-        _windowsApiService.SendClick(location.X + 20, location.Y + 20);
-        WaitMs(300);
-
-        if (_openCvService.TryFindOnScreen(GameButton.FreeBuxGift, out var collectLocation))
+        if (!_imageFinder.TryFindOnScreen(GameButton.FreeBuxGift, out var collectLocation))
         {
-            _windowsApiService.SendClick(collectLocation.X + 40, collectLocation.Y + 40);
-            WaitMs(300);
-            _windowsApiService.SendClick(225, 375); // collect bux
+            return;
         }
+
+        ClickAndWaitMs(collectLocation.X + 40, collectLocation.Y + 40, 300);
+        _windowsApiService.SendClick(225, 375); // collect bux
     }
 
     public void ClickOnChute(int location)
     {
         _logger.Log("Clicking on the parachute");
-        _windowsApiService.SendClick(location);
-        WaitMs(500);
-        if (_openCvService.IsImageOnScreen(GameWindow.WatchCoinsAdsPrompt) && _configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
+        ClickAndWaitMs(location, 500);
+
+        if (_imageFinder.IsImageOnScreen(GameWindow.WatchCoinsAdsPrompt) 
+            && _userConfiguration.Configuration.CurrentFloor >= _userConfiguration.Configuration.WatchAdsFromFloor)
         {
             TryWatchAds();
         }
-        else if (_configService.Config.WatchBuxAds && _configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
+        else if (_userConfiguration.Configuration.WatchBuxAds 
+            && _userConfiguration.Configuration.CurrentFloor >= _userConfiguration.Configuration.WatchAdsFromFloor)
         {
-            if (_openCvService.IsImageOnScreen(GameWindow.WatchBuxAdsPrompt))
+            if (_imageFinder.IsImageOnScreen(GameWindow.WatchBuxAdsPrompt))
             {
                 TryWatchAds();
             }
@@ -121,7 +120,7 @@ public class ClickerActionsRepository
         ClickAndWaitMs(100, 480, 500); // stock all
         ClickAndWaitMs(225, 375, 500);
 
-        if (_openCvService.IsImageOnScreen(GameButton.FullyStockedBonus))
+        if (_imageFinder.IsImageOnScreen(GameButton.FullyStockedBonus))
         {
             ClickAndWaitSec(165, 375, 1); // close the bonus tooltip
             MoveUp();
@@ -146,26 +145,26 @@ public class ClickerActionsRepository
         _logger.Log("Riding the elevator");
         ClickAndWaitSec(21, 510, 1); // move up
 
-        if (_openCvService.IsImageOnScreen(GameButton.Back))
+        if (_imageFinder.IsImageOnScreen(GameButton.Back))
         {
             WaitMs(300);
             PressExitButton();
         }
-        else if (_openCvService.TryFindOnScreen(GameButton.Continue, out var location))
+        else if (_imageFinder.TryFindOnScreen(GameButton.Continue, out var location))
         {
             // click continue in case a new bitizen moved in
             _windowsApiService.SendClick(location.X, location.Y);
         }
         else
         {
-            while (!_openCvService.IsImageOnScreen(GameButton.MenuButton))
+            while (!_imageFinder.IsImageOnScreen(GameButton.MenuButton))
             {
                 WaitMs(500);
             }
 
             MoveUp();
-            _configService.Config.ElevatorRides++;
-            _configService.SaveConfig();
+            _userConfiguration.Configuration.ElevatorRides++;
+            _userConfiguration.SaveConfig();
         }
     }
 
@@ -175,11 +174,11 @@ public class ClickerActionsRepository
         _windowsApiService.SendClick(location);
         WaitMs(500);
 
-        if (_openCvService.IsImageOnScreen(GameWindow.DeliverBitizensQuestPrompt))
+        if (_imageFinder.IsImageOnScreen(GameWindow.DeliverBitizensQuestPrompt))
         {
             DeliverBitizens();
         }
-        else if (_openCvService.IsImageOnScreen(GameWindow.FindBitizensQuestPrompt))
+        else if (_imageFinder.IsImageOnScreen(GameWindow.FindBitizensQuestPrompt))
         {
             FindBitizens();
         }
@@ -213,7 +212,7 @@ public class ClickerActionsRepository
     public void CheckIfAdsRewardWillBeLost()
     {
         WaitMs(500);
-        if (_openCvService.IsImageOnScreen(GameWindow.AdsLostRewardNotification))
+        if (_imageFinder.IsImageOnScreen(GameWindow.AdsLostRewardNotification))
         {
             _windowsApiService.SendClick(240, 344); // click "keep watching"
             WaitSec(15);
@@ -263,26 +262,26 @@ public class ClickerActionsRepository
 
     public void CheckForNewFloor(int currentFloor, int balance)
     {
-        if (currentFloor >= _configService.Config.RebuildAtFloor)
+        if (currentFloor >= _userConfiguration.Configuration.RebuildAtFloor)
         {
             WaitMs(500);
             RebuildTower();
             return;
         }
 
-        if (balance <= FloorPrices[currentFloor + 1] || currentFloor >= _configService.Config.RebuildAtFloor)
+        if (balance <= FloorPrices[currentFloor + 1] || currentFloor >= _userConfiguration.Configuration.RebuildAtFloor)
         {
             return;
         }
 
-        if (_openCvService.IsImageOnScreen(GameButton.RideElevator))
+        if (_imageFinder.IsImageOnScreen(GameButton.RideElevator))
         {
             WaitMs(300);
             RideElevator();
             return;
         }
 
-        if (_openCvService.IsImageOnScreen(GameWindow.Lobby))
+        if (_imageFinder.IsImageOnScreen(GameWindow.Lobby))
         {
             _logger.Log("Found lobby window");
             PressExitButton();
@@ -292,7 +291,7 @@ public class ClickerActionsRepository
 
         BuildNewFloor();
 
-        if (_openCvService.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
+        if (_imageFinder.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
         {
             AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(3);
             _logger.Log("Not enough coins for a new floor");
@@ -300,25 +299,25 @@ public class ClickerActionsRepository
             return;
         }
 
-        if (_openCvService.IsImageOnScreen(GameButton.Back))
+        if (_imageFinder.IsImageOnScreen(GameButton.Back))
         {
             return;
         }
 
-        CheckForNewFloor(_configService.Config.CurrentFloor, balance - FloorPrices[currentFloor + 1]);
+        CheckForNewFloor(_userConfiguration.Configuration.CurrentFloor, balance - FloorPrices[currentFloor + 1]);
     }
 
     private void BuildNewFloor()
     {
         if (AttemptNextFloorBuildAt <= DateTime.Now)
         {
-            if (_openCvService.IsImageOnScreen(GameButton.Continue))
+            if (_imageFinder.IsImageOnScreen(GameButton.Continue))
             {
                 _windowsApiService.SendClick(230, 380); // continue
                 return;
             }
 
-            if (_openCvService.IsImageOnScreen(GameButton.Back))
+            if (_imageFinder.IsImageOnScreen(GameButton.Back))
             {
                 PressExitButton();
                 _logger.Log("Clicking Back button while building");
@@ -330,19 +329,19 @@ public class ClickerActionsRepository
             ClickAndWaitMs(22, 10, 300);   // move up
             ClickAndWaitMs(300, 360, 400); // click on a new floor
 
-            if (_openCvService.IsImageOnScreen(GameButton.Continue))
+            if (_imageFinder.IsImageOnScreen(GameButton.Continue))
             {
                 _windowsApiService.SendClick(160, 380); // no, thanks
                 _logger.Log("Clicking Continue button while building");
             }
-            else if (_openCvService.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
+            else if (_imageFinder.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
             {
                 _windowsApiService.SendClick(230, 320); // confirm
                 WaitMs(400);
 
-                if (!_openCvService.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
+                if (!_imageFinder.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
                 {
-                    _configService.AddOneFloor();
+                    _userConfiguration.AddOneFloor();
                     _logger.Log("Built a new floor");
                 }
                 else
@@ -364,8 +363,8 @@ public class ClickerActionsRepository
     private void RebuildTower()
     {
         _logger.Log("Rebuilding the tower");
-        _configService.SaveStatRebuildTime();
-        _configService.Config.ElevatorRides = 0;
+        _userConfiguration.SaveStatRebuildTime();
+        _userConfiguration.Configuration.ElevatorRides = 0;
 
         ClickAndWaitMs(305, 570, 350); // menu
         ClickAndWaitMs(165, 435, 350); // rebuild menu
@@ -374,14 +373,14 @@ public class ClickerActionsRepository
         ClickAndWaitMs(230, 380, 600); // yes, skip tutorial (finally)
         //ClickAndWaitMs(165, 405, 200); // click to claim easter GT bonus
 
-        _configService.SetCurrentFloor(4);
+        _userConfiguration.SetCurrentFloor(4);
     }
 
     // ReSharper disable once UnusedMember.Global
     public void PassTheTutorial()
     {
         _logger.Log("Passing the tutorial");
-        if (_openCvService.IsImageOnScreen(GameButton.Continue))
+        if (_imageFinder.IsImageOnScreen(GameButton.Continue))
         {
             ClickAndWaitMs(170, 435, 400); // Continue
         }
@@ -403,7 +402,7 @@ public class ClickerActionsRepository
         ClickAndWaitSec(21, 510, 4);    // click on the elevator button
 
         // daily rent check (in case it's past midnight)
-        if (_openCvService.TryFindOnScreen(GameButton.CollectFreeBux, out var location))
+        if (_imageFinder.TryFindOnScreen(GameButton.CollectFreeBux, out var location))
         {
             ClickAndWaitMs(location.X, location.Y, 500); // collect daily rent
             ClickAndWaitMs(21, 510, 4000);               // click on elevator button again
@@ -434,7 +433,7 @@ public class ClickerActionsRepository
         ClickAndWaitSec(200, 210, 5);  // request restock of the first item in the store
 
         // wait until the floor is restocked
-        while (!_openCvService.IsImageOnScreen(GameButton.Restock))
+        while (!_imageFinder.IsImageOnScreen(GameButton.Restock))
         {
             WaitMs(700);
         }
@@ -457,7 +456,7 @@ public class ClickerActionsRepository
 
     public void TryWatchAds()
     {
-        if (_configService.Config.CurrentFloor >= _configService.Config.WatchAdsFromFloor)
+        if (_userConfiguration.Configuration.CurrentFloor >= _userConfiguration.Configuration.WatchAdsFromFloor)
         {
             _logger.Log("Watching the advertisement");
             ClickAndWaitSec(225, 375, 20);
@@ -470,7 +469,7 @@ public class ClickerActionsRepository
 
     private void MoveUp()
     {
-        ClickAndWaitSec(22, 10, 1);
+        _windowsApiService.SendClick(22, 10);
     }
 
     private void MoveDown()
@@ -486,14 +485,14 @@ public class ClickerActionsRepository
 
     public void TryPlayRaffle()
     {
-        var lastRaffleTime = _configService.Config.LastRaffleTime;
+        var lastRaffleTime = _userConfiguration.Configuration.LastRaffleTime;
         var dateTimeNow = DateTime.Now;
         if (lastRaffleTime > dateTimeNow.AddHours(-1))
         {
             return;
         }
 
-        if (_openCvService.IsImageOnScreen(GameButton.Continue))
+        if (_imageFinder.IsImageOnScreen(GameButton.Continue))
         {
             _windowsApiService.SendClick(160, 380); // continue
         }
@@ -501,16 +500,11 @@ public class ClickerActionsRepository
         _logger.Log("Playing the raffle");
         WaitMs(500);
         ClickAndWaitMs(300, 570, 500);          // open menu
-        ClickAndWaitMs(275, 440, 2000);         // open raffle
+        ClickAndWaitMs(275, 440, 3000);         // open raffle
         _windowsApiService.SendClick(160, 345); // enter raffle
 
-        _configService.Config.LastRaffleTime = dateTimeNow;
-        _configService.SaveConfig();
-    }
-
-    private static Point GetLocationFromLParam(int lParam)
-    {
-        return new Point((short)lParam, lParam >> 16);
+        _userConfiguration.Configuration.LastRaffleTime = dateTimeNow;
+        _userConfiguration.SaveConfig();
     }
 
     private static void WaitSec(int seconds)
@@ -539,7 +533,7 @@ public class ClickerActionsRepository
     private Dictionary<int, int> CalculateFloorPrices()
     {
         var result = new Dictionary<int, int>();
-        var floorCostDecrease = _configService.Config.FloorCostDecrease;
+        var floorCostDecrease = _userConfiguration.Configuration.FloorCostDecrease;
 
         for (var i = 1; i <= 9; i++)
         {
@@ -547,7 +541,7 @@ public class ClickerActionsRepository
             result.Add(i, floorPrice);
         }
 
-        for (var i = 10; i <= _configService.Config.RebuildAtFloor + 1; i++)
+        for (var i = 10; i <= _userConfiguration.Configuration.RebuildAtFloor + 1; i++)
         {
             var floorCost = 1000 * 1 * ((0.5f * (i * i)) + (8 * i) - 117);
 

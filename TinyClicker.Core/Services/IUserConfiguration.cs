@@ -2,13 +2,13 @@
 
 namespace TinyClicker.Core.Services;
 
-public interface IConfigService
+public interface IUserConfiguration
 {
-    Config Config { get; }
+    Configuration Configuration { get; }
 
     void AddOneFloor();
     void SaveConfig();
-    void SaveConfig(Config config);
+    void SaveConfig(Configuration config);
     void SaveStatRebuildTime();
     void SetCurrentFloor(int floor);
 }

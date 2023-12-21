@@ -8,12 +8,12 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 
 namespace TinyClicker.Core.Services;
 
-public class ImageToTextService : IImageToTextService
+public class BalanceParser : IBalanceParser
 {
     private readonly TesseractEngine _tesseractEngine;
     private readonly Rectangle _cropRectangle = new(20, 541, 65, 20);
 
-    public ImageToTextService(TesseractEngine tesseractEngine)
+    public BalanceParser(TesseractEngine tesseractEngine)
     {
         _tesseractEngine = tesseractEngine;
     }

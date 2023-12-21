@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TinyClicker.Core.Logic;
 
-namespace TinyClicker.Core.Extensions;
+namespace TinyClicker.Core;
 
 public static class ClickerActionsExtensions
 {

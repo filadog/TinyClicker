@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 using ImageMagick;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logic;
 using Point = OpenCvSharp.Point;
 
 namespace TinyClicker.Core.Services;
 
-public class OpenCvService : IOpenCvService
+public class ImageFinder : IImageFinder
 {
     private const double OPEN_CV_THRESHOLD_LOW = 0.78;
     private const double OPEN_CV_THRESHOLD_HIGH = 0.9;
@@ -21,7 +20,7 @@ public class OpenCvService : IOpenCvService
     private const string SAMPLE_NAMES_PATH = "./Samples/button_names.txt";
 
     private readonly IWindowsApiService _windowsApiService;
-    private readonly IImageToTextService _imageService;
+    private readonly IBalanceParser _balanceParser;
 
     private readonly HashSet<string> _skipButtons =
     [
@@ -55,10 +54,10 @@ public class OpenCvService : IOpenCvService
         GameButton.ParachuteGift.GetDescription()
     ];
 
-    public OpenCvService(IWindowsApiService windowsApiService, IImageToTextService imageService)
+    public ImageFinder(IWindowsApiService windowsApiService, IBalanceParser balanceParser)
     {
         _windowsApiService = windowsApiService;
-        _imageService = imageService;
+        _balanceParser = balanceParser;
     }
 
     private Dictionary<string, Mat>? Templates { get; set; }
@@ -125,16 +124,16 @@ public class OpenCvService : IOpenCvService
     public Dictionary<string, Mat> MakeTemplatesFromSamples(Image screenshot)
     {
         var images = LoadSampleImages();
-        var percentage = _imageService.GetScreenDiffPercentageForTemplates(screenshot);
+        var percentage = _balanceParser.GetScreenDiffPercentageForTemplates(screenshot);
 
         var mats = new Dictionary<string, Mat>();
 
         foreach (var image in images)
         {
-            using var imageOld = new MagickImage(_imageService.ImageToBytes(image.Value), MagickFormat.Png);
+            using var imageOld = new MagickImage(_balanceParser.ImageToBytes(image.Value), MagickFormat.Png);
             imageOld.Resize(percentage.x, percentage.y);
 
-            using var imageBitmap = new Bitmap(_imageService.BytesToImage(imageOld.ToByteArray()));
+            using var imageBitmap = new Bitmap(_balanceParser.BytesToImage(imageOld.ToByteArray()));
             var template = imageBitmap.ToMat();
 
             mats.Add(image.Key, template);

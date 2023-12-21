@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using TinyClicker.Core.Extensions;
+using TinyClicker.Core;
 using TinyClicker.Core.Logic;
 using TinyClicker.Core.Services;
 using Xunit;
@@ -73,20 +73,20 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindNothingOnScreen()
     {
-        var openCvService = _serviceProvider.GetRequiredService<IOpenCvService>();
+        var imageFinder = _serviceProvider.GetRequiredService<IImageFinder>();
 
         var screenshot = TestHelper.LoadGameScreenshot("NothingOnScreen");
-        var foundItems = openCvService.TryFindFirstImageOnScreen(screenshot, out _);
+        var foundItems = imageFinder.TryFindFirstImageOnScreen(screenshot, out _);
 
         Assert.False(foundItems);
     }
 
     private string TryFindFirstItemOnScreen(string itemName)
     {
-        var openCvService = _serviceProvider.GetRequiredService<IOpenCvService>();
+        var imageFinder = _serviceProvider.GetRequiredService<IImageFinder>();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);
 
-        if (openCvService.TryFindFirstImageOnScreen(screenshot, out var item))
+        if (imageFinder.TryFindFirstImageOnScreen(screenshot, out var item))
         {
             return item.ItemName;
         }
@@ -98,11 +98,10 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
     {
         var itemName = item.GetDescription();
 
-        var openCvService = _serviceProvider.GetRequiredService<IOpenCvService>();
+        var imageFinder = _serviceProvider.GetRequiredService<IImageFinder>();
         var screenshot = TestHelper.LoadGameScreenshot(itemName);
-        var templates = openCvService.MakeTemplatesFromSamples(screenshot);
-        var isImageFound = openCvService.IsImageOnScreen(item, templates, screenshot);
+        var templates = imageFinder.MakeTemplatesFromSamples(screenshot);
 
-        return isImageFound;
+        return imageFinder.IsImageOnScreen(item, templates, screenshot);
     }
 }

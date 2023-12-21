@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TinyClicker.Core.Extensions;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
 
@@ -9,40 +8,40 @@ namespace TinyClicker.Core.Logic;
 public class MainLoop
 {
     private readonly ClickerActionsRepository _clickerActionsRepository;
-    private readonly IConfigService _configService;
-    private readonly IOpenCvService _openCvService;
     private readonly IWindowsApiService _windowsApiService;
+    private readonly IUserConfiguration _userConfiguration;
+    private readonly IBalanceParser _balanceParser;
+    private readonly IImageFinder _imageFinder;
     private readonly ILogger _logger;
-    private readonly IImageToTextService _imageService;
 
     private readonly Dictionary<string, Action<int>> _clickerActionsMap;
     private int _notFoundCount;
 
     public MainLoop(
-        IConfigService configService,
         ClickerActionsRepository clickerActionsRepository,
+        IUserConfiguration userConfiguration,
         IWindowsApiService windowsApiService,
-        IOpenCvService openCvService,
-        IImageToTextService imageService,
+        IBalanceParser balanceParser,
+        IImageFinder imageFinder,
         ILogger logger)
     {
         _clickerActionsRepository = clickerActionsRepository;
-        _configService = configService;
+        _userConfiguration = userConfiguration;
         _windowsApiService = windowsApiService;
-        _openCvService = openCvService;
-        _imageService = imageService;
+        _balanceParser = balanceParser;
+        _imageFinder = imageFinder;
         _logger = logger;
         _clickerActionsMap = clickerActionsRepository.GetActionsMap();
     }
 
-    private int FloorToRebuildAt => _configService.Config.RebuildAtFloor;
+    private int FloorToRebuildAt => _userConfiguration.Configuration.RebuildAtFloor;
 
     public void Start()
     {
         using var gameWindow = _windowsApiService.GetGameScreenshot();
-        var currentFloor = _configService.Config.CurrentFloor;
+        var currentFloor = _userConfiguration.Configuration.CurrentFloor;
 
-        if (_openCvService.TryFindFirstImageOnScreen(gameWindow, out var result))
+        if (_imageFinder.TryFindFirstImageOnScreen(gameWindow, out var result))
         {
             var message = "Found " + result.ItemName;
             _logger.Log(message);
@@ -53,9 +52,10 @@ public class MainLoop
             _notFoundCount++;
             _logger.Log("Found nothing x" + _notFoundCount);
 
-            if (_notFoundCount >= 100) // todo multiply count by loop speed here
+            if (_notFoundCount >= 35000 / _userConfiguration.Configuration.GameScreenScanningRateMs)
             {
                 _clickerActionsRepository.TryCloseAd();
+                return;
             }
         }
 
@@ -71,12 +71,12 @@ public class MainLoop
             }
         }
 
-        if (!_configService.Config.BuildFloors)
+        if (!_userConfiguration.Configuration.BuildFloors)
         {
             return;
         }
 
-        var balance = _imageService.GetBalanceFromWindow(gameWindow);
+        var balance = _balanceParser.GetBalanceFromWindow(gameWindow);
         if (balance == -1 || currentFloor < 4)
         {
             return;

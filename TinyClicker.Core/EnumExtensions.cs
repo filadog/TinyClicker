@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace TinyClicker.Core.Extensions;
+namespace TinyClicker.Core;
 
 public static class EnumExtensions
 {

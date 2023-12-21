@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using TinyClicker.Core.Extensions;
+using TinyClicker.Core;
 using TinyClicker.Core.Logging;
 
 namespace TinyClicker.UI;

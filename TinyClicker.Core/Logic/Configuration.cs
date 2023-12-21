@@ -2,13 +2,13 @@
 
 namespace TinyClicker.Core.Logic;
 
-public class Config
+public class Configuration
 {
-    public Config() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0, 0)
+    public Configuration() : this(true, 10f, 4, 50, 25, false, DateTime.Now, true, default, true, 0, 0, 500)
     {
     }
 
-    public Config(
+    public Configuration(
         bool vip,
         float elevatorSpeed,
         int currentFloor,
@@ -20,7 +20,8 @@ public class Config
         DateTime lastRaffleTime,
         bool isBluestacks,
         int elevatorRides,
-        int floorCostDecrease)
+        int floorCostDecrease,
+        int gameScreenScanningRateMs)
     {
         VipPackage = vip;
         ElevatorSpeed = elevatorSpeed;
@@ -34,6 +35,7 @@ public class Config
         IsBluestacks = isBluestacks;
         ElevatorRides = elevatorRides;
         FloorCostDecrease = floorCostDecrease;
+        GameScreenScanningRateMs = gameScreenScanningRateMs;
     }
 
     public bool VipPackage { get; init; }
@@ -48,4 +50,5 @@ public class Config
     public bool IsBluestacks { get; set; }
     public int ElevatorRides { get; set; }
     public int FloorCostDecrease { get; init; }
+    public int GameScreenScanningRateMs { get; init; }
 }

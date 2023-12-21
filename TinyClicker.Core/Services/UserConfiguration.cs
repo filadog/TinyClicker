@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -6,50 +6,50 @@ using TinyClicker.Core.Logic;
 
 namespace TinyClicker.Core.Services;
 
-public class ConfigService : IConfigService
+public class UserConfiguration : IUserConfiguration
 {
     private const string STATS_PATH = "./Stats.txt";
     private const string HEADER = "rebuild time        | time since last rebuild | elevator rides |";
 
     private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
 
-    public ConfigService()
+    public UserConfiguration()
     {
-        Config = GetConfig();
-        SaveConfig(Config);
+        Configuration = GetConfiguration();
+        SaveConfig(Configuration);
     }
 
-    public Config Config { get; private set; }
+    public Configuration Configuration { get; private set; }
 
     public void AddOneFloor()
     {
-        Config.CurrentFloor += 1;
-        SaveConfig(Config);
+        Configuration.CurrentFloor += 1;
+        SaveConfig(Configuration);
     }
 
     public void SetCurrentFloor(int floor)
     {
-        Config.CurrentFloor = floor;
-        SaveConfig(Config);
+        Configuration.CurrentFloor = floor;
+        SaveConfig(Configuration);
     }
 
-    public void SaveConfig(Config config)
+    public void SaveConfig(Configuration config)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
         var json = JsonSerializer.Serialize(config, options);
         File.WriteAllText(_configPath, json);
-        Config = config;
+        Configuration = config;
     }
 
     public void SaveConfig()
     {
-        SaveConfig(Config);
+        SaveConfig(Configuration);
     }
 
     public void SaveStatRebuildTime()
     {
         var dateTimeNow = DateTime.Now;
-        var lastRebuildTime = Config.LastRebuildTime;
+        var lastRebuildTime = Configuration.LastRebuildTime;
         var timeSinceRebuild = string.Empty;
 
         if (lastRebuildTime != DateTime.MinValue)
@@ -77,7 +77,7 @@ public class ConfigService : IConfigService
         }
 
         const int maxElevatorRidesLength = 15;
-        var rides = Config.ElevatorRides.ToString();
+        var rides = Configuration.ElevatorRides.ToString();
         if (rides.Length < maxElevatorRidesLength)
         {
             rides += new string(' ', maxElevatorRidesLength - rides.Length);
@@ -89,19 +89,19 @@ public class ConfigService : IConfigService
 
     private void SaveNewRebuildTime(DateTime rebuildTime)
     {
-        Config.LastRebuildTime = rebuildTime;
-        SaveConfig(Config);
+        Configuration.LastRebuildTime = rebuildTime;
+        SaveConfig(Configuration);
     }
 
-    private Config GetConfig()
+    private Configuration GetConfiguration()
     {
         if (!File.Exists(_configPath))
         {
-            return new Config();
+            return new Configuration();
         }
 
         var json = File.ReadAllText(_configPath);
-        var result = JsonSerializer.Deserialize<Config>(json);
+        var result = JsonSerializer.Deserialize<Configuration>(json);
 
         return result ?? throw new InvalidOperationException("Invalid configuration file");
     }

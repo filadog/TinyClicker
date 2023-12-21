@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,14 +14,18 @@ public partial class SettingsWindow
     private const float ELEVATOR_SPEED = 10f;
     private const bool VIP_PACKAGE = true;
 
-    private readonly IConfigService _configService;
+    private readonly IUserConfiguration _userConfiguration;
+    private readonly UserSettingsValidator _validator;
     private readonly UserSettingsViewModel _userSettings = new();
 
     private MainWindow? _mainWindow;
 
-    public SettingsWindow(IConfigService configService)
+    public SettingsWindow(
+        IUserConfiguration userConfiguration,
+        UserSettingsValidator validator)
     {
-        _configService = configService;
+        _userConfiguration = userConfiguration;
+        _validator = validator;
     }
 
     public void Show(MainWindow mainWindow)
@@ -57,22 +61,22 @@ public partial class SettingsWindow
 
     private void InitFields()
     {
-        TextBoxCurrentFloor.Text = _configService.Config.CurrentFloor.ToString();
-        TextBoxFloorToRebuildAt.Text = _configService.Config.RebuildAtFloor.ToString();
-        TextBoxWatchAdsFrom.Text = _configService.Config.WatchAdsFromFloor.ToString();
-        TextBoxFloorCostDecrease.Text = _configService.Config.FloorCostDecrease.ToString();
+        TextBoxCurrentFloor.Text = _userConfiguration.Configuration.CurrentFloor.ToString();
+        TextBoxFloorToRebuildAt.Text = _userConfiguration.Configuration.RebuildAtFloor.ToString();
+        TextBoxWatchAdsFrom.Text = _userConfiguration.Configuration.WatchAdsFromFloor.ToString();
+        TextBoxFloorCostDecrease.Text = _userConfiguration.Configuration.FloorCostDecrease.ToString();
 
-        CheckBoxWatchBuxAds.IsChecked = _configService.Config.WatchBuxAds;
-        CheckboxVipPackage.IsChecked = _configService.Config.VipPackage;
-        CheckBoxBuildFloors.IsChecked = _configService.Config.BuildFloors;
+        CheckBoxWatchBuxAds.IsChecked = _userConfiguration.Configuration.WatchBuxAds;
+        CheckboxVipPackage.IsChecked = _userConfiguration.Configuration.VipPackage;
+        CheckBoxBuildFloors.IsChecked = _userConfiguration.Configuration.BuildFloors;
 
-        _userSettings.CurrentFloor = _configService.Config.CurrentFloor;
-        _userSettings.RebuildAtFloor = _configService.Config.RebuildAtFloor;
-        _userSettings.WatchAdsFromFloor = _configService.Config.WatchAdsFromFloor;
-        _userSettings.WatchBuxAds = _configService.Config.WatchBuxAds;
-        _userSettings.LastRebuildTime = _configService.Config.LastRebuildTime;
-        _userSettings.BuildFloors = _configService.Config.BuildFloors;
-        _userSettings.LastRaffleTime = _configService.Config.LastRaffleTime;
+        _userSettings.CurrentFloor = _userConfiguration.Configuration.CurrentFloor;
+        _userSettings.RebuildAtFloor = _userConfiguration.Configuration.RebuildAtFloor;
+        _userSettings.WatchAdsFromFloor = _userConfiguration.Configuration.WatchAdsFromFloor;
+        _userSettings.WatchBuxAds = _userConfiguration.Configuration.WatchBuxAds;
+        _userSettings.LastRebuildTime = _userConfiguration.Configuration.LastRebuildTime;
+        _userSettings.BuildFloors = _userConfiguration.Configuration.BuildFloors;
+        _userSettings.LastRaffleTime = _userConfiguration.Configuration.LastRaffleTime;
 
         TextBlockVersionText.Text = GetVersionInfo();
     }
@@ -135,7 +139,7 @@ public partial class SettingsWindow
             throw new InvalidOperationException("Main window is null");
         }
 
-        var config = new Config(
+        var config = new Configuration(
             VIP_PACKAGE,
             ELEVATOR_SPEED,
             _userSettings.CurrentFloor,
@@ -147,9 +151,10 @@ public partial class SettingsWindow
             _userSettings.LastRaffleTime,
             _mainWindow.IsBluestacks,
             default,
-            _userSettings.FloorCostDecreasePercent);
+            _userSettings.FloorCostDecreasePercent, 
+            500); //todo do not forget to implement settings textbox
 
-        _configService.SaveConfig(config);
+        _userConfiguration.SaveConfig(config);
         _mainWindow?.Log("Saved settings");
     }
 

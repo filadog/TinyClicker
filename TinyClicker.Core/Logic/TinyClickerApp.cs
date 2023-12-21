@@ -2,23 +2,27 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
+using TinyClicker.Core.Services;
 
 namespace TinyClicker.Core.Logic;
 
 public class TinyClickerApp
 {
-    private readonly MainLoop _mainLoop;
     private readonly BackgroundWorker _backgroundWorker;
+    private readonly MainLoop _mainLoop;
+    private readonly IUserConfiguration _userConfiguration;
     private readonly ILogger _logger;
 
     public TinyClickerApp(
         BackgroundWorker backgroundWorker,
         MainLoop mainLoop,
+        IUserConfiguration userConfiguration,
         ILogger logger)
     {
         _backgroundWorker = backgroundWorker;
         _mainLoop = mainLoop;
         _logger = logger;
+        _userConfiguration = userConfiguration;
     }
 
     public void StartInBackground()
@@ -38,9 +42,8 @@ public class TinyClickerApp
         {
             try
             {
-                // todo add custom loop delay
                 _mainLoop.Start();
-                Task.Delay(500).Wait();
+                Task.Delay(_userConfiguration.Configuration.GameScreenScanningRateMs).Wait();
             }
             catch (InvalidOperationException ex)
             {

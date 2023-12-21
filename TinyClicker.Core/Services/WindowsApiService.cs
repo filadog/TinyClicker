@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -13,15 +13,15 @@ public class WindowsApiService : IWindowsApiService
     private const string BLUESTACKS_PROCESS = "HD-Player";
     private const string ERROR_MESSAGE = "Emulator window not found. Restart required";
 
-    private readonly IConfigService _configService;
+    private readonly IUserConfiguration _userConfiguration;
 
     private Process? _process;
     private nint _childHandle;
     private Rectangle _screenRect;
 
-    public WindowsApiService(IConfigService configService)
+    public WindowsApiService(IUserConfiguration userConfiguration)
     {
-        _configService = configService;
+        _userConfiguration = userConfiguration;
     }
 
     public void SendClick(int location)
@@ -31,7 +31,7 @@ public class WindowsApiService : IWindowsApiService
             throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
-        if (_configService.Config.IsBluestacks)
+        if (_userConfiguration.Configuration.IsBluestacks)
         {
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS);
             User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0000, location);
@@ -93,7 +93,7 @@ public class WindowsApiService : IWindowsApiService
             throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
-        if (_configService.Config.IsBluestacks)
+        if (_userConfiguration.Configuration.IsBluestacks)
         {
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS, (nint)0, 0);
             User32.PostMessage(_childHandle, User32.WindowMessage.WM_KEYDOWN, (nint)User32.VK.VK_ESCAPE);
