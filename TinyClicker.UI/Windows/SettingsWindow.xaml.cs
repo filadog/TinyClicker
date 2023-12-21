@@ -61,22 +61,22 @@ public partial class SettingsWindow
 
     private void InitFields()
     {
-        TextBoxCurrentFloor.Text = _userConfiguration.Configuration.CurrentFloor.ToString();
-        TextBoxFloorToRebuildAt.Text = _userConfiguration.Configuration.RebuildAtFloor.ToString();
-        TextBoxWatchAdsFrom.Text = _userConfiguration.Configuration.WatchAdsFromFloor.ToString();
-        TextBoxFloorCostDecrease.Text = _userConfiguration.Configuration.FloorCostDecrease.ToString();
+        TextBoxCurrentFloor.Text = _userConfiguration.CurrentFloor.ToString();
+        TextBoxFloorToRebuildAt.Text = _userConfiguration.RebuildAtFloor.ToString();
+        TextBoxWatchAdsFrom.Text = _userConfiguration.WatchAdsFromFloor.ToString();
+        TextBoxFloorCostDecrease.Text = _userConfiguration.FloorCostDecrease.ToString();
 
-        CheckBoxWatchBuxAds.IsChecked = _userConfiguration.Configuration.WatchBuxAds;
-        CheckboxVipPackage.IsChecked = _userConfiguration.Configuration.VipPackage;
-        CheckBoxBuildFloors.IsChecked = _userConfiguration.Configuration.BuildFloors;
+        CheckBoxWatchBuxAds.IsChecked = _userConfiguration.WatchBuxAds;
+        CheckboxVipPackage.IsChecked = _userConfiguration.VipPackage;
+        CheckBoxBuildFloors.IsChecked = _userConfiguration.BuildFloors;
 
-        _userSettings.CurrentFloor = _userConfiguration.Configuration.CurrentFloor;
-        _userSettings.RebuildAtFloor = _userConfiguration.Configuration.RebuildAtFloor;
-        _userSettings.WatchAdsFromFloor = _userConfiguration.Configuration.WatchAdsFromFloor;
-        _userSettings.WatchBuxAds = _userConfiguration.Configuration.WatchBuxAds;
-        _userSettings.LastRebuildTime = _userConfiguration.Configuration.LastRebuildTime;
-        _userSettings.BuildFloors = _userConfiguration.Configuration.BuildFloors;
-        _userSettings.LastRaffleTime = _userConfiguration.Configuration.LastRaffleTime;
+        _userSettings.CurrentFloor = _userConfiguration.CurrentFloor;
+        _userSettings.RebuildAtFloor = _userConfiguration.RebuildAtFloor;
+        _userSettings.WatchAdsFromFloor = _userConfiguration.WatchAdsFromFloor;
+        _userSettings.WatchBuxAds = _userConfiguration.WatchBuxAds;
+        _userSettings.LastRebuildTime = _userConfiguration.LastRebuildTime;
+        _userSettings.BuildFloors = _userConfiguration.BuildFloors;
+        _userSettings.LastRaffleTime = _userConfiguration.LastRaffleTime;
 
         TextBlockVersionText.Text = GetVersionInfo();
     }
@@ -139,7 +139,7 @@ public partial class SettingsWindow
             throw new InvalidOperationException("Main window is null");
         }
 
-        var config = new Configuration(
+        var configuration = new Configuration(
             VIP_PACKAGE,
             ELEVATOR_SPEED,
             _userSettings.CurrentFloor,
@@ -152,9 +152,9 @@ public partial class SettingsWindow
             _mainWindow.IsBluestacks,
             default,
             _userSettings.FloorCostDecreasePercent, 
-            500); //todo do not forget to implement settings textbox
+            500); // todo do not forget to implement settings textbox later
 
-        _userConfiguration.SaveConfig(config);
+        _userConfiguration.SaveConfiguration(configuration);
         _mainWindow?.Log("Saved settings");
     }
 

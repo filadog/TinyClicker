@@ -12,44 +12,86 @@ public class UserConfiguration : IUserConfiguration
     private const string HEADER = "rebuild time        | time since last rebuild | elevator rides |";
 
     private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
+    private Configuration _configuration;
 
     public UserConfiguration()
     {
-        Configuration = GetConfiguration();
-        SaveConfig(Configuration);
+        _configuration = ReadConfiguration();
+        SaveConfiguration(_configuration);
     }
 
-    public Configuration Configuration { get; private set; }
+    public bool VipPackage => _configuration.VipPackage;
+    public float ElevatorSpeed => _configuration.ElevatorSpeed;
+    public int CurrentFloor => _configuration.CurrentFloor;
+    public DateTime LastRebuildTime => _configuration.LastRebuildTime;
+    public int RebuildAtFloor => _configuration.RebuildAtFloor;
+    public int WatchAdsFromFloor => _configuration.WatchAdsFromFloor;
+    public bool WatchBuxAds => _configuration.WatchBuxAds;
+    public bool BuildFloors => _configuration.BuildFloors;
+    public DateTime LastRaffleTime => _configuration.LastRaffleTime;
+    public bool IsBluestacks => _configuration.IsBluestacks;
+    public int ElevatorRides => _configuration.ElevatorRides;
+    public int FloorCostDecrease => _configuration.FloorCostDecrease;
+    public int GameScreenScanningRateMs => _configuration.GameScreenScanningRateMs;
 
     public void AddOneFloor()
     {
-        Configuration.CurrentFloor += 1;
-        SaveConfig(Configuration);
+        _configuration.CurrentFloor++;
+        SaveConfiguration();
+    }
+
+    public void AddElevatorRide()
+    {
+        _configuration.ElevatorRides++;
+        SaveConfiguration();
+    }
+
+    public void ResetElevatorRides()
+    {
+        _configuration.ElevatorRides = 0;
+        SaveConfiguration();
     }
 
     public void SetCurrentFloor(int floor)
     {
-        Configuration.CurrentFloor = floor;
-        SaveConfig(Configuration);
+        _configuration.CurrentFloor = floor;
+        SaveConfiguration();
     }
 
-    public void SaveConfig(Configuration config)
+    public void SaveLastUsedEmulator(bool isBluestacks)
+    {
+        _configuration.IsBluestacks = isBluestacks;
+        SaveConfiguration();
+    }
+
+    public void SaveLastRaffleTime(DateTime rebuildTime)
+    {
+        if (rebuildTime == default)
+        {
+            throw new ArgumentNullException(nameof(rebuildTime));
+        }
+
+        _configuration.LastRaffleTime = rebuildTime;
+        SaveConfiguration();
+    }
+
+    public void SaveConfiguration(Configuration newConfiguration)
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
-        var json = JsonSerializer.Serialize(config, options);
+        var json = JsonSerializer.Serialize(newConfiguration, options);
         File.WriteAllText(_configPath, json);
-        Configuration = config;
+        _configuration = newConfiguration;
     }
 
-    public void SaveConfig()
+    public void SaveConfiguration()
     {
-        SaveConfig(Configuration);
+        SaveConfiguration(_configuration);
     }
 
-    public void SaveStatRebuildTime()
+    public void SaveRebuildTime()
     {
         var dateTimeNow = DateTime.Now;
-        var lastRebuildTime = Configuration.LastRebuildTime;
+        var lastRebuildTime = _configuration.LastRebuildTime;
         var timeSinceRebuild = string.Empty;
 
         if (lastRebuildTime != DateTime.MinValue)
@@ -77,7 +119,7 @@ public class UserConfiguration : IUserConfiguration
         }
 
         const int maxElevatorRidesLength = 15;
-        var rides = Configuration.ElevatorRides.ToString();
+        var rides = _configuration.ElevatorRides.ToString();
         if (rides.Length < maxElevatorRidesLength)
         {
             rides += new string(' ', maxElevatorRidesLength - rides.Length);
@@ -89,11 +131,11 @@ public class UserConfiguration : IUserConfiguration
 
     private void SaveNewRebuildTime(DateTime rebuildTime)
     {
-        Configuration.LastRebuildTime = rebuildTime;
-        SaveConfig(Configuration);
+        _configuration.LastRebuildTime = rebuildTime;
+        SaveConfiguration();
     }
 
-    private Configuration GetConfiguration()
+    private Configuration ReadConfiguration()
     {
         if (!File.Exists(_configPath))
         {

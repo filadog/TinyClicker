@@ -34,12 +34,12 @@ public class MainLoop
         _clickerActionsMap = clickerActionsRepository.GetActionsMap();
     }
 
-    private int FloorToRebuildAt => _userConfiguration.Configuration.RebuildAtFloor;
+    private int FloorToRebuildAt => _userConfiguration.RebuildAtFloor;
 
     public void Start()
     {
         using var gameWindow = _windowsApiService.GetGameScreenshot();
-        var currentFloor = _userConfiguration.Configuration.CurrentFloor;
+        var currentFloor = _userConfiguration.CurrentFloor;
 
         if (_imageFinder.TryFindFirstImageOnScreen(gameWindow, out var result))
         {
@@ -52,7 +52,7 @@ public class MainLoop
             _notFoundCount++;
             _logger.Log("Found nothing x" + _notFoundCount);
 
-            if (_notFoundCount >= 35000 / _userConfiguration.Configuration.GameScreenScanningRateMs)
+            if (_notFoundCount >= 35000 / _userConfiguration.GameScreenScanningRateMs)
             {
                 _clickerActionsRepository.TryCloseAd();
                 return;
@@ -71,7 +71,7 @@ public class MainLoop
             }
         }
 
-        if (!_userConfiguration.Configuration.BuildFloors)
+        if (!_userConfiguration.BuildFloors)
         {
             return;
         }

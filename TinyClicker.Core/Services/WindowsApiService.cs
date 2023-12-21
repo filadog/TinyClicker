@@ -31,7 +31,7 @@ public class WindowsApiService : IWindowsApiService
             throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
-        if (_userConfiguration.Configuration.IsBluestacks)
+        if (_userConfiguration.IsBluestacks)
         {
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS);
             User32.PostMessage(_childHandle, User32.WindowMessage.WM_LBUTTONDOWN, 0x0000, location);
@@ -93,7 +93,7 @@ public class WindowsApiService : IWindowsApiService
             throw new InvalidOperationException(ERROR_MESSAGE);
         }
 
-        if (_userConfiguration.Configuration.IsBluestacks)
+        if (_userConfiguration.IsBluestacks)
         {
             User32.SendMessage(_process.MainWindowHandle, User32.WindowMessage.WM_SETFOCUS, (nint)0, 0);
             User32.PostMessage(_childHandle, User32.WindowMessage.WM_KEYDOWN, (nint)User32.VK.VK_ESCAPE);

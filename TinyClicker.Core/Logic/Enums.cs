@@ -26,7 +26,7 @@ public enum GameButton
     FreeBuxGift,
 
     [Description("freeBuxCollectButton")]
-    CollectFreeBux,
+    Collect,
 
     [Description("questButton")]
     NewQuest,

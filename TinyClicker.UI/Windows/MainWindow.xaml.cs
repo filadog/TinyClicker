@@ -55,7 +55,7 @@ public partial class MainWindow : IMainWindow
     {
         if (_isLDPlayer ^ IsBluestacks)
         {
-            _userConfiguration.Configuration.IsBluestacks = IsBluestacks;
+            _userConfiguration.SaveLastUsedEmulator(IsBluestacks);
             _tinyClickerApp.StartInBackground();
 
             Log("Started!");

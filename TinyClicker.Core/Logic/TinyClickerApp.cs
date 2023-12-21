@@ -43,7 +43,7 @@ public class TinyClickerApp
             try
             {
                 _mainLoop.Start();
-                Task.Delay(_userConfiguration.Configuration.GameScreenScanningRateMs).Wait();
+                Task.Delay(_userConfiguration.GameScreenScanningRateMs).Wait();
             }
             catch (InvalidOperationException ex)
             {

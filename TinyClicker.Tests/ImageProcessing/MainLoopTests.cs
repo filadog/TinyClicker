@@ -28,7 +28,7 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
     [Fact]
     public void FindFreeBuxCollectButtonOnScreen()
     {
-        var itemName = GameButton.CollectFreeBux.GetDescription();
+        var itemName = GameButton.Collect.GetDescription();
         var foundName = TryFindFirstItemOnScreen(itemName);
 
         Assert.Equal(itemName, foundName);

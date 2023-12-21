@@ -26,7 +26,7 @@ public static class ClickerActionsExtensions
         map.AddMapping(GameButton.Back, _ => actions.PressExitButton());
         map.AddMapping(GameButton.Gift, actions.CollectFreeBux);
         map.AddMapping(GameButton.Restock, _ => actions.Restock());
-        map.AddMapping(GameButton.CollectFreeBux, x => actions.ClickAndWaitMs(x, 300));
+        map.AddMapping(GameButton.Collect, x => actions.ClickAndWaitMs(x, 300));
         map.AddMapping(GameButton.NewScience, actions.CollectNewScience);
         map.AddMapping(GameButton.FreeBuxGift, _ => actions.PressFreeBuxButton());
         map.AddMapping(GameButton.ParachuteGift, actions.ClickOnChute);
