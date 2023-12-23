@@ -36,16 +36,16 @@ public partial class MainWindow : IMainWindow
         InitializeComponent();
     }
 
-    public void Log(string msg)
+    public void Log(string message)
     {
         Dispatcher.Invoke(() =>
         {
-            TextBoxLog.Text = msg;
+            TextBoxLog.Text = message;
 
             // todo add logging enabled parameter
-            //msg += "\n";
+            //message += "\n";
             //var time = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-            //File.AppendAllText(@"./log.txt", time + " " + msg);
+            //File.AppendAllText(@"./log.txt", time + " " + message);
         });
     }
 

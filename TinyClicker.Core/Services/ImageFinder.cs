@@ -175,7 +175,7 @@ public class ImageFinder : IImageFinder
 
         if (matReference.Height < matTemplate.Height || matReference.Width < matTemplate.Width)
         {
-            return (0, new Point());
+            return (default, default);
         }
 
         Cv2.MatchTemplate(matReference, matTemplate, result, TemplateMatchModes.CCoeffNormed);

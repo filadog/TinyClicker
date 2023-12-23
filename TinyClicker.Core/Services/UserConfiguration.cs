@@ -12,12 +12,12 @@ public class UserConfiguration : IUserConfiguration
     private const string HEADER = "rebuild time        | time since last rebuild | elevator rides |";
 
     private readonly string _configPath = Environment.CurrentDirectory + "/Config.txt";
+    private readonly JsonSerializerOptions _options = new() { WriteIndented = true };
     private Configuration _configuration;
 
     public UserConfiguration()
     {
-        _configuration = ReadConfiguration();
-        SaveConfiguration(_configuration);
+        _configuration = LoadConfiguration();
     }
 
     public bool VipPackage => _configuration.VipPackage;
@@ -77,8 +77,7 @@ public class UserConfiguration : IUserConfiguration
 
     public void SaveConfiguration(Configuration newConfiguration)
     {
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        var json = JsonSerializer.Serialize(newConfiguration, options);
+        var json = JsonSerializer.Serialize(newConfiguration, _options);
         File.WriteAllText(_configPath, json);
         _configuration = newConfiguration;
     }
@@ -135,7 +134,7 @@ public class UserConfiguration : IUserConfiguration
         SaveConfiguration();
     }
 
-    private Configuration ReadConfiguration()
+    private Configuration LoadConfiguration()
     {
         if (!File.Exists(_configPath))
         {
