@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TinyClicker.Core.Logging;
 using TinyClicker.Core.Services;
@@ -55,12 +56,12 @@ public class ClickerActionsRepository
         _logger.Log("Clicking on the parachute");
         ClickAndWaitMs(location, 500);
 
-        if (_imageFinder.IsImageOnScreen(GameWindow.WatchCoinsAdsPrompt) 
+        if (_imageFinder.IsImageOnScreen(GameWindow.WatchCoinsAdsPrompt)
             && _userConfiguration.CurrentFloor >= _userConfiguration.WatchAdsFromFloor)
         {
             TryWatchAds();
         }
-        else if (_userConfiguration.WatchBuxAds 
+        else if (_userConfiguration.WatchBuxAds
             && _userConfiguration.CurrentFloor >= _userConfiguration.WatchAdsFromFloor)
         {
             if (_imageFinder.IsImageOnScreen(GameWindow.WatchBuxAdsPrompt))
@@ -108,7 +109,6 @@ public class ClickerActionsRepository
         _logger.Log("Clicking continue");
 
         _windowsApiService.SendClick(location);
-        WaitMs(500);
         MoveUp();
     }
 
@@ -124,12 +124,10 @@ public class ClickerActionsRepository
         {
             ClickAndWaitSec(165, 375, 1); // close the bonus tooltip
             MoveUp();
-            WaitSec(1);
         }
         else
         {
             MoveUp();
-            WaitSec(1);
         }
     }
 
@@ -260,43 +258,32 @@ public class ClickerActionsRepository
         WaitMs(waitTimeMs);
     }
 
-    public void CheckForNewFloor(int currentFloor, int balance)
+    public void CheckForNewFloor(int currentFloor, int balance, CancellationToken cancellationToken)
     {
-        if (currentFloor >= _userConfiguration.RebuildAtFloor)
+        cancellationToken.ThrowIfCancellationRequested();
+
+        while (balance > FloorPrices[currentFloor + 1])
         {
-            WaitMs(500);
-            RebuildTower();
-            return;
+            CheckObstructingWindows();
+
+            if (currentFloor >= _userConfiguration.RebuildAtFloor)
+            {
+                RebuildTower();
+                return;
+            }
+
+            if (_imageFinder.IsImageOnScreen(GameButton.RideElevator))
+            {
+                WaitMs(300); // important, wait until elevator button is in correct position
+                RideElevator();
+                return;
+            }
+
+            TryBuildNewFloor();
+
+            balance -= FloorPrices[currentFloor + 1];
+            currentFloor = _userConfiguration.CurrentFloor;
         }
-
-        if (balance <= FloorPrices[currentFloor + 1] || currentFloor >= _userConfiguration.RebuildAtFloor)
-        {
-            return;
-        }
-
-        if (_imageFinder.IsImageOnScreen(GameButton.RideElevator))
-        {
-            WaitMs(300);
-            RideElevator();
-        }
-
-        CheckObstructingWindows();
-        TryBuildNewFloor();
-
-        if (_imageFinder.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
-        {
-            AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(3);
-            _logger.Log("Not enough coins for a new floor");
-            _windowsApiService.SendClick(230, 380); // continue
-            return;
-        }
-
-        if (_imageFinder.IsImageOnScreen(GameButton.Back))
-        {
-            return;
-        }
-
-        CheckForNewFloor(_userConfiguration.CurrentFloor, balance - FloorPrices[currentFloor + 1]);
     }
 
     private void TryBuildNewFloor()
@@ -306,9 +293,7 @@ public class ClickerActionsRepository
             _logger.Log("Building new floor");
 
             MoveUp();
-            WaitMs(300);
-            ClickAndWaitMs(300, 360, 100); // click on a new floor
-            CheckObstructingWindows();
+            ClickAndWaitMs(300, 360, 300); // click on a new floor
 
             if (!_imageFinder.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
             {
@@ -316,6 +301,7 @@ public class ClickerActionsRepository
             }
 
             _windowsApiService.SendClick(230, 320); // confirm build
+            WaitMs(300); // important, wait until all possible windows are showed
 
             if (!_imageFinder.IsImageOnScreen(GameWindow.NewFloorNoCoinsNotification))
             {
@@ -324,6 +310,7 @@ public class ClickerActionsRepository
             }
             else
             {
+                _windowsApiService.SendClick(230, 380); // continue
                 AttemptNextFloorBuildAt = DateTime.Now.AddSeconds(5);
                 _logger.Log("Not enough coins for a new floor");
             }
@@ -360,7 +347,12 @@ public class ClickerActionsRepository
         if (_imageFinder.IsImageOnScreen(GameButton.Back))
         {
             PressExitButton();
-            _logger.Log("Clicking Back button while building");
+            return;
+        }
+
+        if (_imageFinder.IsImageOnScreen(GameWindow.BitizenMovedIn))
+        {
+            PressExitButton();
             return;
         }
 
@@ -369,7 +361,6 @@ public class ClickerActionsRepository
             _logger.Log("Found lobby window");
             PressExitButton();
             MoveUp();
-            WaitSec(1);
         }
     }
 
@@ -483,6 +474,7 @@ public class ClickerActionsRepository
     private void MoveUp()
     {
         _windowsApiService.SendClick(22, 10);
+        WaitMs(500);
     }
 
     private void MoveDown()

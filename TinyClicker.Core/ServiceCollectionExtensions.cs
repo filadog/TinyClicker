@@ -11,10 +11,9 @@ public static class ServiceCollectionExtensions
     public static void AddCoreServices(this IServiceCollection collection)
     {
         collection.AddSingleton<BackgroundWorker>();
-        collection.AddSingleton<IUserConfiguration, UserConfiguration>();
-        collection.AddSingleton<TinyClickerApp>();
         collection.AddSingleton<MainLoop>();
         collection.AddSingleton<ClickerActionsRepository>();
+        collection.AddSingleton<IUserConfiguration, UserConfiguration>();
         collection.AddSingleton<IWindowsApiService, WindowsApiService>();
         collection.AddSingleton<IBalanceParser, BalanceParser>();
         collection.AddSingleton<IImageFinder, ImageFinder>();

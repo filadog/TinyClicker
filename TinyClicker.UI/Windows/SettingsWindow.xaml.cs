@@ -11,7 +11,7 @@ namespace TinyClicker.UI.Windows;
 
 public partial class SettingsWindow
 {
-    private const float ELEVATOR_SPEED = 10f;
+    private const float ELEVATOR_SPEED = 10f; // todo remove this - not necessary anymore
     private const bool VIP_PACKAGE = true;
 
     private readonly IUserConfiguration _userConfiguration;

@@ -218,7 +218,7 @@
             HorizontalAlignment="Left"
             Margin="23,186,0,0"
             TextWrapping="Wrap"
-            Text="Press Start to launch Tiny Clicker"
+            Text="Press ScanScreenAndPerformActions to launch Tiny Clicker"
             VerticalAlignment="Top"
             Width="214"
             Height="21"

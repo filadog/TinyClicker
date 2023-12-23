@@ -1,4 +1,6 @@
-using System.ComponentModel;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TinyClicker.Core.Logging;
@@ -9,26 +11,23 @@ namespace TinyClicker.UI.Windows;
 
 public partial class MainWindow : IMainWindow
 {
-    private readonly BackgroundWorker _backgroundWorker;
-    private readonly SettingsWindow _settingsWindow;
-    private readonly TinyClickerApp _tinyClickerApp;
     private readonly IUserConfiguration _userConfiguration;
+    private readonly SettingsWindow _settingsWindow;
+    private readonly MainLoop _mainLoop;
 
+    private CancellationTokenSource? _cancellationTokenSource;
     private bool _isLDPlayer;
-
     public bool IsBluestacks;
     public bool SettingsOpened;
 
     public MainWindow(
-        BackgroundWorker backgroundWorker,
-        SettingsWindow settingsWindow,
-        TinyClickerApp tinyClickerApp,
         IUserConfiguration userConfiguration,
+        SettingsWindow settingsWindow,
+        MainLoop mainLoop,
         ILogger logger)
     {
-        _backgroundWorker = backgroundWorker;
         _settingsWindow = settingsWindow;
-        _tinyClickerApp = tinyClickerApp;
+        _mainLoop = mainLoop;
         _userConfiguration = userConfiguration;
 
         logger.SetMainWindow(this);
@@ -39,32 +38,31 @@ public partial class MainWindow : IMainWindow
 
     public void Log(string msg)
     {
-        Dispatcher.Invoke(
-            () =>
-            {
-                TextBoxLog.Text = msg;
+        Dispatcher.Invoke(() =>
+        {
+            TextBoxLog.Text = msg;
 
-                // todo add logging enabled parameter
-                //msg += "\n";
-                //var time = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-                //File.AppendAllText(@"./log.txt", time + " " + msg);
-            });
+            // todo add logging enabled parameter
+            //msg += "\n";
+            //var time = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            //File.AppendAllText(@"./log.txt", time + " " + msg);
+        });
     }
 
-    private void Startup()
+    private async Task StartClickerAsync()
     {
-        if (_isLDPlayer ^ IsBluestacks)
+        try
         {
-            _userConfiguration.SaveLastUsedEmulator(IsBluestacks);
-            _tinyClickerApp.StartInBackground();
-
-            Log("Started!");
-            ShowStartedButton();
-            HideCheckboxes();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await _mainLoop.StartAsync(_cancellationTokenSource.Token);
         }
-        else
+        catch(Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
         {
-            Log("Error: Select the emulator");
+            Log("Stopped the clicker");
+        }
+        catch (InvalidOperationException ex)
+        {
+            Log(ex.Message);
         }
     }
 
@@ -76,15 +74,27 @@ public partial class MainWindow : IMainWindow
         }
     }
 
-    private void StartButton_Click(object sender, RoutedEventArgs e)
+    private async void StartButton_Click(object sender, RoutedEventArgs e)
     {
-        DisableSettingsButton();
-        Startup();
+        if (_isLDPlayer ^ IsBluestacks)
+        {
+            Log("Started!");
+            DisableSettingsButton();
+            ShowStartedButton();
+            HideCheckboxes();
+            _userConfiguration.SaveLastUsedEmulator(IsBluestacks);
+
+            await StartClickerAsync();
+        }
+        else
+        {
+            Log("Error: select the emulator");
+        }
     }
 
     private void StopButton_Click(object sender, RoutedEventArgs e)
     {
-        _backgroundWorker.CancelAsync();
+        _cancellationTokenSource?.Cancel();
         Log("Stopped!");
         ShowExitButton();
         ShowCheckboxes();
