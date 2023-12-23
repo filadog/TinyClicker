@@ -262,13 +262,18 @@ public class ClickerActionsRepository
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        while (balance > FloorPrices[currentFloor + 1])
+        while (true)
         {
             CheckObstructingWindows();
 
             if (currentFloor >= _userConfiguration.RebuildAtFloor)
             {
                 RebuildTower();
+                return;
+            }
+
+            if (balance < FloorPrices[currentFloor + 1])
+            {
                 return;
             }
 
