@@ -51,7 +51,7 @@ public class WindowsApiService : IWindowsApiService
         SendClick(GetRelativeCoordinates(x, y));
     }
 
-    public Image GetGameScreenshot()
+    public Bitmap GetGameScreenshot()
     {
         if (_childHandle != default)
         {
@@ -129,7 +129,7 @@ public class WindowsApiService : IWindowsApiService
         return MakeLParam(x2, y2);
     }
 
-    private static Image MakeScreenshot(nint handle)
+    private static Bitmap MakeScreenshot(nint handle)
     {
         var hdcSrc = User32.GetWindowDC(handle);
 

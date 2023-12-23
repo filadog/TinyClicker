@@ -62,12 +62,11 @@ public class ImageFinder : IImageFinder
 
     private Dictionary<string, Mat>? Templates { get; set; }
 
-    public bool TryFindFirstImageOnScreen(Image gameScreen, out (string ItemName, int Location) result)
+    public bool TryFindFirstImageOnScreen(Bitmap gameScreen, out (string ItemName, int Location) result)
     {
         Templates ??= MakeTemplatesFromSamples(gameScreen);
 
-        using var screenBitmap = new Bitmap(gameScreen);
-        using var screenMat = screenBitmap.ToMat();
+        using var screenMat = gameScreen.ToMat();
 
         foreach (var template in Templates.Where(x => !_skipButtons.Contains(x.Key)))
         {
@@ -83,15 +82,13 @@ public class ImageFinder : IImageFinder
         return false;
     }
 
-    public bool IsImageOnScreen(Enum image, Dictionary<string, Mat>? templates = null, Image? screenshot = null)
+    public bool IsImageOnScreen(Enum image, Bitmap? gameScreen = null)
     {
-        using var gameWindow = screenshot ?? _windowsApiService.GetGameScreenshot();
-        using var windowBitmap = new Bitmap(gameWindow);
+        gameScreen ??= _windowsApiService.GetGameScreenshot();
+        Templates ??= MakeTemplatesFromSamples(gameScreen);
 
-        Templates ??= MakeTemplatesFromSamples(gameWindow);
-
-        var screen = windowBitmap.ToMat();
-        var template = templates == null ? Templates[image.GetDescription()] : templates[image.GetDescription()];
+        var screen = gameScreen.ToMat();
+        var template = Templates[image.GetDescription()];
 
         var result = FindTemplateOnImage(screen, template);
         var threshold = _highThresholdButtons.Contains(image.GetDescription())
@@ -101,14 +98,12 @@ public class ImageFinder : IImageFinder
         return result.MaxVal >= threshold;
     }
 
-    public bool TryFindOnScreen(Enum image, out Point location)
+    public bool TryFindOnScreen(Enum image, out Point location, Bitmap? gameScreen = null)
     {
-        using var gameWindow = _windowsApiService.GetGameScreenshot();
-        using var windowBitmap = new Bitmap(gameWindow);
+        gameScreen ??= _windowsApiService.GetGameScreenshot();
+        Templates ??= MakeTemplatesFromSamples(gameScreen);
 
-        Templates ??= MakeTemplatesFromSamples(gameWindow);
-
-        var screen = windowBitmap.ToMat();
+        var screen = gameScreen.ToMat();
         var template = Templates[image.GetDescription()];
 
         var result = FindTemplateOnImage(screen, template);

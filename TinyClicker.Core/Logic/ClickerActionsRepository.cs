@@ -260,10 +260,9 @@ public class ClickerActionsRepository
 
     public void CheckForNewFloor(int currentFloor, int balance, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             CheckObstructingWindows();
 
             if (currentFloor >= _userConfiguration.RebuildAtFloor)
@@ -302,6 +301,7 @@ public class ClickerActionsRepository
 
             if (!_imageFinder.IsImageOnScreen(GameWindow.BuildNewFloorNotification))
             {
+                CheckObstructingWindows();
                 return;
             }
 
@@ -331,37 +331,39 @@ public class ClickerActionsRepository
 
     private void CheckObstructingWindows()
     {
-        if (_imageFinder.TryFindOnScreen(GameButton.Continue, out var location))
+        using var gameScreen = _windowsApiService.GetGameScreenshot();
+
+        if (_imageFinder.TryFindOnScreen(GameButton.Continue, out var location, gameScreen))
         {
             _windowsApiService.SendClick(location.X, location.Y);
             return;
         }
 
-        if (_imageFinder.TryFindOnScreen(GameButton.Collect, out location))
+        if (_imageFinder.TryFindOnScreen(GameButton.Collect, out location, gameScreen))
         {
             _windowsApiService.SendClick(location.X, location.Y);
             return;
         }
 
-        if (_imageFinder.TryFindOnScreen(GameButton.Awesome, out location))
+        if (_imageFinder.TryFindOnScreen(GameButton.Awesome, out location, gameScreen))
         {
             _windowsApiService.SendClick(location.X, location.Y);
             return;
         }
 
-        if (_imageFinder.IsImageOnScreen(GameButton.Back))
+        if (_imageFinder.IsImageOnScreen(GameButton.Back, gameScreen))
         {
             PressExitButton();
             return;
         }
 
-        if (_imageFinder.IsImageOnScreen(GameWindow.BitizenMovedIn))
+        if (_imageFinder.IsImageOnScreen(GameWindow.BitizenMovedIn, gameScreen))
         {
             PressExitButton();
             return;
         }
 
-        if (_imageFinder.IsImageOnScreen(GameWindow.Lobby))
+        if (_imageFinder.IsImageOnScreen(GameWindow.Lobby, gameScreen))
         {
             _logger.Log("Found lobby window");
             PressExitButton();

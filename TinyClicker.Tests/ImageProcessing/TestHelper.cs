@@ -5,7 +5,7 @@ namespace TinyClicker.Tests.ImageProcessing;
 
 internal static class TestHelper
 {
-    public static Image LoadGameScreenshot(string screenshotName)
+    public static Bitmap LoadGameScreenshot(string screenshotName)
     {
         var fileName = $@".\Screenshots\{screenshotName}.png";
         if (!File.Exists(fileName))
@@ -13,6 +13,6 @@ internal static class TestHelper
             throw new FileNotFoundException();
         }
 
-        return Image.FromFile(fileName);
+        return new Bitmap(Image.FromFile(fileName));
     }
 }

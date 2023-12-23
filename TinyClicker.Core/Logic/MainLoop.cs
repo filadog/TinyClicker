@@ -47,9 +47,9 @@ public class MainLoop
 
     private void ScanScreenAndPerformActions(CancellationToken cancellationToken)
     {
-        using var gameWindow = _windowsApiService.GetGameScreenshot();
+        using var gameScreen = _windowsApiService.GetGameScreenshot();
 
-        if (_imageFinder.TryFindFirstImageOnScreen(gameWindow, out var result))
+        if (_imageFinder.TryFindFirstImageOnScreen(gameScreen, out var result))
         {
             var message = "Found " + result.ItemName;
             _logger.Log(message);
@@ -78,7 +78,7 @@ public class MainLoop
             return;
         }
 
-        var balance = _balanceParser.GetBalanceFromWindow(gameWindow);
+        var balance = _balanceParser.GetBalanceFromWindow(gameScreen);
         if (balance == -1 || currentFloor < 4)
         {
             return;

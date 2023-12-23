@@ -97,11 +97,9 @@ public class MainLoopTests : IClassFixture<DependencySetupFixture>
     private bool IsItemOnScreen(Enum item)
     {
         var itemName = item.GetDescription();
-
         var imageFinder = _serviceProvider.GetRequiredService<IImageFinder>();
-        var screenshot = TestHelper.LoadGameScreenshot(itemName);
-        var templates = imageFinder.MakeTemplatesFromSamples(screenshot);
+        var screenshot = new System.Drawing.Bitmap(TestHelper.LoadGameScreenshot(itemName));
 
-        return imageFinder.IsImageOnScreen(item, templates, screenshot);
+        return imageFinder.IsImageOnScreen(item, screenshot);
     }
 }

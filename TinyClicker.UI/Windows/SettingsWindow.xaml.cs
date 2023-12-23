@@ -37,7 +37,7 @@ public partial class SettingsWindow
 
         InitializeComponent();
         AddEventHandlers();
-        InitFields();
+        InitializeFields();
         Show();
     }
 
@@ -59,7 +59,7 @@ public partial class SettingsWindow
         CheckBoxBuildFloors.Unchecked += CheckBox_BuildFloors_Unchecked;
     }
 
-    private void InitFields()
+    private void InitializeFields()
     {
         TextBoxCurrentFloor.Text = _userConfiguration.CurrentFloor.ToString();
         TextBoxFloorToRebuildAt.Text = _userConfiguration.RebuildAtFloor.ToString();

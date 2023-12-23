@@ -33,7 +33,9 @@ public partial class MainWindow : IMainWindow
         logger.SetMainWindow(this);
 
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
         InitializeComponent();
+        InitializeFields();
     }
 
     public void Log(string message)
@@ -66,6 +68,12 @@ public partial class MainWindow : IMainWindow
         }
     }
 
+    private void InitializeFields()
+    {
+        BlueStacksCheckbox.IsChecked = _userConfiguration.IsBluestacks;
+        LdPlayerCheckbox.IsChecked = !_userConfiguration.IsBluestacks;
+    }
+
     private void MainWindowMouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ChangedButton == MouseButton.Left)
@@ -95,7 +103,7 @@ public partial class MainWindow : IMainWindow
     private void StopButton_Click(object sender, RoutedEventArgs e)
     {
         _cancellationTokenSource?.Cancel();
-        Log("Stopped!");
+        Log("Stopping...");
         ShowExitButton();
         ShowCheckboxes();
         EnableSettingsButton();
@@ -146,11 +154,6 @@ public partial class MainWindow : IMainWindow
 
     private void IsBluestacksCheckboxChecked(object sender, RoutedEventArgs e)
     {
-        if (LdPlayerCheckbox == null)
-        {
-            return;
-        }
-
         LdPlayerCheckbox.IsHitTestVisible = false;
         LdPlayerCheckbox.Focusable = false;
         IsBluestacks = true;

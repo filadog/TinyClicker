@@ -5,7 +5,7 @@ namespace TinyClicker.Core.Services;
 public interface IWindowsApiService
 {
     int MakeLParam(int x, int y);
-    Image GetGameScreenshot();
+    Bitmap GetGameScreenshot();
     void SendClick(int location);
     void SendClick(int x, int y);
 }
