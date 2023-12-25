@@ -90,12 +90,11 @@ public class UserConfiguration : IUserConfiguration
     public void SaveRebuildTime()
     {
         var dateTimeNow = DateTime.Now;
-        var lastRebuildTime = _configuration.LastRebuildTime;
         var timeSinceRebuild = string.Empty;
 
-        if (lastRebuildTime != DateTime.MinValue)
+        if (LastRebuildTime != DateTime.MinValue)
         {
-            var diff = dateTimeNow - lastRebuildTime;
+            var diff = dateTimeNow - LastRebuildTime;
             var formatted = diff.ToString(@"hh\:mm\:ss");
             timeSinceRebuild = diff.Days >= 1 ? $"{diff.Days} days " + formatted : formatted;
         }
@@ -118,7 +117,7 @@ public class UserConfiguration : IUserConfiguration
         }
 
         const int maxElevatorRidesLength = 15;
-        var rides = _configuration.ElevatorRides.ToString();
+        var rides = ElevatorRides.ToString();
         if (rides.Length < maxElevatorRidesLength)
         {
             rides += new string(' ', maxElevatorRidesLength - rides.Length);

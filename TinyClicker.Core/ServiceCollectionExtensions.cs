@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using Tesseract;
 using TinyClicker.Core.Logic;
@@ -10,7 +9,6 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCoreServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<BackgroundWorker>();
         collection.AddSingleton<MainLoop>();
         collection.AddSingleton<ClickerActionsRepository>();
         collection.AddSingleton<IUserConfiguration, UserConfiguration>();

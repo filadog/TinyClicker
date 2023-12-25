@@ -116,7 +116,7 @@ public class ImageFinder : IImageFinder
         return result.MaxVal >= threshold;
     }
 
-    public Dictionary<string, Mat> MakeTemplatesFromSamples(Image screenshot)
+    private Dictionary<string, Mat> MakeTemplatesFromSamples(Image screenshot)
     {
         var images = LoadSampleImages();
         var percentage = _balanceParser.GetScreenDiffPercentageForTemplates(screenshot);
