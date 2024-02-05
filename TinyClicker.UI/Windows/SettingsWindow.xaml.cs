@@ -15,17 +15,13 @@ public partial class SettingsWindow
     private const bool VIP_PACKAGE = true;
 
     private readonly IUserConfiguration _userConfiguration;
-    private readonly UserSettingsValidator _validator;
     private readonly UserSettingsViewModel _userSettings = new();
 
     private MainWindow? _mainWindow;
 
-    public SettingsWindow(
-        IUserConfiguration userConfiguration,
-        UserSettingsValidator validator)
+    public SettingsWindow(IUserConfiguration userConfiguration)
     {
         _userConfiguration = userConfiguration;
-        _validator = validator;
     }
 
     public void Show(MainWindow mainWindow)
