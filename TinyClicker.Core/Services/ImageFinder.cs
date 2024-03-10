@@ -36,7 +36,6 @@ public class ImageFinder : IImageFinder
 
         GameWindow.DeliverBitizensQuestPrompt.GetDescription(),
         GameWindow.FindBitizensQuestPrompt.GetDescription(),
-        GameWindow.BuildNewFloorNotification.GetDescription(),
         GameWindow.HurryConstructionWithBux.GetDescription(),
         GameWindow.NewFloorNoCoinsNotification.GetDescription(),
         GameWindow.WatchBuxAdsPrompt.GetDescription(),
