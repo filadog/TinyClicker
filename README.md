@@ -1,6 +1,6 @@
 ## TinyClicker
 [![Tests](https://github.com/filadog/TinyClicker/actions/workflows/run_tests.yml/badge.svg?branch=master)](https://github.com/filadog/TinyClicker/actions/workflows/run_tests.yml)
-#### Game version: v.4.30.0-359 - _01.12.2023_
+#### Game version: v.5.0.0-391 - _10.03.2024_
 
 
 ### [English](#tinyclicker---english)
