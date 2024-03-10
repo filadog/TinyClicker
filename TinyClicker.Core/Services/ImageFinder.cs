@@ -15,7 +15,7 @@ namespace TinyClicker.Core.Services;
 public class ImageFinder : IImageFinder
 {
     private const double OPEN_CV_THRESHOLD_LOW = 0.78;
-    private const double OPEN_CV_THRESHOLD_HIGH = 0.9;
+    private const double OPEN_CV_THRESHOLD_HIGH = 0.92;
     private const string SAMPLES_PATH = "./Samples/samples.dat";
     private const string SAMPLE_NAMES_PATH = "./Samples/button_names.txt";
 
@@ -32,6 +32,8 @@ public class ImageFinder : IImageFinder
         GameButton.TasksButton.GetDescription(),
         GameButton.FreeBuxGift.GetDescription(),
         GameButton.TowerManagementButton.GetDescription(),
+        GameButton.ScienceButtonWarning.GetDescription(),
+
         GameWindow.DeliverBitizensQuestPrompt.GetDescription(),
         GameWindow.FindBitizensQuestPrompt.GetDescription(),
         GameWindow.BuildNewFloorNotification.GetDescription(),
@@ -41,12 +43,13 @@ public class ImageFinder : IImageFinder
         GameWindow.WatchCoinsAdsPrompt.GetDescription(),
         GameWindow.FullyStockedBonus.GetDescription(),
         GameWindow.AdsLostRewardNotification.GetDescription(),
-        GameWindow.BitizenMovedIn.GetDescription()
+        GameWindow.BitizenMovedIn.GetDescription(),
     ];
 
     private readonly HashSet<string> _highThresholdButtons =
     [
-        GameButton.Gift.GetDescription()
+        GameButton.Gift.GetDescription(),
+        GameButton.TowerManagementWarning.GetDescription(),
     ];
 
     private readonly HashSet<string> _adjustableButtons =

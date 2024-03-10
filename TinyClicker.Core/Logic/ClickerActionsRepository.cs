@@ -47,7 +47,7 @@ public class ClickerActionsRepository
             return;
         }
 
-        ClickAndWaitMs(collectLocation.X + 40, collectLocation.Y + 40, 300);
+        ClickAndWaitMs(collectLocation.X + 20, collectLocation.Y + 20, 300);
         _windowsApiService.SendClick(225, 375); // collect bux
     }
 
@@ -371,6 +371,19 @@ public class ClickerActionsRepository
         }
     }
 
+    public void CheckTowerManagementActions(int location)
+    {
+        ClickAndWaitMs(location, 300);
+
+        using var gameScreen = _windowsApiService.GetGameScreenshot();
+
+        if (_imageFinder.TryFindOnScreen(GameButton.ScienceButtonWarning, out var scienceLocation, gameScreen))
+        {
+            ClickAndWaitMs(scienceLocation.X + 20, scienceLocation.Y + 20, 300); // click on science button
+            ClickAndWaitMs(160, 110, 100); // click collect point
+        }
+    }
+
     private void RebuildTower()
     {
         _logger.Log("Rebuilding the tower");
@@ -378,8 +391,8 @@ public class ClickerActionsRepository
         _userConfiguration.ResetElevatorRides();
 
         ClickAndWaitMs(305, 570, 350); // menu
-        ClickAndWaitMs(165, 435, 350); // rebuild menu
-        ClickAndWaitMs(165, 440, 350); // rebuild button
+        ClickAndWaitMs(165, 370, 350); // rebuild menu
+        ClickAndWaitMs(165, 470, 350); // rebuild button
         ClickAndWaitMs(230, 380, 350); // confirm rebuild
         ClickAndWaitMs(230, 380, 600); // yes, skip tutorial (finally)
         //ClickAndWaitMs(165, 405, 200); // click to claim easter GT bonus

@@ -59,7 +59,13 @@ public enum GameButton
     Awesome,
 
     [Description("completedQuestButton")]
-    CompletedQuest
+    CompletedQuest,
+
+    [Description("towerManagementWarningButton")]
+    TowerManagementWarning,
+
+    [Description("scienceButtonWarning")]
+    ScienceButtonWarning,
 }
 
 public enum GameWindow

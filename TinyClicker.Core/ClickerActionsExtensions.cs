@@ -34,6 +34,7 @@ public static class ClickerActionsExtensions
         map.AddMapping(GameButton.GameIcon, actions.OpenTheGame);
         map.AddMapping(GameButton.NewQuest, actions.PressQuestButton);
         map.AddMapping(GameButton.CompletedQuest, actions.CompleteQuest);
+        map.AddMapping(GameButton.TowerManagementWarning, actions.CheckTowerManagementActions);
 
         map.AddMapping(GameWindow.RoofCustomization, _ => actions.ExitRoofCustomizationMenu());
         map.AddMapping(GameWindow.HurryConstructionWithBux, _ => actions.CancelHurryConstructionWithBux());

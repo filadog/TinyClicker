@@ -38,3 +38,5 @@ newTasksButton
 newGiftsButton
 newTowerManagementButton
 newCalendarButton
+towerManagementWarningButton
+scienceButtonWarning
