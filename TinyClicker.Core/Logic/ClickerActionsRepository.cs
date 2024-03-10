@@ -512,7 +512,7 @@ public class ClickerActionsRepository
         _logger.Log("Playing the raffle");
         WaitMs(500);
         ClickAndWaitMs(300, 570, 500);          // open menu
-        ClickAndWaitMs(275, 440, 3000);         // open raffle
+        ClickAndWaitMs(280, 370, 3000);         // open raffle
         _windowsApiService.SendClick(160, 345); // enter raffle
 
         _userConfiguration.SaveLastRaffleTime(dateTimeNow);
