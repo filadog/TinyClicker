@@ -1,7 +1,10 @@
 ## TinyClicker
-[![Tests](https://github.com/filadog/TinyClicker/actions/workflows/run_tests.yml/badge.svg?branch=master)](https://github.com/filadog/TinyClicker/actions/workflows/run_tests.yml)
 #### Game version: v.5.0.0-391 - _10.03.2024_
 
+### [English (full readme)](#tinyclicker---english)
+
+Автокликер для мобильной игры Tiny Tower, созданный для сбора золотых билетов и автоматизации рутины в игре.\
+Кликер использует распознавание текста и изображений для полной автоматизации постройки и перестройки вашего небоскреба при запуске игры в эмуляторе Android.
 
 ## Состояние проекта
 Скорее всего TinyClicker уже не будет получать обновлений от меня в будущем. \
@@ -9,20 +12,6 @@
 
 Исходный код остается доступен под лицензией MIT, можете использовать его целиком или частично для своих проектов. \
 Модули работы с распознаванием текста или изображений (Tesseract и OpenCvSharp) могут оказаться полезны в похожих .NET проектах.
-
-
-## Current project state
-TinyClicker will most likely not receive any updates from me in the future. \
-I stopped playing due to the devs making too much in-the-face ads and microtransactions. 
-
-Feel free to fork the repository or reuse the code. The repository is under MIT license. \
-Some services, such as image or text recognition (OpenCvSharp and Tesseract) might prove helpful in similar .NET projects.
-
-
-### [English (full readme)](#tinyclicker---english)
-
-Автокликер для мобильной игры Tiny Tower, созданный для сбора золотых билетов и автоматизации рутины в игре.\
-Кликер использует распознавание текста и изображений для полной автоматизации постройки и перестройки вашего небоскреба при запуске игры в эмуляторе Android.
 
 ## 
 
@@ -110,6 +99,15 @@ Some services, such as image or text recognition (OpenCvSharp and Tesseract) mig
 
 A simple background autoclicker for the Tiny Tower game tailored for the greedy Golden Tickets collectors.\
 TinyClicker implements image pattern matching and OCR to help you automate the grind of rebuilding your Tiny Tower.
+
+
+
+## Current project state
+TinyClicker will most likely not receive any updates from me in the future. \
+I stopped playing due to the devs making too much in-the-face ads and microtransactions. 
+
+Feel free to fork the repository or reuse the code. The repository is under MIT license. \
+Some services, such as image or text recognition (OpenCvSharp and Tesseract) might prove helpful in similar .NET projects.
 
 ## 
 
